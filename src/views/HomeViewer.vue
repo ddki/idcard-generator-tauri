@@ -9,12 +9,12 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
-import HeaderMenu from './HeaderMenu.vue'
+import HeaderMenu from './HeaderMenuViewer.vue'
 
 @Options({
   components: {
     HeaderMenu
   }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue { }
 </script>

@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
-import IdCard from '../views/idcard/index.vue'
-import IdCardImage from '@/views/idcard/image.vue'
-import About from '@/views/About.vue'
+import Home from '@/views/HomeViewer.vue'
+import IdCard from '@/views/IdCard/IdCardViewer.vue'
+import IdCardImage from '@/views/IdCard/IdCardImageViewer.vue'
+import About from '@/views/AboutViewer.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
