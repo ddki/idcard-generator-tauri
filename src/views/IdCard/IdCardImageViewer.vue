@@ -24,8 +24,8 @@
           v-model="formData.startDate"
           type="date"
           placeholder="有效期起期"
-          format="YYYY-M-DD"
-          value-format="YYYY-M-DD"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
       <el-form-item label="有效期类型">
@@ -47,8 +47,8 @@
           v-model="formData.endDate"
           type="date"
           placeholder="有效期止期"
-          format="YYYY-M-DD"
-          value-format="YYYY-M-DD"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
       <el-form-item>
@@ -80,7 +80,11 @@ function getNowDate(): string {
   const year = now.getFullYear()
   const month = now.getMonth() + 1
   const date = now.getDate()
-  return `${year}-${month}-${date}`
+  let monthStr = month.toString()
+  if (month < 10) {
+    monthStr = '0' + month
+  }
+  return `${year}-${monthStr}-${date}`
 }
 
 function addDate(startDate: string, num: number): string {
@@ -89,7 +93,11 @@ function addDate(startDate: string, num: number): string {
   const month = sDate.getMonth() + 1
   const date = sDate.getDate()
   const newYear = year + num
-  return `${newYear}-${month}-${date}`
+  let monthStr = month.toString()
+  if (month < 10) {
+    monthStr = '0' + month
+  }
+  return `${newYear}-${monthStr}-${date}`
 }
 export default defineComponent({
   props: {
