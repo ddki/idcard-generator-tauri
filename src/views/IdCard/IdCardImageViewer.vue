@@ -84,7 +84,11 @@ function getNowDate(): string {
   if (month < 10) {
     monthStr = '0' + month
   }
-  return `${year}-${monthStr}-${date}`
+  let dateStr = date.toString()
+  if (date < 10) {
+    dateStr = '0' + date
+  }
+  return `${year}-${monthStr}-${dateStr}`
 }
 
 function addDate(startDate: string, num: number): string {
@@ -97,7 +101,11 @@ function addDate(startDate: string, num: number): string {
   if (month < 10) {
     monthStr = '0' + month
   }
-  return `${newYear}-${monthStr}-${date}`
+  let dateStr = date.toString()
+  if (date < 10) {
+    dateStr = '0' + date
+  }
+  return `${newYear}-${monthStr}-${dateStr}`
 }
 export default defineComponent({
   props: {

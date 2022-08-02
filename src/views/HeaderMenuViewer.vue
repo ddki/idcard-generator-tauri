@@ -14,9 +14,16 @@
 import { defineComponent, reactive } from 'vue'
 
 export default defineComponent({
-  setup() {
+  props: {
+    active: {
+      type: String,
+      required: true,
+      default: '/idcard'
+    }
+  },
+  setup(props) {
     const state = reactive({
-      active: '/idcard',
+      active: props.active,
       menus: [
         {
           text: '身份证生成',
@@ -24,11 +31,10 @@ export default defineComponent({
         }, {
           text: '身份证照片生成',
           router: '/idcard-image'
+        }, {
+          text: '关于',
+          router: '/about'
         }
-        // , {
-        //   text: '关于',
-        //   router: '/about'
-        // }
       ]
     })
 
