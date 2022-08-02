@@ -34,7 +34,6 @@ export default defineComponent({
   // back https://s3.bmp.ovh/imgs/2021/12/cc3873a71e9edb05.png
   // font https://s3.bmp.ovh/imgs/2021/12/10f6c7697fc2943c.png
   setup(props) {
-    console.log(props.idCardInfo)
     const dateStr = computed(() => {
       if (props.idCardInfo.validityType === '3') {
         return '长期有效'

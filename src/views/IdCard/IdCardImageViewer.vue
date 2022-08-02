@@ -120,7 +120,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    console.log(props)
     const initFormData = {
       name: props.name || '',
       nation: '汉',

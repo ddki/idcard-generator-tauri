@@ -39,7 +39,6 @@ export default defineComponent({
     })
 
     const handleSelect = (key: string, keyPath: string[]) => {
-      console.log(key, keyPath)
       state.active = key
     }
 

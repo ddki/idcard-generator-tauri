@@ -1,6 +1,6 @@
 <template>
   <el-header>
-    <HeaderMenu />
+    <HeaderMenu :active="routerPath" />
   </el-header>
   <router-view />
 </template>
@@ -16,8 +16,11 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute()
-    console.log(route.fullPath)
-    return {}
+    console.log('route', route.path)
+    const routerPath = route.path
+    return {
+      routerPath
+    }
   }
 })
 </script>

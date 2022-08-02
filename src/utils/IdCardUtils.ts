@@ -78,7 +78,6 @@ export function getSexFromIdCard(idCard: string): string {
  */
 export function getBirthdayArrayFromIdCard(idCard: string): Array<string> {
   const birthday = idCard.substring(6, 14)
-  console.log(birthday)
   const arr: Array<string> = []
   arr.push(birthday.substring(0, 4))
   let month = birthday.substring(4, 6)
