@@ -7,6 +7,7 @@ declare module 'idCard' {
     sex: string
     birthday: string
     mobile: string
+    address: string
   }
 
   export interface IdCardInput {
@@ -16,6 +17,7 @@ declare module 'idCard' {
     birthday: string
     number: number
     relation: string
+    address: string
   }
 
   export interface IdCardImageInput {

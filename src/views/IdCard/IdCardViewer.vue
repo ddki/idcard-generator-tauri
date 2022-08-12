@@ -31,7 +31,7 @@
           v-model="formData.areaCode"
           :options="areaOptions"
           :props="areaPropsOption"
-          :show-all-levels="false"
+          :show-all-levels="true"
           @change="onChangeAreaCode"
           placeholder="地区代码"
           clearable
@@ -86,12 +86,17 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="age" label="年龄" width="50" />
+      <el-table-column align="center" prop="address" label="地址" width="220">
+        <template #default="scope">
+          <span @click="handleClickCopy(scope.row.address)">{{scope.row.address}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" fixed="right" label="操作">
         <template #default="scope">
           <el-button
             type="text"
             size="small"
-            @click="handleGenerateImage(scope.row.name, scope.row.idCard, scope.row.sex)"
+            @click="handleGenerateImage(scope.row.name, scope.row.idCard, scope.row.sex, scope.row.address)"
           >生成照片</el-button>
         </template>
       </el-table-column>
@@ -120,7 +125,8 @@ export default defineComponent({
       areaCode: '110101',
       birthday: getBirthday(20),
       number: 5,
-      relation: '0'
+      relation: '0',
+      address: ''
     })
 
     const areaOptions = IdcardConstant.cities
@@ -141,7 +147,7 @@ export default defineComponent({
     }
 
     const onChangeAreaCode = (value: Array<string>): void => {
-      const lastValue = value.pop()
+      const lastValue = value?.pop()
       formData.areaCode = lastValue || '110101'
     }
 
@@ -160,7 +166,8 @@ export default defineComponent({
           areaCode: formData.areaCode,
           birthday: formData.birthday,
           number: formData.number,
-          relation: '0'
+          relation: '0',
+          address: ''
         }
         // 生成自己
         tableData.push(generateIdCardInfo(oneSelfParams))
@@ -172,7 +179,8 @@ export default defineComponent({
             areaCode: formData.areaCode,
             birthday: formData.birthday,
             number: formData.number,
-            relation: formData.relation
+            relation: formData.relation,
+            address: ''
           }
           const relationContext = new RelationContext(params)
           const newParams = relationContext.execute()
@@ -205,7 +213,8 @@ export default defineComponent({
         areaCode: formData.areaCode,
         birthday: formData.birthday,
         number: formData.number,
-        relation: '0'
+        relation: '0',
+        address: ''
       }
       array.forEach(element => {
         params.relation = element
@@ -216,13 +225,14 @@ export default defineComponent({
       })
     }
 
-    const handleGenerateImage = (_name: string, _idCard: string, _sexText: string): void => {
+    const handleGenerateImage = (_name: string, _idCard: string, _sexText: string, _address: string): void => {
       router.push({
         name: 'IdCardImage',
         params: {
           name: _name,
           idCard: _idCard,
-          sexText: _sexText
+          sexText: _sexText,
+          address: _address
         }
       })
     }

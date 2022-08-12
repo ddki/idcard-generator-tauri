@@ -117,6 +117,9 @@ export default defineComponent({
     },
     sexText: {
       type: String
+    },
+    address: {
+      type: String
     }
   },
   setup(props) {
@@ -125,7 +128,7 @@ export default defineComponent({
       nation: '汉',
       idCard: props.idCard || '',
       sexText: props.sexText || '',
-      address: '北京市东城区长安街一号院',
+      address: props.address || '',
       office: '北京市公安局',
       validityType: '1',
       startDate: getNowDate(),

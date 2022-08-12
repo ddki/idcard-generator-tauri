@@ -19,7 +19,8 @@ export class Companion implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -36,7 +37,8 @@ export class Son implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -53,7 +55,8 @@ export class Daughter implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -70,7 +73,8 @@ export class Father implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -87,7 +91,8 @@ export class Mather implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -104,7 +109,8 @@ export class GrandFather implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -121,7 +127,8 @@ export class GrandMather implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -138,7 +145,8 @@ export class GrandSon implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }
@@ -155,7 +163,8 @@ export class GrandDaughter implements RelationStrategy {
       areaCode: params.areaCode,
       birthday: getBirthday(newAge),
       number: 1,
-      relation: params.relation
+      relation: params.relation,
+      address: params.address
     }
     return newParams
   }

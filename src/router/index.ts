@@ -20,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/idcard-image',
         name: 'IdCardImage',
         component: IdCardImage,
-        props: route => ({ name: route.params.name, idCard: route.params.idCard, sexText: route.params.sexText })
+        props: route => ({ name: route.params.name, idCard: route.params.idCard, sexText: route.params.sexText, address: route.params.address })
       },
       {
         path: '/about',

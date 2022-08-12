@@ -14,7 +14,8 @@ export function generateIdCardInfo(param: IdCardInput): IdCardInfo {
     name: getName(),
     sex: getSex(param.sex),
     birthday: getBirthday(param.age),
-    mobile: getMobile()
+    mobile: getMobile(),
+    address: param.address + getAddress(param.areaCode)
   }
 
   return result
@@ -217,4 +218,53 @@ function getMobile(): string {
     prefix = prefix + Math.floor(Math.random() * 10)
   }
   return prefix
+}
+
+/**
+ * 生成地址
+ * @param areaCode 地区代码
+ * @returns 地址
+ */
+function getAddress(areaCode: string): string {
+  // 56个
+  const streetNames = [
+    '朱雀大街', '太乙路', '太白路', '太华路', '长乐坊', '长樱路', '案板街', '竹笆市', '骡马市', '东木头市', '西木头市', '安仁坊', '端履门', '德福巷', '洒金桥', '冰窖巷', '菊花园', '下马陵', '索罗巷', '后宰门', '书院门', '炭市街', '马厂子', '景龙池', '甜水井', '柏树林', '苏州的', '桃花坞大街', '夕水街', '春熙路', '支矶石街', '涯石街', '正府街', '督院街', '布后街', '将军街', '走马街', '点将台街', '琴台路', '守经街', '蓥华街', '岳宫街', '天竺街', '染房街', '浆洗街', '落虹街', '红布街', '桃溪路', '芳草街', '悠然街', '幽静街', '细语街', '凭阑街', '碧波道', '霜林道', '璃醉街', '镗钯街', '天仙桥', '送仙桥', '合江亭', '梧桐街', '杏花街', '盐市口', '乌衣巷', '草鞋巷', '五块石', '九里堤', '八里桥', '十里店', '高笋塘', '高升塘', '小菜园', '荷花池', '迎仙桥', '水津街', '烟台道', '中山道', '朱雀大街', '太乙路', '太白路', '太华路', '长乐坊', '长樱路', '案板街', '竹笆市', '骡马市', '东木头市', '西木头市', '安仁坊', '端履门', '德福巷', '洒金桥', '冰窖巷', '菊花园', '粉巷', '索罗巷', '岐黄大道', '清策庄', '清虚埔', '无妄坡'
+  ]
+  const index = Math.floor(Math.random() * 100)
+  const streetName = streetNames[index]
+  const number = Math.floor(Math.random() * 1000) + 1
+  const province = getCityName(getCityCode(areaCode, 1))
+  let city = getCityName(getCityCode(areaCode, 2))
+  if (province !== city) {
+    city = province + city
+  }
+  const country = getCityName(areaCode)
+  return city + country + streetName + number + '号'
+}
+
+function getCityCode(areaCode: string, upLevel: number): string {
+  return areaCode.substring(0, upLevel * 2) + getZeroStr((3 - upLevel) * 2)
+}
+
+function getCityName(code: string) {
+  return findCityItem(IdcardConstant.cities, code)
+}
+
+function findCityItem(cities: Array<{code: string, name: string}>, code: string) {
+  for (const index in cities) {
+    const city: string = findOneCityItem(cities[index], code)
+    if (city) {
+      return city
+    }
+  }
+  return ''
+}
+
+function findOneCityItem(city: any, code: string) {
+  if (city.code === code) {
+    return city.name
+  } else {
+    return findCityItem(city.child, code)
+  }
+  return null
 }
