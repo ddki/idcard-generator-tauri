@@ -86,12 +86,12 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="age" label="年龄" width="50" />
-      <el-table-column align="center" prop="address" label="地址" width="220">
+      <el-table-column align="center" prop="address" label="地址">
         <template #default="scope">
           <span @click="handleClickCopy(scope.row.address)">{{scope.row.address}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" fixed="right" label="操作">
+      <el-table-column align="center" fixed="right" label="操作" width="140">
         <template #default="scope">
           <el-button
             type="text"

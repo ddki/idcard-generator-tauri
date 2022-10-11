@@ -151,7 +151,9 @@ export default defineComponent({
     const imageData = reactive({
       fontImage: require('@/assets/image/color/font.png'),
       backImage: require('@/assets/image/color/back.png'),
-      userImage: require('@/assets/image/user.png')
+      userImage: require('@/assets/image/user.png'),
+      userMaleImage: require('@/assets/image/user-male.png'),
+      userFemaleImage: require('@/assets/image/user-female.png')
     })
 
     const dateStr = computed(() => {
@@ -191,7 +193,7 @@ export default defineComponent({
         const fontImage = new Image(1200)
         fontImage.onload = () => {
           fontContext.drawImage(fontImage, 0, 0, fontCanvasElement.width, fontCanvasElement.height)
-          fontContext.font = 'normal normal 300 20px 黑体'
+          fontContext.font = 'normal normal 300 22px 黑体'
           fontContext.fillStyle = '#000'
           fontContext.fillText(formData.office, 260, 287)
           fontContext.fillText(dateStr.value, 260, 330)
@@ -201,12 +203,13 @@ export default defineComponent({
         const backCanvasElement = document.getElementById('backCanvas') as HTMLCanvasElement
         backCanvasElement.width = 600
         backCanvasElement.height = 378
+        backCanvasElement.style.letterSpacing = '2px'
         const backContext: CanvasRenderingContext2D = backCanvasElement.getContext('2d') || new CanvasRenderingContext2D()
         const backImage = new Image(1200)
         const photoImage = new Image(30)
         backImage.onload = () => {
           backContext.drawImage(backImage, 0, 0, backCanvasElement.width, backCanvasElement.height)
-          backContext.font = 'normal normal 300 20px 黑体'
+          backContext.font = 'normal normal 300 22px 黑体'
           backContext.fillStyle = '#000'
           backContext.fillText(formData.name, 115, 85)
           backContext.fillText(formData.sexText, 115, 128)
@@ -238,13 +241,19 @@ export default defineComponent({
           let idCardText = ''
           for (let index = 0; index < array.length; index++) {
             const element = array[index]
-            idCardText += (element + ' ')
+            idCardText += (element + '')
           }
           backContext.fillText(idCardText, 180, 330)
 
           backContext.drawImage(photoImage, 385, 60, 180, 200)
         }
-        photoImage.src = imageData.userImage
+        if (formData.sexText === '男') {
+          photoImage.src = imageData.userMaleImage
+        } else if (formData.sexText === '女') {
+          photoImage.src = imageData.userFemaleImage
+        } else {
+          photoImage.src = imageData.userImage
+        }
         backImage.src = imageData.backImage
       })
     }
