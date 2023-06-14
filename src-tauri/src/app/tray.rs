@@ -39,19 +39,10 @@ pub fn handle_menu_event(app: &AppHandle, event: SystemTrayEvent) {
                 let window: tauri::Window = app.get_window("main").unwrap();
                 window.eval("window.location.replace('#/')").unwrap();
             }
-            "setting" => {
-                let window: tauri::Window = app.get_window("main").unwrap();
-                window.eval("window.location.replace('#/setting')").unwrap();
-            }
             "about" => {
                 let window: tauri::Window = app.get_window("main").unwrap();
                 window.menu_handle().hide().unwrap();
                 super::window::open_about(window.app_handle());
-            }
-            "wiki" => {
-                let window: tauri::Window = app.get_window("main").unwrap();
-                window.menu_handle().hide().unwrap();
-                super::window::open_wiki(window.app_handle());
             }
             "issues" => {
                 app.get_window("main")
@@ -81,12 +72,10 @@ pub fn handle_menu_event(app: &AppHandle, event: SystemTrayEvent) {
 
 fn build_menu() -> SystemTrayMenu {
     let main = CustomMenuItem::new("main", "主页");
-    let setting = CustomMenuItem::new("setting".to_string(), "设置");
     let about = SystemTraySubmenu::new(
         "关于",
         SystemTrayMenu::new()
             .add_item(CustomMenuItem::new("about", "关于"))
-            .add_item(CustomMenuItem::new("wiki", "文档"))
             .add_item(CustomMenuItem::new("issues", "Issues"))
             .add_item(CustomMenuItem::new("github", "Github")),
     );
@@ -96,7 +85,6 @@ fn build_menu() -> SystemTrayMenu {
 
     let tray_menu: SystemTrayMenu = SystemTrayMenu::new()
         .add_item(main)
-        .add_item(setting)
         .add_submenu(about)
         .add_item(check_update)
         .add_native_item(SystemTrayMenuItem::Separator)

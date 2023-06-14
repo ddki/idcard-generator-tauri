@@ -63,7 +63,7 @@
 					<span @click="handleClickCopy(scope.row.name)">{{ scope.row.name }}</span>
 				</template>
 			</el-table-column>
-			<el-table-column align="center" prop="idCard" label="身份证号码" width="165">
+			<el-table-column align="center" prop="idCard" label="身份证号码" width="180">
 				<template #default="scope">
 					<span @click="handleClickCopy(scope.row.idCard)">{{ scope.row.idCard }}</span>
 				</template>
@@ -140,6 +140,7 @@ export default defineComponent({
 
 		const onChangeBirthday = (payload: Event): void => {
 			formData.age = getAge(payload as unknown as string)
+			formData.birthday = payload as unknown as string
 		}
 
 		const onChangeAreaCode = (value: Array<string>): void => {
@@ -224,7 +225,7 @@ export default defineComponent({
 		const handleGenerateImage = (_name: string, _idCard: string, _sexText: string, _address: string): void => {
 			router.push({
 				name: 'IdCardImage',
-				params: {
+				query: {
 					name: _name,
 					idCard: _idCard,
 					sexText: _sexText,

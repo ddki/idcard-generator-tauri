@@ -15,7 +15,6 @@ fn main() {
         .system_tray(crate::app::tray::build())
         .on_system_tray_event(crate::app::tray::handle_menu_event)
         .invoke_handler(tauri::generate_handler![
-            crate::app::event::greet,
             crate::app::window::close_splashscreen
         ])
         .menu(crate::app::menu::build_menu())

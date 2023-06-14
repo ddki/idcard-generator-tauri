@@ -17,17 +17,7 @@ pub fn open_about(app: AppHandle) {
     let about_window = windows.get("about");
     match about_window {
         Some(about_window) => about_window.show().unwrap(),
-        None => crate::utils::create_window(app, "about", "关于", "#/about", Menu::default()),
-    }
-}
-
-pub fn open_wiki(app: AppHandle) {
-    println!("open_wiki...");
-    let windows = app.windows();
-    let wiki_window = windows.get("wiki");
-    match wiki_window {
-        Some(wiki_window) => wiki_window.show().unwrap(),
-        None => crate::utils::create_window(app, "wiki", "文档", "#/wiki", Menu::default()),
+        None => crate::utils::create_window(app, "about", "关于", "#/about", Menu::new()),
     }
 }
 

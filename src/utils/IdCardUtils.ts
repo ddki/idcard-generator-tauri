@@ -1,5 +1,5 @@
 import IdcardConstant from '../constant/idcard'
-import { IdCardImageInfo, IdCardImageInput, IdCardInfo, IdCardInput } from 'idCard'
+import type { IdCardImageInfo, IdCardImageInput, IdCardInfo, IdCardInput } from 'idCard'
 
 /**
  * 根据输入信息生成身份证信息
@@ -13,7 +13,7 @@ export function generateIdCardInfo(param: IdCardInput): IdCardInfo {
 		age: param.age,
 		name: getName(),
 		sex: getSex(param.sex),
-		birthday: getBirthday(param.age),
+		birthday: param.birthday || getBirthday(param.age),
 		mobile: getMobile(),
 		address: param.address + getAddress(param.areaCode)
 	}

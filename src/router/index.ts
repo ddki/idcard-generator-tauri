@@ -7,7 +7,26 @@ const router = createRouter({
 		{
 			path: '/',
 			name: 'home',
-			component: HomeView
+			component: HomeView,
+			redirect: '/idcard',
+			children: [
+				{
+					path: '/idcard',
+					name: 'IdCard',
+					component: () => import('../views/IdCard/IdCardViewer.vue')
+				},
+				{
+					path: '/idcard-image',
+					name: 'IdCardImage',
+					component: () => import('../views/IdCard/IdCardImageViewer.vue'),
+					props: (route) => ({
+						name: route.query.name,
+						idCard: route.query.idCard,
+						sexText: route.query.sexText,
+						address: route.query.address
+					})
+				}
+			]
 		},
 		{
 			path: '/about',
@@ -21,11 +40,6 @@ const router = createRouter({
 			path: '/setting',
 			name: 'setting',
 			component: () => import('../views/SettingView.vue')
-		},
-		{
-			path: '/wiki',
-			name: 'wiki',
-			component: () => import('../views/WikiView.vue')
 		}
 	]
 })

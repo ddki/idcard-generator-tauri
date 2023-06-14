@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "idcard-generator"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "中国居民身份证生成器"
+authors = ["ddki"]
 license = ""
-repository = ""
-default-run = "app"
+repository = "https://github.com/ddki/idcard-generator-tauri"
+default-run = "idcard-generator"
 edition = "2021"
 rust-version = "1.59"
 

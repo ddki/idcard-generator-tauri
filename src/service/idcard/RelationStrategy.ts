@@ -1,5 +1,5 @@
 import { getBirthday } from '../../utils/IdCardUtils'
-import { IdCardInput } from 'idCard'
+import type { IdCardInput } from 'idCard'
 
 /**
  * 根据关系获得身份证证件号策略接口

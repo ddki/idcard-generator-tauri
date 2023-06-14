@@ -3,10 +3,13 @@ import c from 'kleur'
 
 import { $argv, relativePath, LOG_PATH, UPDATE_LOG_PATH, packageJSON } from './utils'
 import path from 'path'
+import { test } from 'node:test'
 
 export default function changelog(tag: string) {
 	/* eslint-disable */
 	const reTag = /## \[[\d\.]+\]/
+	/* eslint-disable */
+	const reTag2 = /## [\d\.]+/
 	/* eslint-disable */
 	const reVersion = /[\d\.]+/
 
@@ -22,7 +25,7 @@ export default function changelog(tag: string) {
 	const content = fs.readFileSync(filePath, 'utf8').split('\n')
 
 	content.forEach((line, index) => {
-		if (reTag.test(line)) {
+		if (reTag.test(line) || reTag2.test(line)) {
 			_tag = line.slice(3).trim()
 			_tag = line.match(reVersion)?.[0] || _tag
 			if (!tagMap[_tag]) {
@@ -33,7 +36,7 @@ export default function changelog(tag: string) {
 		if (_tag) {
 			tagMap[_tag].push(line.trim())
 		}
-		if (reTag.test(content[index + 1])) {
+		if (reTag.test(content[index + 1]) || reTag2.test(content[index + 1])) {
 			_tag = null
 		}
 	})

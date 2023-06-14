@@ -1,23 +1,9 @@
 use tauri::{AppHandle, Manager};
 
-#[tauri::command]
-pub fn greet(name: &str) -> String {
-    println!("arg = {}", name);
-    format!("Hello, {}!", name)
-}
-
 #[derive(Clone, serde::Serialize)]
 struct Payload {
     message: String,
 }
-
-#[derive(Clone, serde::Serialize)]
-struct Setting {
-    user: String,
-}
-
-// #[tauri::command]
-// pub fn save_setting(setting: Setting) -> String {}
 
 pub fn build_app_event(app: AppHandle) {
     // listen to the `event-name` (emitted on any window)

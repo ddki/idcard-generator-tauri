@@ -10,6 +10,7 @@ import WindiCSS from 'vite-plugin-windicss'
 import { internalIpV4 } from 'internal-ip'
 
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import ElementPlus from 'unplugin-element-plus/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
@@ -19,6 +20,9 @@ export default defineConfig(async () => {
 		plugins: [
 			vue(),
 			vueJsx(),
+			ElementPlus({
+				useSource: true
+			}),
 			WindiCSS(),
 			AutoImport({
 				resolvers: [ElementPlusResolver()]

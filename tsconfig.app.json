@@ -4,6 +4,7 @@
 	"exclude": ["src/**/__tests__/*", "node_modules"],
 	"compilerOptions": {
 		"composite": true,
+		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
@@ -11,6 +12,7 @@
 		"types": ["element-plus/global", "pinia-plugin-persist", "@tauri-apps/api"],
 		"module": "ESNext",
 		"moduleResolution": "node",
-		"target": "ESNext"
+		"target": "ESNext",
+		"lib": ["ES2021", "dom"]
 	}
 }
