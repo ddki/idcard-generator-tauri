@@ -1,0 +1,117 @@
+{
+	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
+	"build": {
+		"beforeBuildCommand": "pnpm run build",
+		"beforeDevCommand": "pnpm run dev",
+		"devPath": "http://localhost:5173",
+		"distDir": "../dist"
+	},
+	"package": {
+		"productName": "idcard-generator",
+		"version": "0.0.0"
+	},
+	"tauri": {
+		"bundle": {
+			"active": true,
+			"category": "DeveloperTool",
+			"copyright": "",
+			"deb": {
+				"depends": []
+			},
+			"externalBin": [],
+			"icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+			"identifier": "idcard-generator.ddki.github.io",
+			"longDescription": "",
+			"macOS": {
+				"entitlements": null,
+				"exceptionDomain": "",
+				"frameworks": [],
+				"providerShortName": null,
+				"signingIdentity": null
+			},
+			"resources": [],
+			"shortDescription": "",
+			"targets": "all",
+			"windows": {
+				"certificateThumbprint": null,
+				"digestAlgorithm": "sha256",
+				"timestampUrl": "",
+				"wix": {
+					"language": ["zh-CN"]
+				}
+			},
+			"updater": {
+				"active": true,
+				"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFGNkI5MTFGRTMwRkE0MzkKUldRNXBBL2pINUZycitNOWhLNTR6WUNiVjBVejlKQ2ljQUE4QzIybDM4V0FzUEhuUGM2ZUtMUFgK",
+				"windows": {
+					"installMode": "basicUi"
+				}
+			}
+		},
+		"security": {
+			"csp": null
+		},
+		"windows": [
+			{
+				"height": 800,
+				"width": 1200,
+				"fullscreen": false,
+				"decorations": false,
+				"url": "splashscreen.html",
+				"label": "splashscreen",
+				"center": true
+			},
+			{
+				"height": 800,
+				"width": 1200,
+				"fullscreen": false,
+				"resizable": true,
+				"title": "身份证生成器",
+				"label": "main",
+				"visible": false,
+				"center": true,
+				"focus": true,
+				"shadow": true
+			},
+			{
+				"height": 800,
+				"width": 1200,
+				"fullscreen": false,
+				"resizable": true,
+				"title": "设置",
+				"label": "setting",
+				"visible": false,
+				"url": "#/setting"
+			},
+			{
+				"height": 800,
+				"width": 1200,
+				"fullscreen": false,
+				"resizable": true,
+				"title": "文档",
+				"label": "wiki",
+				"visible": false,
+				"url": "#/wiki"
+			},
+			{
+				"height": 800,
+				"width": 1200,
+				"fullscreen": false,
+				"resizable": true,
+				"title": "关于",
+				"label": "about",
+				"visible": false,
+				"url": "#/about"
+			}
+		],
+		"systemTray": {
+			"iconPath": "icons/icon.png",
+			"iconAsTemplate": true
+		}
+	},
+	"plugins": {
+		"updater": {
+			"endpoints": ["https://github.com/ddki/idcard-generator/releases/download/updater/update.json"]
+		}
+	}
+}
