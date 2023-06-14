@@ -27,8 +27,11 @@
 		"script:update": "npx esmo scripts/update.ts"
 	},
 	"dependencies": {
+		"@kangc/v-md-editor": "^2.3.15",
+		"element-plus": "^2.3.6",
 		"pinia": "^2.0.32",
 		"vue": "^3.2.47",
+		"vue-clipboard3": "^2.0.0",
 		"vue-router": "^4.1.6"
 	},
 	"devDependencies": {

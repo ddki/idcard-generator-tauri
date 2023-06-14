@@ -9,12 +9,24 @@ import WindiCSS from 'vite-plugin-windicss'
 
 import { internalIpV4 } from 'internal-ip'
 
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
 	const host = await internalIpV4()
 
 	return {
-		plugins: [vue(), vueJsx(), WindiCSS(), AutoImport(), Components()],
+		plugins: [
+			vue(),
+			vueJsx(),
+			WindiCSS(),
+			AutoImport({
+				resolvers: [ElementPlusResolver()]
+			}),
+			Components({
+				resolvers: [ElementPlusResolver()]
+			})
+		],
 		resolve: {
 			alias: {
 				'@tauri-apps/api': fileURLToPath(new URL('./node_modules/@tauri-apps/api', import.meta.url)),
