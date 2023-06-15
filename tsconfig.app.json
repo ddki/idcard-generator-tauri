@@ -12,7 +12,6 @@
 		"types": ["element-plus/global", "pinia-plugin-persist", "@tauri-apps/api"],
 		"module": "ESNext",
 		"moduleResolution": "node",
-		"target": "ESNext",
-		"lib": ["ES2021", "dom"]
+		"target": "ESNext"
 	}
 }

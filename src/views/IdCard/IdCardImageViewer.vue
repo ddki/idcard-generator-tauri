@@ -153,11 +153,13 @@ export default defineComponent({
 			userFemaleImage: require('@/assets/image/user-female.png')
 		})
 
+		/* eslint-disable */
+		const reg = /\-/g
 		const dateStr = computed(() => {
 			if (formData.validityType === '3') {
-				return formData.startDate.replaceAll('-', '.') + '-' + '长期'
+				return formData.startDate.replace(reg, '.') + '-' + '长期'
 			}
-			return formData.startDate.replaceAll('-', '.') + '-' + formData.endDate.replaceAll('-', '.')
+			return formData.startDate.replace(reg, '.') + '-' + formData.endDate.replace(reg, '.')
 		})
 
 		const onChangeIdCard = (value: string): void => {

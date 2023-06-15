@@ -38,7 +38,9 @@ export default defineComponent({
 			if (props.idCardInfo.validityType === '3') {
 				return '长期有效'
 			}
-			return props.idCardInfo.startDate.replaceAll('-', '.') + '-' + props.idCardInfo.endDate.replaceAll('-', '.')
+			/* eslint-disable */
+			const reg = /\-/g
+			return props.idCardInfo.startDate.replace(reg, '.') + '-' + props.idCardInfo.endDate.replace(reg, '.')
 		})
 		nextTick(() => {
 			const fontCanvasElement = document.getElementById('fontCanvas') as HTMLCanvasElement

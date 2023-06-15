@@ -1,5 +1,5 @@
 <template>
-	<div class="about">
+	<div class="about pl-5 pr-5">
 		<v-md-preview :text="content"></v-md-preview>
 	</div>
 </template>

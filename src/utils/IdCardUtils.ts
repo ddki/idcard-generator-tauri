@@ -148,7 +148,9 @@ export function getAge(birthday: string): number {
  */
 function getIdCard(areaCode: string, birthday: string, sex: string) {
 	const sequenceCode = getSequenceCode(sex)
-	birthday = birthday.replaceAll('-', '')
+	/* eslint-disable */
+	const reg = /\-/g
+	birthday = birthday.replace(reg, '')
 	const prefix = areaCode + birthday + sequenceCode
 	const array = prefix.split('')
 	let sum = 0

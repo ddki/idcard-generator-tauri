@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 
 import VMdPreview from '@kangc/v-md-editor/lib/preview'
 import '@kangc/v-md-editor/lib/style/preview.css'
-import githubTheme from '@kangc/v-md-editor/lib/theme/github.js'
+import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js'
 import '@kangc/v-md-editor/lib/theme/style/github.css'
 
 import App from './App.vue'
@@ -11,7 +11,7 @@ import router from './router'
 
 import 'virtual:windi.css'
 
-VMdPreview.use(githubTheme, {})
+VMdPreview.use(vuepressTheme)
 
 const app = createApp(App)
 

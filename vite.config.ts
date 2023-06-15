@@ -10,6 +10,7 @@ import WindiCSS from 'vite-plugin-windicss'
 import { internalIpV4 } from 'internal-ip'
 
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+// @ts-ignore
 import ElementPlus from 'unplugin-element-plus/vite'
 
 // https://vitejs.dev/config/
@@ -31,6 +32,9 @@ export default defineConfig(async () => {
 				resolvers: [ElementPlusResolver()]
 			})
 		],
+		optimizeDeps: {
+			include: ['@kangc/v-md-editor/lib/theme/vuepress.js']
+		},
 		resolve: {
 			alias: {
 				'@tauri-apps/api': fileURLToPath(new URL('./node_modules/@tauri-apps/api', import.meta.url)),
