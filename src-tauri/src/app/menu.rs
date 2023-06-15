@@ -26,14 +26,17 @@ pub fn handle_menu_event(event: WindowMenuEvent) {
                 .window()
                 .shell()
                 // None 使用默认程序打开
-                .open("https://github.com/ddki/idcard-generator/issues", None)
+                .open(
+                    "https://github.com/ddki/idcard-generator-tauri/issues",
+                    None,
+                )
                 .unwrap();
         }
         "github" => {
             event
                 .window()
                 .shell()
-                .open("https://github.com/ddki/idcard-generator", None)
+                .open("https://github.com/ddki/idcard-generator-tauri", None)
                 .unwrap();
         }
         "check_update" => {

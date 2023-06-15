@@ -48,14 +48,17 @@ pub fn handle_menu_event(app: &AppHandle, event: SystemTrayEvent) {
                 app.get_window("main")
                     .unwrap()
                     .shell()
-                    .open("https://github.com/ddki/idcard-generator/issues", None)
+                    .open(
+                        "https://github.com/ddki/idcard-generator-tauri/issues",
+                        None,
+                    )
                     .unwrap();
             }
             "github" => {
                 app.get_window("main")
                     .unwrap()
                     .shell()
-                    .open("https://github.com/ddki/idcard-generator", None)
+                    .open("https://github.com/ddki/idcard-generator-tauri", None)
                     .unwrap();
             }
             "check_update" => {

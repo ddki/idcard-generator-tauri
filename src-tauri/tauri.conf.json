@@ -101,7 +101,7 @@
 	},
 	"plugins": {
 		"updater": {
-			"endpoints": ["https://github.com/ddki/idcard-generator/releases/download/updater/update.json"]
+			"endpoints": ["https://github.com/ddki/idcard-generator-tauri/releases/download/updater/update.json"]
 		}
 	}
 }

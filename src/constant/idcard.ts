@@ -1,5 +1,5 @@
-import cities from '../assets/json/city.json'
 import type { EnumData } from 'baseModel'
+import { JSON_CITY } from '@/utils/AssetsUtils'
 
 // 加权因子
 const WEIGHTEDFACTOR: Array<number> = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
@@ -50,6 +50,8 @@ function constainSex(value: string): boolean {
 	const sex = sexData.filter((item) => item.value === value)
 	return sex != null && sex.length > 0
 }
+
+const cities = JSON_CITY
 
 export default {
 	cities,

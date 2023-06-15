@@ -69,6 +69,7 @@
 import IdcardConstant from '../../constant/idcard'
 import { getBirthdayArrayFromIdCard, getSexFromIdCard } from '../../utils/IdCardUtils'
 import { require } from '../../utils/require'
+import * as AssetsUtils from '../../utils/AssetsUtils'
 import type { IdCardImageInput } from 'idCard'
 import { computed, defineComponent, nextTick, onMounted, reactive } from 'vue'
 
@@ -146,11 +147,11 @@ export default defineComponent({
 
 		const validityTypeOptions = IdcardConstant.validityTypeData
 		const imageData = reactive({
-			fontImage: require('@/assets/image/color/font.png'),
-			backImage: require('@/assets/image/color/back.png'),
-			userImage: require('@/assets/image/user.png'),
-			userMaleImage: require('@/assets/image/user-male.png'),
-			userFemaleImage: require('@/assets/image/user-female.png')
+			fontImage: AssetsUtils.IMAGE_IDCARD_Font,
+			backImage: AssetsUtils.IMAGE_IDCARD_BACK,
+			userImage: AssetsUtils.IMAGE_USER_DEFAULT,
+			userMaleImage: AssetsUtils.IMAGE_USER_MALE,
+			userFemaleImage: AssetsUtils.IMAGE_USER_FEMALE
 		})
 
 		/* eslint-disable */
