@@ -50,11 +50,11 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
       - name: Build 
-        run: pnpm build-only
+        run: pnpm build-only --mode github-page
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: public
+          path: dist
  
   deploy:
     needs: build

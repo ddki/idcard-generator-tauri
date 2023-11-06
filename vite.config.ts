@@ -14,10 +14,11 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import ElementPlus from 'unplugin-element-plus/vite'
 
 // https://vitejs.dev/config/
-export default defineConfig(async () => {
+export default defineConfig(async ({ command, mode, ssrBuild }) => {
 	const host = await internalIpV4()
 
 	return {
+		base: mode === 'github-page' ? 'idcard-generator-tauri' : '',
 		plugins: [
 			vue(),
 			vueJsx(),
