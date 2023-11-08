@@ -6,6 +6,7 @@ module.exports = {
 		'after:bump': ['npx prettier --write {package,./src-tauri/tauri.conf}.json', 'npx esmo scripts/changelog.ts']
 	},
 	git: {
+		commitMessage: "🔖 release: v${version}",
 		tagName: 'v${version}'
 	},
 	plugins: {

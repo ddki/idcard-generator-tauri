@@ -66,7 +66,7 @@ module.exports = {
 			}
 		],
 		useEmoji: true,
-		emojiAlign: 'center',
+		emojiAlign: 'left',
 		useAI: false,
 		aiNumber: 1,
 		themeColorCode: '',
