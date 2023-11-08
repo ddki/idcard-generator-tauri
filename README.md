@@ -3,28 +3,44 @@
 
 &#xa0;
 
-<a href="ddki.github.io/idcard-generator-tauri/">Online</a>
+<a href="https://ddki.github.io/idcard-generator-tauri/">Online</a>
 
 </div>
 
 <h1 align="center">Idcard Generator</h1>
 
 <p align="center">
-  <img alt="Github release" src="https://img.shields.io/github/release/ddki/idcard-generator-tauri">
+  <a href="https://github.com/ddki/idcard-generator-tauri/releases">
+    <img alt="Github release" src="https://img.shields.io/github/release/ddki/idcard-generator-tauri">
+  </a>
 
-  <img alt="Github top language" src="https://img.shields.io/github/languages/top/ddki/idcard-generator-tauri">
+  <a href="#">
+    <img alt="Github top language" src="https://img.shields.io/github/languages/top/ddki/idcard-generator-tauri">
+  </a>
 
-  <!-- <img alt="Github language count" src="https://img.shields.io/github/languages/count/ddki/idcard-generator-tauri"> -->
+  <a href="#">
+    <img alt="Github language count" src="https://img.shields.io/github/languages/count/ddki/idcard-generator-tauri">
+  </a>
 
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/ddki/idcard-generator-tauri">
+  <a href="#">
+    <img alt="Repository size" src="https://img.shields.io/github/repo-size/ddki/idcard-generator-tauri">
+  </a>
 
-  <img alt="License" src="https://img.shields.io/github/license/ddki/idcard-generator-tauri">
+  <a href="https://github.com/ddki/idcard-generator-tauri/blob/master/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/ddki/idcard-generator-tauri">
+  </a>
 
-  <img alt="Github issues" src="https://img.shields.io/github/issues/ddki/idcard-generator-tauri" />
+  <a href="https://github.com/ddki/idcard-generator-tauri/issues">
+    <img alt="Github issues" src="https://img.shields.io/github/issues/ddki/idcard-generator-tauri" />
+  </a>
 
-  <img alt="Github forks" src="https://img.shields.io/github/forks/ddki/idcard-generator-tauri" />
+  <a href="https://github.com/ddki/idcard-generator-tauri/forks">
+    <img alt="Github forks" src="https://img.shields.io/github/forks/ddki/idcard-generator-tauri" />
+  </a>
 
-  <img alt="Github stars" src="https://img.shields.io/github/stars/ddki/idcard-generator-tauri" />
+  <a href="https://github.com/ddki/idcard-generator-tauri/stargazers">
+    <img alt="Github stars" src="https://img.shields.io/github/stars/ddki/idcard-generator-tauri" />
+  </a>
 </p>
 
 <!-- Status -->
