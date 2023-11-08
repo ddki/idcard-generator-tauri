@@ -1,5 +1,5 @@
 <div align="center" id="top"> 
-  <img src="./.github/app.gif" alt="Idcard Generator" />
+  <img src="./public/favicon.ico" alt="Idcard Generator" />
 
 &#xa0;
 
@@ -67,9 +67,6 @@ _本项目仅支持用于学习测试，请在使用软件的过程中，遵守�
 The following tools were used in this project:
 
 - [tauri-vite-app-template](https://github.com/ddki/tauri-vite-app-template)
-- [Tauri](https://github.com/tauri-apps/tauri)
-- [Node.js](https://nodejs.org/en/)
-- [TypeScript](https://www.typescriptlang.org/)
 
 ## :white_check_mark: Requirements
 
