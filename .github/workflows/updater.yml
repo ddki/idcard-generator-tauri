@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 19.x.x
+          node-version: 20
           cache: pnpm
 
       - name: Install frontend dependencies

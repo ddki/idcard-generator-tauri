@@ -12,6 +12,9 @@ module.exports = {
 	plugins: {
 		'@release-it/conventional-changelog': {
 			writerOpts: {},
+			context: {
+				linkCompare: true
+			},
 			infile: 'CHANGE_LOG.md',
 			header: '# 📄 更新日志',
 			preset: {

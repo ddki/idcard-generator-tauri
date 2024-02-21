@@ -7,24 +7,29 @@ license = ""
 repository = "https://github.com/ddki/idcard-generator-tauri"
 default-run = "idcard-generator"
 edition = "2021"
-rust-version = "1.59"
+rust-version = "1.73"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-alpha.0", features = [] }
+tauri-build = { version = "2.0.0-beta", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "2.0.0-alpha.0", features = ["devtools", "system-tray"] }
-tauri-plugin-shell = "2.0.0-alpha.0"
-tauri-plugin-dialog = "2.0.0-alpha.0"
+tauri = { version = "2.0.0-beta", features = [
+	"devtools",
+	"tray-icon",
+	"config-json5",
+] }
+tauri-plugin-shell = "2.0.0-beta"
+tauri-plugin-dialog = "2.0.0-beta"
+tauri-plugin-updater = "2.0.0-beta"
+tauri-plugin-autostart = "2.0.0-beta"
+tauri-plugin-single-instance = "2.0.0-beta"
 # webbrowser = "0.8.10"
 log = "0.4.17"
-tauri-plugin-updater = "2.0.0-alpha.0"
-# 系统自动启动 support：win、Linux、mac
-tauri-plugin-autostart = "2.0.0-alpha.0"
+
 
 [features]
 # by default Tauri runs in production mode
@@ -35,8 +40,8 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [profile.release]
-panic = "abort" # Strip expensive panic clean-up logic
+panic = "abort"   # Strip expensive panic clean-up logic
 codegen-units = 1 # Compile crates one after another so the compiler can optimize better
-lto = true # Enables link to optimizations
-opt-level = "s" # Optimize for binary size
-strip = true # Remove debug symbols
+lto = true        # Enables link to optimizations
+opt-level = "s"   # Optimize for binary size
+strip = true      # Remove debug symbols

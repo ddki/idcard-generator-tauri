@@ -1,10 +1,24 @@
 <template>
 	<div class="about pl-5 pr-5">
 		<v-md-preview :text="content"></v-md-preview>
+		<div class="updater">
+			<el-button type="primary" @click="checkUpdate">检查更新</el-button>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
+import { check } from '@tauri-apps/plugin-updater'
+import { relaunch } from '@tauri-apps/plugin-process'
+
+const checkUpdate = async () => {
+	const update = await check()
+	if (update?.available) {
+		await update.downloadAndInstall()
+		await relaunch()
+	}
+}
+
 const content = `
 ## 😃 简介
 

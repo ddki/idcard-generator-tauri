@@ -2,10 +2,10 @@
 	"recommendations": [
 		"vue.vscode-typescript-vue-plugin",
 		"esbenp.prettier-vscode",
-		"antfu.vite",
 		"vue.volar",
 		"editorconfig.editorconfig",
 		"rust-lang.rust-analyzer",
-		"voorjaar.windicss-intellisense"
+		"voorjaar.windicss-intellisense",
+		"tamasfe.even-better-toml"
 	]
 }

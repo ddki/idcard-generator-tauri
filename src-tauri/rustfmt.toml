@@ -1,0 +1,8 @@
+# https://github.com/rust-lang/rustfmt/blob/master/Configurations.md
+# lf '\n'
+newline_style = "Unix"
+# 使用tab缩进
+hard_tabs = true
+tab_spaces = 4
+# 最长行长度
+max_width = 100
