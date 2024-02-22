@@ -20,6 +20,9 @@ dependencies:
   pinia:
     specifier: ^2.0.32
     version: 2.0.33(typescript@4.8.4)(vue@3.2.47)
+  pinyin-pro:
+    specifier: ^3.19.5
+    version: 3.19.5
   vue:
     specifier: ^3.2.47
     version: 3.2.47
@@ -8669,6 +8672,11 @@ packages:
       typescript: 4.8.4
       vue: 3.2.47
       vue-demi: 0.13.11(vue@3.2.47)
+    dev: false
+
+  /pinyin-pro@3.19.5:
+    resolution:
+      { integrity: sha512-cklxUx9S2EBr9N25XgdihSPHLKvwsQ3i3a8YdbtYr56XYMcyRsAH7dS3wdIeRazvg94qcW/3TTu0EKTtiVFXcQ== }
     dev: false
 
   /pkg-types@1.0.2:

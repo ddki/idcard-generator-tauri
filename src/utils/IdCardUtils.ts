@@ -1,5 +1,9 @@
 import IdcardConstant from '../constant/idcard'
 import type { IdCardImageInfo, IdCardImageInput, IdCardInfo, IdCardInput } from 'idCard'
+import type { FprCardInfo, FprCardInput } from 'fprCard'
+import { JSON_CITY, JSON_COUNTRY } from './AssetsUtils'
+import { FIRST_NAMES, LAST_NAMES, STREET_NAMES } from '@/constant'
+import type { Country } from 'baseModel'
 
 /**
  * 根据输入信息生成身份证信息
@@ -16,6 +20,29 @@ export function generateIdCardInfo(param: IdCardInput): IdCardInfo {
 		birthday: param.birthday || getBirthday(param.age),
 		mobile: getMobile(),
 		address: param.address + getAddress(param.areaCode)
+	}
+
+	return result
+}
+
+/**
+ * 根据输入信息生成外国人永久居留证证信息
+ * @param param 输入
+ * @returns 外国人永久居留证证信息
+ */
+export function generateFprCardInfo(param: FprCardInput): FprCardInfo {
+	console.log('param', param)
+	const country = param.country || randomCountry()
+	const result: FprCardInfo = {
+		cardNumber: getFprCardNumber(param.acceptAreaCode, country.ISO_3166_1_threeNumber, param.birthday, param.sex),
+		relation: getRelation(param.relation),
+		age: param.age,
+		firstName: randomFirstName(),
+		lastName: randomLastName(),
+		sex: getSex(param.sex),
+		birthday: param.birthday || getBirthday(param.age),
+		mobile: getMobile(),
+		country: country
 	}
 
 	return result
@@ -62,6 +89,19 @@ function getSex(sex: string): string {
 }
 
 /**
+ * 根据值获取性别文本
+ * @param sex 性别值
+ * @returns 姓名文本
+ */
+function getSexWithCode(sex: string): string {
+	if (IdcardConstant.constainSex(sex)) {
+		const sexData = IdcardConstant.getSexByValue(sex)
+		return sexData == null ? '' : sexData.text + '/' + sexData.code
+	}
+	return ''
+}
+
+/**
  *  根据身份证号获取性别
  * @param idCard 身份证号
  * @returns 性别编码
@@ -70,6 +110,17 @@ export function getSexFromIdCard(idCard: string): string {
 	// 3位顺序码
 	const sexNum = idCard.substring(14, 17)
 	return (parseInt(sexNum) % 2).toString()
+}
+
+/**
+ *  根据身份证号获取性别
+ * @param idCard 身份证号
+ * @returns 性别编码
+ */
+export function getSexWithCodeFromIdCard(idCard: string): string {
+	// 3位顺序码
+	const sexNum = idCard.substring(14, 17)
+	return getSexWithCode((parseInt(sexNum) % 2).toString())
 }
 
 /**
@@ -92,6 +143,21 @@ export function getBirthdayArrayFromIdCard(idCard: string): Array<string> {
 	}
 	arr.push(date)
 	return arr
+}
+
+/**
+ * 根据身份证号获取年月日
+ * @param idCard 身份证号
+ * @returns yyyy-mm-dd
+ */
+export function getBirthdayFromIdCard(idCard: string): string {
+	const birthday = idCard.substring(6, 14)
+	const arr: Array<string> = []
+	arr.push(birthday.substring(0, 4))
+	arr.push(birthday.substring(4, 6))
+	const date = birthday.substring(6, 8)
+	arr.push(birthday.substring(6, 8))
+	return arr.join('-')
 }
 
 /**
@@ -164,6 +230,37 @@ function getIdCard(areaCode: string, birthday: string, sex: string) {
 }
 
 /**
+ * https://www.nia.gov.cn/20231013/2.pdf
+ * 身份标识码 受理地代码 国家和地区代码    出生日期码     顺序码   校验码
+ *    9        32        682       1985  01   01   001     7
+ *           江苏省    沙特阿拉伯   出生年 出生月 出生日
+ *
+ * @param areaCode 受理地区码
+ * @param countryThreeNumber 国家和地区代码
+ * @param birthday 出生日期
+ * @param sex 性别
+ * @returns 外国人永久居留证号
+ */
+function getFprCardNumber(areaCode: string, countryThreeNumber: string, birthday: string, sex: string) {
+	console.log('areaCode: ', areaCode, countryThreeNumber, birthday, sex)
+	areaCode = areaCode.length > 2 ? areaCode.substring(0, 2) : areaCode
+	const sequenceCode = getSequenceCode(sex)
+	/* eslint-disable */
+	const reg = /\-/g
+	birthday = birthday.replace(reg, '')
+	const prefix = '9' + areaCode + countryThreeNumber + birthday + sequenceCode
+	const array = prefix.split('')
+	let sum = 0
+	for (let index = 0; index < array.length; index++) {
+		const element = array[index]
+		sum += parseInt(element) * IdcardConstant.WEIGHTEDFACTOR[index]
+	}
+	const mod = sum % 11
+	const cardNumber = prefix + IdcardConstant.CHECKSUM[mod]
+	return cardNumber
+}
+
+/**
  * 根据性别获取顺序码
  * @param sex 性别
  */
@@ -193,218 +290,28 @@ function getZeroStr(count: number): string {
  * @returns 随机姓名
  */
 function getName(): string {
-	const familyNames = [
-		'赵',
-		'钱',
-		'孙',
-		'李',
-		'周',
-		'吴',
-		'郑',
-		'王',
-		'冯',
-		'陈',
-		'褚',
-		'卫',
-		'蒋',
-		'沈',
-		'韩',
-		'杨',
-		'朱',
-		'秦',
-		'尤',
-		'许',
-		'何',
-		'吕',
-		'施',
-		'张',
-		'孔',
-		'曹',
-		'严',
-		'华',
-		'金',
-		'魏',
-		'陶',
-		'姜',
-		'戚',
-		'谢',
-		'邹',
-		'喻',
-		'柏',
-		'水',
-		'窦',
-		'章',
-		'云',
-		'苏',
-		'潘',
-		'葛',
-		'奚',
-		'范',
-		'彭',
-		'郎',
-		'鲁',
-		'韦',
-		'昌',
-		'马',
-		'苗',
-		'凤',
-		'花',
-		'方',
-		'俞',
-		'任',
-		'袁',
-		'柳',
-		'酆',
-		'鲍',
-		'史',
-		'唐',
-		'费',
-		'廉',
-		'岑',
-		'薛',
-		'雷',
-		'贺',
-		'倪',
-		'汤',
-		'滕',
-		'殷',
-		'罗',
-		'毕',
-		'郝',
-		'邬',
-		'安',
-		'常',
-		'乐',
-		'于',
-		'时',
-		'傅',
-		'皮',
-		'卞',
-		'齐',
-		'康',
-		'伍',
-		'余',
-		'元',
-		'卜',
-		'顾',
-		'孟',
-		'平',
-		'黄',
-		'和',
-		'穆',
-		'萧',
-		'尹'
-	]
-	const givenNames = [
-		'子璇',
-		'淼',
-		'国栋',
-		'夫子',
-		'瑞堂',
-		'甜',
-		'敏',
-		'尚',
-		'国贤',
-		'贺祥',
-		'晨涛',
-		'昊轩',
-		'易轩',
-		'益辰',
-		'益帆',
-		'益冉',
-		'瑾春',
-		'瑾昆',
-		'春齐',
-		'杨',
-		'文昊',
-		'东东',
-		'雄霖',
-		'浩晨',
-		'熙涵',
-		'溶溶',
-		'冰枫',
-		'欣欣',
-		'宜豪',
-		'欣慧',
-		'建政',
-		'美欣',
-		'淑慧',
-		'文轩',
-		'文杰',
-		'欣源',
-		'忠林',
-		'榕润',
-		'欣汝',
-		'慧嘉',
-		'新建',
-		'建林',
-		'亦菲',
-		'林',
-		'冰洁',
-		'佳欣',
-		'涵涵',
-		'禹辰',
-		'淳美',
-		'泽惠',
-		'伟洋',
-		'涵越',
-		'润丽',
-		'翔',
-		'淑华',
-		'晶莹',
-		'凌晶',
-		'苒溪',
-		'雨涵',
-		'嘉怡',
-		'佳毅',
-		'子辰',
-		'佳琪',
-		'紫轩',
-		'瑞辰',
-		'昕蕊',
-		'萌',
-		'明远',
-		'欣宜',
-		'泽远',
-		'欣怡',
-		'佳怡',
-		'佳惠',
-		'晨茜',
-		'晨璐',
-		'运昊',
-		'汝鑫',
-		'淑君',
-		'晶滢',
-		'润莎',
-		'榕汕',
-		'佳钰',
-		'佳玉',
-		'晓庆',
-		'一鸣',
-		'语晨',
-		'添池',
-		'添昊',
-		'雨泽',
-		'雅晗',
-		'雅涵',
-		'清妍',
-		'诗悦',
-		'嘉乐',
-		'晨涵',
-		'天赫',
-		'玥傲',
-		'佳昊',
-		'天昊',
-		'萌萌',
-		'若萌'
-	]
-	const mIndex = Math.floor(Math.random() * 100)
-	const familyName = familyNames[mIndex]
-
-	const sIndex = Math.floor(Math.random() * 100)
-	const givenName = givenNames[sIndex]
-	const name = familyName + givenName
+	const firstName = randomFirstName()
+	const lastName = randomLastName()
+	const name = firstName + lastName
 	return name
+}
+
+/**
+ * 随机获取姓
+ * @returns 姓
+ */
+function randomFirstName(): string {
+	const mIndex = Math.floor(Math.random() * 100)
+	return FIRST_NAMES[mIndex]
+}
+
+/**
+ * 随机获取名
+ * @returns 名
+ */
+function randomLastName(): string {
+	const sIndex = Math.floor(Math.random() * 100)
+	return LAST_NAMES[sIndex]
 }
 
 /**
@@ -427,111 +334,8 @@ function getMobile(): string {
  * @returns 地址
  */
 function getAddress(areaCode: string): string {
-	// 56个
-	const streetNames = [
-		'朱雀大街',
-		'太乙路',
-		'太白路',
-		'太华路',
-		'长乐坊',
-		'长樱路',
-		'案板街',
-		'竹笆市',
-		'骡马市',
-		'东木头市',
-		'西木头市',
-		'安仁坊',
-		'端履门',
-		'德福巷',
-		'洒金桥',
-		'冰窖巷',
-		'菊花园',
-		'下马陵',
-		'索罗巷',
-		'后宰门',
-		'书院门',
-		'炭市街',
-		'马厂子',
-		'景龙池',
-		'甜水井',
-		'柏树林',
-		'苏州的',
-		'桃花坞大街',
-		'夕水街',
-		'春熙路',
-		'支矶石街',
-		'涯石街',
-		'正府街',
-		'督院街',
-		'布后街',
-		'将军街',
-		'走马街',
-		'点将台街',
-		'琴台路',
-		'守经街',
-		'蓥华街',
-		'岳宫街',
-		'天竺街',
-		'染房街',
-		'浆洗街',
-		'落虹街',
-		'红布街',
-		'桃溪路',
-		'芳草街',
-		'悠然街',
-		'幽静街',
-		'细语街',
-		'凭阑街',
-		'碧波道',
-		'霜林道',
-		'璃醉街',
-		'镗钯街',
-		'天仙桥',
-		'送仙桥',
-		'合江亭',
-		'梧桐街',
-		'杏花街',
-		'盐市口',
-		'乌衣巷',
-		'草鞋巷',
-		'五块石',
-		'九里堤',
-		'八里桥',
-		'十里店',
-		'高笋塘',
-		'高升塘',
-		'小菜园',
-		'荷花池',
-		'迎仙桥',
-		'水津街',
-		'烟台道',
-		'中山道',
-		'朱雀大街',
-		'太乙路',
-		'太白路',
-		'太华路',
-		'长乐坊',
-		'长樱路',
-		'案板街',
-		'竹笆市',
-		'骡马市',
-		'东木头市',
-		'西木头市',
-		'安仁坊',
-		'端履门',
-		'德福巷',
-		'洒金桥',
-		'冰窖巷',
-		'菊花园',
-		'粉巷',
-		'索罗巷',
-		'岐黄大道',
-		'清策庄',
-		'清虚埔',
-		'无妄坡'
-	]
 	const index = Math.floor(Math.random() * 100)
-	const streetName = streetNames[index]
+	const streetName = STREET_NAMES[index]
 	const number = Math.floor(Math.random() * 1000) + 1
 	const province = getCityName(getCityCode(areaCode, 1))
 	let city = getCityName(getCityCode(areaCode, 2))
@@ -547,7 +351,7 @@ function getCityCode(areaCode: string, upLevel: number): string {
 }
 
 function getCityName(code: string) {
-	return findCityItem(IdcardConstant.cities, code)
+	return findCityItem(JSON_CITY, code)
 }
 
 function findCityItem(cities: Array<{ code: string; name: string }>, code: string) {
@@ -567,4 +371,12 @@ function findOneCityItem(city: any, code: string) {
 		return findCityItem(city.child, code)
 	}
 	return null
+}
+
+/**
+ * 随机国家/地区
+ */
+function randomCountry(): Country {
+	const index = Math.floor(Math.random() * 239)
+	return JSON_COUNTRY[index]
 }

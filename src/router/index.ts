@@ -25,6 +25,24 @@ const router = createRouter({
 						sexText: route.query.sexText,
 						address: route.query.address
 					})
+				},
+				{
+					path: '/fprcard',
+					name: 'FprCard',
+					component: () => import('../views/FprCard/FprCardViewer.vue')
+				},
+				{
+					path: '/fprcard-image',
+					name: 'FprCardImage',
+					component: () => import('../views/FprCard/FprCardImageViewer.vue'),
+					props: (route) => ({
+						firstName: route.query.firstName,
+						lastName: route.query.lastName,
+						cardNumber: route.query.cardNumber,
+						sexText: route.query.sexText,
+						countryText: route.query.countryText,
+						birthday: route.query.birthday
+					})
 				}
 			]
 		},

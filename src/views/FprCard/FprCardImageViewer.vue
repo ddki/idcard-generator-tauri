@@ -1,23 +1,30 @@
 <template>
 	<div class="left-form" ref="form">
 		<el-form :inline="true" size="default" label-width="90px" label-position="left" label-suffix=":">
-			<el-form-item label="姓名">
-				<el-input v-model="formData.name" placeholder="姓名" />
+			<el-form-item label="姓">
+				<el-input v-model="formData.firstName" placeholder="姓" />
 			</el-form-item>
-			<el-form-item label="民族">
-				<el-input v-model="formData.nation" placeholder="民族" />
+			<el-form-item label="名">
+				<el-input v-model="formData.lastName" placeholder="名" />
 			</el-form-item>
-			<el-form-item label="身份证号">
-				<el-input v-model="formData.idCard" placeholder="身份证号" @change="onChangeIdCard" />
+			<el-form-item label="国家/地区">
+				<el-autocomplete
+					v-model="country"
+					:fetch-suggestions="queryCountrySearch"
+					clearable
+					placeholder="国家/地区"
+					@select="handleCountrySelect"
+				>
+					<template #default="{ item }">
+						<span>{{ item.name }}/{{ item.ISO_3166_1_threeString }}/{{ item.ISO_3166_1_threeNumber }}</span>
+					</template>
+				</el-autocomplete>
+			</el-form-item>
+			<el-form-item label="证件号">
+				<el-input v-model="formData.cardNumber" placeholder="证件号" />
 			</el-form-item>
 			<el-form-item label="性别">
 				<el-input v-model="formData.sexText" placeholder="性别" />
-			</el-form-item>
-			<el-form-item label="住址">
-				<el-input v-model="formData.address" placeholder="住址" />
-			</el-form-item>
-			<el-form-item label="签发机关">
-				<el-input v-model="formData.office" placeholder="签发机关" />
 			</el-form-item>
 			<el-form-item label="有效期起期">
 				<el-date-picker
@@ -67,22 +74,31 @@
 
 <script setup lang="ts">
 import IdcardConstant from '../../constant/idcard'
-import { getBirthdayArrayFromIdCard, getSexFromIdCard } from '../../utils/IdCardUtils'
+import { getBirthdayFromIdCard, getSexWithCodeFromIdCard } from '../../utils/IdCardUtils'
 import * as AssetsUtils from '../../utils/AssetsUtils'
-import type { IdCardImageInput } from 'idCard'
-import { computed, nextTick, onMounted, reactive } from 'vue'
+import type { FprCardImageInput } from 'fprCard'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import type { Country } from 'baseModel'
+import { JSON_COUNTRY } from '../../utils/AssetsUtils'
+import { pinyin } from 'pinyin-pro'
 
 const props = defineProps({
-	name: {
+	firstName: {
 		type: String
 	},
-	idCard: {
+	lastName: {
+		type: String
+	},
+	cardNumber: {
 		type: String
 	},
 	sexText: {
 		type: String
 	},
-	address: {
+	countryText: {
+		type: String
+	},
+	birthday: {
 		type: String
 	}
 })
@@ -121,33 +137,62 @@ const addDate = (startDate: string, num: number): string => {
 }
 
 const initFormData = {
-	name: props.name || '',
-	nation: '汉',
-	idCard: props.idCard || '',
+	firstName: props.firstName || '',
+	lastName: props.lastName || '',
+	cardNumber: props.cardNumber || '',
+	countryText: props.countryText || '',
 	sexText: props.sexText || '',
-	address: props.address || '',
-	office: '北京市公安局',
+	birthday: props.birthday || '',
 	validityType: '1',
 	startDate: getNowDate(),
 	endDate: addDate(getNowDate(), 5)
 }
 
-const formData = reactive<IdCardImageInput>({
-	name: initFormData.name,
-	nation: initFormData.nation,
-	idCard: initFormData.idCard,
+const formData = reactive<FprCardImageInput>({
+	firstName: initFormData.firstName,
+	lastName: initFormData.lastName,
+	cardNumber: initFormData.cardNumber,
+	countryText: initFormData.countryText,
 	sexText: initFormData.sexText,
-	address: initFormData.address,
-	office: initFormData.office,
+	birthday: initFormData.birthday,
 	validityType: initFormData.validityType,
 	startDate: initFormData.startDate,
 	endDate: initFormData.endDate
 })
 
+console.log('formData = ', formData)
+
+const country = ref(props.countryText)
+const countries = ref<Country[]>(JSON_COUNTRY)
+
+const queryCountrySearch = (queryString: string, cb: any) => {
+	const results = queryString ? countries.value.filter(createCountryFilter(queryString)) : countries.value
+	console.log('results = ', results)
+	cb(results)
+}
+const createCountryFilter = (queryString: string) => {
+	return (country: Country) => {
+		return (
+			country.name.indexOf(queryString) === 0 ||
+			country.ISO_3166_1_threeNumber.toString() === queryString ||
+			country.ISO_3166_1_twoString.toLowerCase().indexOf(queryString.toLowerCase()) === 0 ||
+			country.ISO_3166_1_threeString.toLowerCase().indexOf(queryString.toLowerCase()) === 0 ||
+			country.GEC.toLowerCase().indexOf(queryString.toLowerCase()) === 0 ||
+			country.STANAG_1059.toLowerCase().indexOf(queryString.toLowerCase()) === 0 ||
+			country.www.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+		)
+	}
+}
+
+const handleCountrySelect = (item: Country) => {
+	formData.country = item
+	country.value = [item.name, item.ISO_3166_1_threeString].join('/')
+}
+
 const validityTypeOptions = IdcardConstant.validityTypeData
 const imageData = reactive({
-	fontImage: AssetsUtils.IMAGE_IDCARD_FONT,
-	backImage: AssetsUtils.IMAGE_IDCARD_BACK,
+	fontImage: AssetsUtils.FPR_IMAGE_FONT,
+	backImage: AssetsUtils.FPR_IMAGE_BACK,
 	userImage: AssetsUtils.IMAGE_USER_DEFAULT,
 	userMaleImage: AssetsUtils.IMAGE_USER_MALE,
 	userFemaleImage: AssetsUtils.IMAGE_USER_FEMALE
@@ -161,13 +206,6 @@ const dateStr = computed(() => {
 	}
 	return formData.startDate.replace(reg, '.') + '-' + formData.endDate.replace(reg, '.')
 })
-
-const onChangeIdCard = (value: string): void => {
-	if (value != null && value.length === 18) {
-		const sex = getSexFromIdCard(value)
-		formData.sexText = IdcardConstant.getSexByValue(sex)?.text as string
-	}
-}
 
 const onChangeValidityType = (value: string): void => {
 	switch (value) {
@@ -184,24 +222,30 @@ const onChangeValidityType = (value: string): void => {
 }
 
 const onSubmit = (): void => {
+	if (formData.birthday == null || formData.birthday == undefined || formData.length < 8 || formData.cardNumber) {
+		formData.birthday = getBirthdayFromIdCard(formData.cardNumber)
+	}
+	if (formData.sexText == null || formData.sexText == undefined || formData.cardNumber) {
+		formData.sexText = getSexWithCodeFromIdCard(formData.cardNumber)
+	}
+	if (formData.countryText == null || formData.countryText == undefined || formData.countryText.length < 1 || country) {
+		formData.countryText = country
+	}
+	console.log('data: ', formData)
 	nextTick(() => {
 		const fontCanvasElement = document.getElementById('fontCanvas') as HTMLCanvasElement
 		fontCanvasElement.width = 600
-		fontCanvasElement.height = 378
+		fontCanvasElement.height = 394
 		const fontContext: CanvasRenderingContext2D = fontCanvasElement.getContext('2d') || new CanvasRenderingContext2D()
 		const fontImage = new Image(1200)
 		fontImage.onload = () => {
 			fontContext.drawImage(fontImage, 0, 0, fontCanvasElement.width, fontCanvasElement.height)
-			fontContext.font = 'normal normal 300 22px 黑体'
-			fontContext.fillStyle = '#000'
-			fontContext.fillText(formData.office, 260, 287)
-			fontContext.fillText(dateStr.value, 260, 330)
 		}
 		fontImage.src = imageData.fontImage || ''
 
 		const backCanvasElement = document.getElementById('backCanvas') as HTMLCanvasElement
 		backCanvasElement.width = 600
-		backCanvasElement.height = 378
+		backCanvasElement.height = 394
 		backCanvasElement.style.letterSpacing = '2px'
 		const backContext: CanvasRenderingContext2D = backCanvasElement.getContext('2d') || new CanvasRenderingContext2D()
 		const backImage = new Image(1200)
@@ -210,45 +254,31 @@ const onSubmit = (): void => {
 			backContext.drawImage(backImage, 0, 0, backCanvasElement.width, backCanvasElement.height)
 			backContext.font = 'normal normal 300 22px 黑体'
 			backContext.fillStyle = '#000'
-			backContext.fillText(formData.name, 115, 85)
-			backContext.fillText(formData.sexText, 115, 128)
-			backContext.fillText(formData.nation, 245, 128)
-			const arr = getBirthdayArrayFromIdCard(formData.idCard)
-			backContext.fillText(arr[0], 115, 172)
-			backContext.fillText(arr[1], 210, 172)
-			backContext.fillText(arr[2], 270, 172)
-			const address = formData.address
-			// 地址换行
-			const textWith = 240
-			let lineW = 0
-			let initH = 216
-			let substrIndex = 0
-			for (let i = 0; i < address.length; i++) {
-				lineW += backContext.measureText(address[i]).width
-				if (lineW > textWith) {
-					backContext.fillText(address.substring(substrIndex, i), 115, initH)
-					initH += 28
-					lineW = 0
-					substrIndex = i
-				}
-				if (i === address.length - 1) {
-					backContext.fillText(address.substring(substrIndex, i + 1), 115, initH)
-				}
-			}
-			// backContext.fillText(formData.address, 110, 216)
-			const array = formData.idCard.split('')
-			let idCardText = ''
+			const cnName = [formData.firstName, formData.lastName].join('')
+			const pinyinName = pinyin([formData.firstName, formData.lastName].join(','), {
+				toneType: 'none'
+			}).toUpperCase()
+			backContext.fillText(pinyinName, 85, 130)
+			backContext.fillText(cnName, 85, 160)
+			backContext.fillText(formData.sexText, 85, 215)
+			backContext.fillText(formData.countryText, 85, 265)
+			backContext.fillText(formData.birthday, 200, 215)
+			// 有效期
+			backContext.fillText(dateStr.value, 85, 310)
+
+			const array = formData.cardNumber.split('')
+			let cardNumberText = ''
 			for (let index = 0; index < array.length; index++) {
 				const element = array[index]
-				idCardText += element + ''
+				cardNumberText += element + ''
 			}
-			backContext.fillText(idCardText, 180, 330)
+			backContext.fillText(cardNumberText, 175, 340)
 
-			backContext.drawImage(photoImage, 385, 60, 180, 200)
+			backContext.drawImage(photoImage, 355, 90, 180, 200)
 		}
-		if (formData.sexText === '男') {
+		if (formData.sexText.indexOf('男') != -1) {
 			photoImage.src = imageData.userMaleImage || ''
-		} else if (formData.sexText === '女') {
+		} else if (formData.sexText.indexOf('女') != -1) {
 			photoImage.src = imageData.userFemaleImage || ''
 		} else {
 			photoImage.src = imageData.userImage || ''
@@ -258,18 +288,16 @@ const onSubmit = (): void => {
 }
 
 const onInit = (): void => {
-	formData.name = initFormData.name
-	formData.nation = initFormData.nation
-	formData.idCard = initFormData.idCard
-	formData.address = initFormData.address
-	formData.office = initFormData.office
+	formData.firstName = initFormData.firstName
+	formData.lastName = initFormData.lastName
+	formData.cardNumber = initFormData.cardNumber
+	formData.countryText = initFormData.countryText
 	formData.validityType = initFormData.validityType
 	formData.startDate = initFormData.startDate
 	formData.endDate = initFormData.endDate
 }
 
 onMounted(() => {
-	onChangeIdCard(props.idCard as string)
 	nextTick(() => {
 		onSubmit()
 	})
@@ -284,16 +312,19 @@ onMounted(() => {
 	padding: 20px;
 	box-shadow: var(--el-box-shadow-light);
 }
+
 .content {
 	margin-left: 380px;
 	padding: 20px;
 	box-shadow: var(--el-box-shadow-light);
+
 	&__image {
 		&__title {
 			text-align: lfet;
 		}
 	}
 }
+
 .el-button {
 	width: 95px;
 	margin-bottom: 10px;

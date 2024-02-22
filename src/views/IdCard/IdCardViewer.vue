@@ -79,7 +79,7 @@
 					<span @click="handleClickCopy(scope.row.birthday)">{{ scope.row.birthday }}</span>
 				</template>
 			</el-table-column>
-			<el-table-column align="center" prop="age" label="年龄" width="50" />
+			<el-table-column align="center" prop="age" label="年龄" width="60" />
 			<el-table-column align="center" prop="address" label="地址">
 				<template #default="scope">
 					<span @click="handleClickCopy(scope.row.address)">{{ scope.row.address }}</span>
@@ -100,166 +100,146 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import IdcardConstant from '../../constant/idcard'
+import { JSON_CITY } from '@/utils/AssetsUtils'
 import type { IdCardInfo, IdCardInput } from 'idCard'
 import { generateIdCardInfo, getAge, getBirthday } from '../../utils/IdCardUtils'
-import { defineComponent, onMounted, reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { RelationContext } from '../../service/idcard/RelationStrategy'
 import { useRouter } from 'vue-router'
 import useClipboard from 'vue-clipboard3'
 import { ElMessage } from 'element-plus'
 
-export default defineComponent({
-	setup() {
-		const router = useRouter()
-		const clipboard = useClipboard()
+const router = useRouter()
+const clipboard = useClipboard()
 
-		const formData = reactive<IdCardInput>({
-			age: 20,
-			sex: '1',
-			areaCode: '110101',
-			birthday: getBirthday(20),
-			number: 5,
+const formData = reactive<IdCardInput>({
+	age: 20,
+	sex: '1',
+	areaCode: '110101',
+	birthday: getBirthday(20),
+	number: 5,
+	relation: '0',
+	address: ''
+})
+
+const areaOptions = JSON_CITY
+const areaPropsOption = {
+	value: 'code',
+	label: 'name',
+	children: 'child'
+}
+const relationOptions = IdcardConstant.relationData
+const tableData = reactive<IdCardInfo[]>([])
+
+const onChangeAge = (value: number): void => {
+	formData.birthday = getBirthday(value)
+}
+
+const onChangeBirthday = (payload: Event): void => {
+	formData.age = getAge(payload as unknown as string)
+	formData.birthday = payload as unknown as string
+}
+
+const onChangeAreaCode = (value: Array<string>): void => {
+	const lastValue = value?.pop()
+	formData.areaCode = lastValue || '110101'
+}
+
+const onSubmit = (): void => {
+	tableData.length = 0
+	if (formData.relation === '0') {
+		let count = 0
+		while (count < formData.number) {
+			tableData.push(generateIdCardInfo(formData))
+			count++
+		}
+	} else {
+		const oneSelfParams: IdCardInput = {
+			age: formData.age,
+			sex: formData.sex,
+			areaCode: formData.areaCode,
+			birthday: formData.birthday,
+			number: formData.number,
 			relation: '0',
 			address: ''
-		})
-
-		const areaOptions = IdcardConstant.cities
-		const areaPropsOption = {
-			value: 'code',
-			label: 'name',
-			children: 'child'
 		}
-		const relationOptions = IdcardConstant.relationData
-		const tableData = reactive<IdCardInfo[]>([])
-
-		const onChangeAge = (value: number): void => {
-			formData.birthday = getBirthday(value)
-		}
-
-		const onChangeBirthday = (payload: Event): void => {
-			formData.age = getAge(payload as unknown as string)
-			formData.birthday = payload as unknown as string
-		}
-
-		const onChangeAreaCode = (value: Array<string>): void => {
-			const lastValue = value?.pop()
-			formData.areaCode = lastValue || '110101'
-		}
-
-		const onSubmit = (): void => {
-			tableData.length = 0
-			if (formData.relation === '0') {
-				let count = 0
-				while (count < formData.number) {
-					tableData.push(generateIdCardInfo(formData))
-					count++
-				}
-			} else {
-				const oneSelfParams: IdCardInput = {
-					age: formData.age,
-					sex: formData.sex,
-					areaCode: formData.areaCode,
-					birthday: formData.birthday,
-					number: formData.number,
-					relation: '0',
-					address: ''
-				}
-				// 生成自己
-				tableData.push(generateIdCardInfo(oneSelfParams))
-				let count = 0
-				while (count < formData.number) {
-					const params: IdCardInput = {
-						age: formData.age,
-						sex: formData.sex,
-						areaCode: formData.areaCode,
-						birthday: formData.birthday,
-						number: formData.number,
-						relation: formData.relation,
-						address: ''
-					}
-					const relationContext = new RelationContext(params)
-					const newParams = relationContext.execute()
-					tableData.push(generateIdCardInfo(newParams))
-					count++
-				}
-			}
-		}
-
-		const onSubmitWithFamily = (): void => {
-			const array: Array<string> = ['0', '1', '2', '3']
-			generateIdCardInfos(array)
-		}
-
-		const onSubmitWithParent = (): void => {
-			const array: Array<string> = ['0', '4', '5']
-			generateIdCardInfos(array)
-		}
-
-		const onSubmitWithBigFamily = (): void => {
-			const array: Array<string> = ['0', '1', '4', '5', '2', '3', '8', '9']
-			generateIdCardInfos(array)
-		}
-
-		const generateIdCardInfos = (array: Array<string>): void => {
-			tableData.length = 0
+		// 生成自己
+		tableData.push(generateIdCardInfo(oneSelfParams))
+		let count = 0
+		while (count < formData.number) {
 			const params: IdCardInput = {
 				age: formData.age,
 				sex: formData.sex,
 				areaCode: formData.areaCode,
 				birthday: formData.birthday,
 				number: formData.number,
-				relation: '0',
+				relation: formData.relation,
 				address: ''
 			}
-			array.forEach((element) => {
-				params.relation = element
-				// 生成自己
-				const relationContext = new RelationContext(params)
-				const newParams = relationContext.execute()
-				tableData.push(generateIdCardInfo(newParams))
-			})
-		}
-
-		const handleGenerateImage = (_name: string, _idCard: string, _sexText: string, _address: string): void => {
-			router.push({
-				name: 'IdCardImage',
-				query: {
-					name: _name,
-					idCard: _idCard,
-					sexText: _sexText,
-					address: _address
-				}
-			})
-		}
-
-		const handleClickCopy = async (value: string): Promise<void> => {
-			await clipboard.toClipboard(value)
-			ElMessage('已复制')
-		}
-
-		onMounted(() => {
-			onSubmit()
-		})
-
-		return {
-			areaOptions,
-			areaPropsOption,
-			relationOptions,
-			formData,
-			tableData,
-			onChangeAge,
-			onChangeBirthday,
-			onChangeAreaCode,
-			onSubmit,
-			onSubmitWithFamily,
-			onSubmitWithParent,
-			onSubmitWithBigFamily,
-			handleGenerateImage,
-			handleClickCopy
+			const relationContext = new RelationContext(params)
+			const newParams = relationContext.execute()
+			tableData.push(generateIdCardInfo(newParams))
+			count++
 		}
 	}
+}
+
+const onSubmitWithFamily = (): void => {
+	const array: Array<string> = ['0', '1', '2', '3']
+	generateIdCardInfos(array)
+}
+
+const onSubmitWithParent = (): void => {
+	const array: Array<string> = ['0', '4', '5']
+	generateIdCardInfos(array)
+}
+
+const onSubmitWithBigFamily = (): void => {
+	const array: Array<string> = ['0', '1', '4', '5', '2', '3', '8', '9']
+	generateIdCardInfos(array)
+}
+
+const generateIdCardInfos = (array: Array<string>): void => {
+	tableData.length = 0
+	const params: IdCardInput = {
+		age: formData.age,
+		sex: formData.sex,
+		areaCode: formData.areaCode,
+		birthday: formData.birthday,
+		number: formData.number,
+		relation: '0',
+		address: ''
+	}
+	array.forEach((element) => {
+		params.relation = element
+		// 生成自己
+		const relationContext = new RelationContext(params)
+		const newParams = relationContext.execute()
+		tableData.push(generateIdCardInfo(newParams))
+	})
+}
+
+const handleGenerateImage = (_name: string, _idCard: string, _sexText: string, _address: string): void => {
+	router.push({
+		name: 'IdCardImage',
+		query: {
+			name: _name,
+			idCard: _idCard,
+			sexText: _sexText,
+			address: _address
+		}
+	})
+}
+
+const handleClickCopy = async (value: string): Promise<void> => {
+	await clipboard.toClipboard(value)
+	ElMessage('已复制')
+}
+
+onMounted(() => {
+	onSubmit()
 })
 </script>
 
