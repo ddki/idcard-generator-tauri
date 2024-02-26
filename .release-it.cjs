@@ -76,6 +76,10 @@ module.exports = {
 				},
 				{
 					file: './src-tauri/tauri.conf.json',
+					path: 'version'
+				},
+				{
+					file: './src-tauri/Cargo.toml',
 					path: 'package.version'
 				}
 			]

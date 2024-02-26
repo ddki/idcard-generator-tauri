@@ -1,54 +1,56 @@
-use tauri::{
-	api::dialog::{blocking::ask, message},
-	AppHandle, Manager, Runtime,
-};
+use tauri::{AppHandle, Manager, Runtime};
+use tauri_plugin_dialog::DialogExt;
+use tauri_plugin_updater::UpdaterExt;
 
-#[tauri::command]
-pub async fn check_update(handle: AppHandle) {
-	check_update_with_dialog(handle).await;
-}
+pub fn check_update<R: Runtime>(app: AppHandle<R>) {
+	tauri::async_runtime::spawn(async move {
+		let mut builder = app.app_handle().updater_builder();
+		if std::env::var("TARGET").unwrap_or_default() == "nsis" {
+			// /D sets the default installation directory ($INSTDIR),
+			// overriding InstallDir and InstallDirRegKey.
+			// It must be the last parameter used in the command line and must not contain any quotes, even if the path contains spaces.
+			// Only absolute paths are supported.
+			// NOTE: we only need this because this is an integration test and we don't want to install the app in the programs folder
+			builder = builder.installer_args(vec![format!(
+				"/D={}",
+				tauri::utils::platform::current_exe()
+					.unwrap()
+					.parent()
+					.unwrap()
+					.display()
+			)]);
+		}
+		let updater = builder.build().unwrap();
 
-pub async fn check_update_with_dialog<R: Runtime>(handle: AppHandle<R>) {
-	let win = handle.get_window("main").unwrap();
-	let package_info = handle.package_info().clone();
-	match tauri::updater::builder(handle.clone()).check().await {
-		Ok(update) => {
-			if update.is_update_available() {
-				let should_update = ask(
-					Some(&win),
-					"新版本",
-					format!(
-						r#"{}有新版本{}，当前版本{}。
-
-是否现在进行安装？
-
-更新日志:
-{}"#,
-						&package_info.name,
-						update.latest_version(),
-						update.current_version().to_string(),
-						update.body().unwrap_or(&("".into()))
-					),
-				);
-				if should_update {
-					let res = update.download_and_install().await;
-					if res.is_err() {
-						message(Some(&win), "错误", "无法更新");
-					} else {
-						let should_restart =
-							ask(Some(&win), "准备重启", "成功安装新版本，是否重启程序？");
-						if should_restart {
-							handle.restart();
-						}
-					}
+		match updater.check().await {
+			Ok(Some(update)) => {
+				if let Err(e) = update.download_and_install(|_, _| {}, || {}).await {
+					println!("下载并安装发生异常：{e}");
+					let _ = tauri_plugin_dialog::MessageDialogBuilder::new(
+						app.dialog().clone(),
+						"警告",
+						"下载并安装时发生了错误，请确保可以连接更新服务器",
+					)
+					.kind(tauri_plugin_dialog::MessageDialogKind::Error)
+					.show(|_| {});
+					// std::process::exit(1);
 				}
-			} else {
-				message(Some(&win), "提示", "没有可用更新");
+				std::process::exit(0);
+			}
+			Ok(None) => {
+				std::process::exit(0);
+			}
+			Err(e) => {
+				println!("获取更新发生异常：{e}");
+				// std::process::exit(1);
+				tauri_plugin_dialog::MessageDialogBuilder::new(
+					app.dialog().clone(),
+					"警告",
+					"获取更新失败，无法连接更新服务（GitHub Gist）",
+				)
+				.kind(tauri_plugin_dialog::MessageDialogKind::Error)
+				.show(|_| {});
 			}
 		}
-		Err(e) => {
-			println!("failed to get update: {}", e);
-			message(Some(&win), "网络异常", "连接Github失败");
-		}
-	}
+	});
 }

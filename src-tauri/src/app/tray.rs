@@ -1,101 +1,41 @@
 use tauri::{
-	AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
-	SystemTrayMenuItem, SystemTraySubmenu,
+	menu::{Menu, MenuItem},
+	tray::{ClickType, TrayIconBuilder},
+	AppHandle, Manager, Runtime,
 };
-use tauri_plugin_shell::ShellExt;
 
-pub fn build() -> SystemTray {
-	SystemTray::new().with_menu(build_menu())
-}
+use crate::app;
 
-pub fn handle_menu_event(app: &AppHandle, event: SystemTrayEvent) {
-	match event {
-		SystemTrayEvent::LeftClick {
-			position: _,
-			size: _,
-			..
-		} => {
-			println!("system tray received a left click");
-			let window: tauri::Window = app.get_window("main").unwrap();
-			window.show().unwrap();
-			window.set_focus().unwrap();
-		}
-		SystemTrayEvent::RightClick {
-			position: _,
-			size: _,
-			..
-		} => {
-			println!("system tray received a right click");
-		}
-		SystemTrayEvent::DoubleClick {
-			position: _,
-			size: _,
-			..
-		} => {
-			println!("system tray received a double click");
-		}
-		SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
-			"main" => {
-				let window: tauri::Window = app.get_window("main").unwrap();
-				window.show().unwrap();
-				window.eval("window.location.replace('#/')").unwrap();
-			}
-			"about" => {
-				let window: tauri::Window = app.get_window("main").unwrap();
-				window.show().unwrap();
-				window.menu_handle().hide().unwrap();
-				super::window::open_about(window.app_handle());
-			}
-			"issues" => {
-				app.get_window("main")
-					.unwrap()
-					.shell()
-					.open(
-						"https://github.com/ddki/idcard-generator-tauri/issues",
-						None,
-					)
-					.unwrap();
-			}
-			"github" => {
-				app.get_window("main")
-					.unwrap()
-					.shell()
-					.open("https://github.com/ddki/idcard-generator-tauri", None)
-					.unwrap();
-			}
+pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
+	let check_update = MenuItem::with_id(app, "check_update", "检查更新", true, None::<&str>)?;
+	let quit = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
+	let menus = Menu::with_items(app, &[&check_update, &quit])?;
+
+	let _ = TrayIconBuilder::with_id("tary")
+		.tooltip("证件生成器")
+		.icon(app.default_window_icon().unwrap().clone())
+		.menu(&menus)
+		.menu_on_left_click(true)
+		.on_menu_event(move |app, event| match event.id.as_ref() {
 			"check_update" => {
-				let handle = app.clone();
-				tauri::async_runtime::spawn(async move {
-					updater::check_update_with_dialog(handle).await;
-				});
-			}
+				println!("check update ....");
+				app::updater::check_update(app.clone());
+			},
 			"quit" => {
-				std::process::exit(0);
+				app.exit(0);
 			}
 			_ => {}
-		},
-		_ => {}
-	}
-}
+		})
+		.on_tray_icon_event(|tray, event| {
+			if event.click_type == ClickType::Left {
+				let app = tray.app_handle();
+				if let Some(window) = app.get_webview_window("main") {
+					let _ = window.show();
+					let _ = window.set_focus();
+				}
+			}
+		})
+		.build(app);
 
-fn build_menu() -> SystemTrayMenu {
-	let main = CustomMenuItem::new("main", "主页");
-	let about = SystemTraySubmenu::new(
-		"关于",
-		SystemTrayMenu::new()
-			.add_item(CustomMenuItem::new("about", "关于"))
-			.add_item(CustomMenuItem::new("issues", "Issues"))
-			.add_item(CustomMenuItem::new("github", "Github")),
-	);
-
-	let check_update = CustomMenuItem::new("check_update", "检查更新");
-	let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-
-	let tray_menu: SystemTrayMenu = SystemTrayMenu::new()
-		.add_item(main)
-		.add_submenu(about)
-		.add_item(check_update)
-		.add_native_item(SystemTrayMenuItem::Separator)
-		.add_item(quit);
-	return tray_menu;
+	Ok(())
 }

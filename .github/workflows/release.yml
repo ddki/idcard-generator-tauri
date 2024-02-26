@@ -83,6 +83,12 @@ jobs:
       fail-fast: false
       matrix:
         platform: [macos-latest, ubuntu-latest, windows-latest]
+    outputs:
+      releaseId: ${{ steps.tauri-action.outputs.releaseId }}
+      releaseHtmlUrl: ${{ steps.tauri-action.outputs.releaseHtmlUrl }}
+      releaseUploadUrl: ${{ steps.tauri-action.outputs.releaseUploadUrl }}
+      artifactPaths: ${{ steps.tauri-action.outputs.artifactPaths }}
+      appVersion: ${{ steps.tauri-action.outputs.appVersion }}
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -131,10 +137,11 @@ jobs:
         run: pnpm install
 
       - uses: tauri-apps/tauri-action@v0
+        id: tauri-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           releaseId: ${{ needs.create-release.outputs.release_id }}
           updaterJsonPreferNsis: true
@@ -162,3 +169,27 @@ jobs:
               draft: false,
               prerelease: false
             })
+
+  update-latest:
+    name: update latest.json to gist latest
+    runs-on: ubuntu-latest
+    needs: publish-release
+
+    steps:
+      - name: echo tauri-action outputs
+        run: echo "releaseId = ${{ needs.publish-release.outputs.releaseId }}" \
+          "releaseHtmlUrl = ${{ needs.publish-release.outputs.releaseHtmlUrl }}" \
+          "releaseUploadUrl = ${{ needs.publish-release.outputs.releaseUploadUrl }}" \
+          "artifactPaths = ${{ needs.publish-release.outputs.artifactPaths }}" \
+          "appVersion = ${{ needs.publish-release.outputs.appVersion }}" \
+
+      - uses: actions/checkout@v3
+      - name: Deploy
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gist_id: b5464a6567611ccf288d3e2d703783f1
+          gist_file: idcard-generator-latest.json
+          file_path: ${{ needs.publish-release.outputs.artifactPaths }}/latest.json
+          file_type: text
+

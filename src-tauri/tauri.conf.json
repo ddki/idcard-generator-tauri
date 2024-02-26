@@ -72,29 +72,17 @@
 				"label": "setting",
 				"visible": false,
 				"url": "#/setting"
-			},
-			{
-				"height": 800,
-				"width": 1200,
-				"fullscreen": false,
-				"resizable": true,
-				"title": "关于",
-				"label": "about",
-				"visible": false,
-				"url": "#/about"
 			}
-		],
-		"trayIcon": {
-			"iconPath": "icons/icon.png",
-			"iconAsTemplate": true
-		}
+		]
 	},
 	"plugins": {
 		"updater": {
-			"endpoints": ["https://github.com/ddki/idcard-generator-tauri/releases/download/updater/update.json"],
+			"endpoints": [
+				"https://gist.githubusercontent.com/ddki/b5464a6567611ccf288d3e2d703783f1/raw/a79cfc28bf2db00cd2a2d4973878b6ea6786ade2/idcard-generator-latest.json"
+			],
 			"active": true,
 			"dialog": true,
-			"pubkey": "",
+			"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE5NEExOThEQkE2RUI3RjUKUldUMXQyNjZqUmxLR1hVaFRCaTBtc0dwSWoyWXBDZVd5UVQ3V040VnFZanBFZzMvaXJoT0tjbkoK",
 			"windows": {
 				"installMode": "passive"
 			}

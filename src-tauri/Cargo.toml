@@ -1,6 +1,6 @@
 [package]
 name = "idcard-generator"
-version = "0.1.0"
+version = "0.1.5"
 description = "中国居民身份证生成器"
 authors = ["ddki"]
 license = ""
@@ -17,16 +17,16 @@ tauri-build = { version = "2.0.0-beta", features = [] }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "2.0.0-beta", features = [
+tauri = { version = "=2.0.0-beta.6", features = [
 	"devtools",
 	"tray-icon",
 	"config-json5",
 ] }
-tauri-plugin-shell = "2.0.0-beta"
-tauri-plugin-dialog = "2.0.0-beta"
-tauri-plugin-updater = "2.0.0-beta"
-tauri-plugin-autostart = "2.0.0-beta"
-tauri-plugin-single-instance = "2.0.0-beta"
+tauri-plugin-shell = "=2.0.0-beta.1"
+tauri-plugin-dialog = "2.0.0-beta.1"
+tauri-plugin-updater = "=2.0.0-beta.1"
+tauri-plugin-autostart = "2.0.0-beta.1"
+tauri-plugin-single-instance = "=2.0.0-beta.2"
 # webbrowser = "0.8.10"
 log = "0.4.17"
 
