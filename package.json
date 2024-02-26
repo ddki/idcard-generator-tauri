@@ -1,6 +1,6 @@
 {
 	"name": "idcard-generator",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"author": "ddki",
 	"private": true,
 	"type": "module",
