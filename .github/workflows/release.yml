@@ -19,7 +19,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 19
+          node-version: 20
 
       # pnpm 并使用缓存安装包
       - uses: pnpm/action-setup@v2
@@ -170,26 +170,4 @@ jobs:
               prerelease: false
             })
 
-  update-latest:
-    name: update latest.json to gist latest
-    runs-on: ubuntu-latest
-    needs: publish-release
-
-    steps:
-      - name: echo tauri-action outputs
-        run: echo "releaseId = ${{ needs.publish-release.outputs.releaseId }}" \
-          "releaseHtmlUrl = ${{ needs.publish-release.outputs.releaseHtmlUrl }}" \
-          "releaseUploadUrl = ${{ needs.publish-release.outputs.releaseUploadUrl }}" \
-          "artifactPaths = ${{ needs.publish-release.outputs.artifactPaths }}" \
-          "appVersion = ${{ needs.publish-release.outputs.appVersion }}" \
-
-      - uses: actions/checkout@v3
-      - name: Deploy
-        uses: exuanbo/actions-deploy-gist@v1
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: b5464a6567611ccf288d3e2d703783f1
-          gist_file: idcard-generator-latest.json
-          file_path: ${{ needs.publish-release.outputs.artifactPaths }}/latest.json
-          file_type: text
 
