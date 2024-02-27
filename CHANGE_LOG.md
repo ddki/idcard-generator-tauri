@@ -1,5 +1,7 @@
 # 📄 更新日志
 
+## [0.1.8](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.7...v0.1.8) (2024-02-27)
+
 ## [0.1.7](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.6...v0.1.7) (2024-02-26)
 
 ## [0.1.6](https://github.com/ddki/idcard-generator-tauri/compare/...v0.1.6) (2024-02-26)
