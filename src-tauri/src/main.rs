@@ -3,26 +3,19 @@
 	windows_subsystem = "windows"
 )]
 
-use std::sync::{Arc, Mutex};
-
-
-use tauri::{Manager, State, WebviewWindow};
+use tauri::{AppHandle, Manager};
 
 mod app;
 
-struct SplashscreenWindow(Arc<Mutex<WebviewWindow>>);
-struct MainWindow(Arc<Mutex<WebviewWindow>>);
-
 #[tauri::command]
-fn close_splashscreen(
-	_: WebviewWindow, // force inference of P
-	splashscreen: State<SplashscreenWindow>,
-	main: State<MainWindow>,
-) {
+fn close_splashscreen(app: AppHandle) {
+	println!("close-splashscreen");
 	// Close splashscreen
-	splashscreen.0.lock().unwrap().close().unwrap();
+	if let Some(splashscreen) = app.get_webview_window("splashscreen") {
+		splashscreen.close().unwrap();
+	}
 	// Show main window
-	main.0.lock().unwrap().show().unwrap();
+	app.get_webview_window("main").unwrap().show().unwrap();
 }
 
 fn main() {
@@ -43,21 +36,13 @@ fn main() {
 		.setup(|app| {
 			// 设置任务栏图标
 			#[cfg(all(desktop))]
-      {
-        let handle = app.handle();
-        app::tray::create_tray(handle)?;
-      }
-			// set the splashscreen and main windows to be globally available with the tauri state API
-			app.manage(SplashscreenWindow(Arc::new(Mutex::new(
-				app.get_webview_window("splashscreen").unwrap(),
-			))));
-			app.manage(MainWindow(Arc::new(Mutex::new(
-				app.get_webview_window("main").unwrap(),
-			))));
+			{
+				let handle = app.handle();
+				app::tray::create_tray(handle)?;
+			}
 			Ok(())
 		})
 		.invoke_handler(tauri::generate_handler![close_splashscreen])
-		// 保持后端在后台运行
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }
