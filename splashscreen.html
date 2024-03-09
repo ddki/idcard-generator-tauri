@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 	<head>
 		<meta charset="UTF-8" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>%VITE_APP_TITLE%</title>
+		<script type="text/javascript">
+			document.addEventListener('keydown', function (event) {
+				if (
+					event.key === 'F5' ||
+					(event.ctrlKey && event.key.toLowerCase() === 'r') ||
+					(event.metaKey && event.key.toLowerCase() === 'r')
+				) {
+					event.preventDefault()
+				}
+				if (
+					event.key === 'F12' ||
+					(event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'i') ||
+					(event.metaKey && event.shiftKey && event.key.toLowerCase() === 'i')
+				) {
+					event.preventDefault()
+				}
+			})
+			document.addEventListener('contextmenu', function (event) {
+				event.preventDefault()
+			})
+		</script>
 		<style>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+
 			div {
 				height: 800px;
 				width: 100%;

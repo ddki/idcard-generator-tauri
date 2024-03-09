@@ -2,9 +2,8 @@
 	"default": {
 		"identifier": "default",
 		"description": "Capability for the main window",
-		"remote": null,
 		"local": true,
-		"windows": ["main"],
+		"windows": ["main", "setting"],
 		"permissions": [
 			"path:default",
 			"event:default",
@@ -18,8 +17,17 @@
 			"dialog:allow-open",
 			"dialog:allow-save",
 			"dialog:allow-confirm",
-			"dialog:allow-message"
-		],
-		"platforms": ["linux", "macOS", "windows", "android", "iOS"]
+			"dialog:allow-message",
+			"notification:allow-is-permission-granted",
+			"notification:allow-notify",
+			"notification:allow-request-permission",
+			"autostart:allow-disable",
+			"autostart:allow-enable",
+			"autostart:allow-is-enabled",
+			"store:allow-load",
+			"store:allow-get",
+			"store:allow-set",
+			"store:allow-save"
+		]
 	}
 }

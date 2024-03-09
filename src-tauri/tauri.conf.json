@@ -64,8 +64,8 @@
 				"shadow": true
 			},
 			{
-				"height": 800,
-				"width": 1200,
+				"height": 600,
+				"width": 800,
 				"fullscreen": false,
 				"resizable": true,
 				"title": "设置",

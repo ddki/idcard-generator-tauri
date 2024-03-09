@@ -2,7 +2,7 @@
 name = "idcard-generator"
 version = "0.1.8"
 description = "中国居民身份证生成器"
-authors = [ "ddki" ]
+authors = ["ddki"]
 license = ""
 repository = "https://github.com/ddki/idcard-generator-tauri"
 default-run = "idcard-generator"
@@ -11,28 +11,30 @@ rust-version = "1.73"
 
 [build-dependencies.tauri-build]
 version = "2.0.0-beta"
-features = [ ]
+features = []
 
 [dependencies]
 serde_json = "1.0"
-tauri-plugin-shell = "=2.0.0-beta.1"
-tauri-plugin-dialog = "2.0.0-beta.1"
-tauri-plugin-updater = "=2.0.0-beta.1"
-tauri-plugin-autostart = "2.0.0-beta.1"
-tauri-plugin-single-instance = "=2.0.0-beta.2"
+tauri-plugin-shell = "2.0.0-beta"
+tauri-plugin-dialog = "2.0.0-beta"
+tauri-plugin-updater = "2.0.0-beta"
+tauri-plugin-autostart = "2.0.0-beta"
+tauri-plugin-single-instance = "2.0.0-beta"
+tauri-plugin-store = "2.0.0-beta"
+tauri-plugin-notification = "2.0.0-beta"
 log = "0.4.17"
 
-  [dependencies.serde]
-  version = "1.0"
-  features = [ "derive" ]
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
 
-  [dependencies.tauri]
-  version = "=2.0.0-beta.6"
-  features = [ "devtools", "tray-icon", "config-json5" ]
+[dependencies.tauri]
+version = "2.0.0-beta"
+features = ["devtools", "tray-icon", "config-json5"]
 
 [features]
-default = [ "custom-protocol" ]
-custom-protocol = [ "tauri/custom-protocol" ]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
 
 [profile.release]
 panic = "abort"
