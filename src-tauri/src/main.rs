@@ -40,6 +40,8 @@ fn main() {
 		.on_window_event(|window, event| match event {
 			tauri::WindowEvent::CloseRequested { api, .. } => {
 				println!("窗口关闭...");
+				window.hide().unwrap();
+				api.prevent_close();
 				// let store = tauri_plugin_store::StoreBuilder::new("settings.json")
 				// 	.build(window.app_handle().clone());
 				// let single_instance = store.get("single-instance");

@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import WindiCSS from 'vite-plugin-windicss'
 
 import { internalIpV4 } from 'internal-ip'
 
@@ -25,7 +24,6 @@ export default defineConfig(async ({ command, mode, ssrBuild }) => {
 			ElementPlus({
 				useSource: true
 			}),
-			WindiCSS(),
 			AutoImport({
 				resolvers: [ElementPlusResolver()]
 			}),

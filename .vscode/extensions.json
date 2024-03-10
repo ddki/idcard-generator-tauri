@@ -6,6 +6,7 @@
 		"editorconfig.editorconfig",
 		"rust-lang.rust-analyzer",
 		"voorjaar.windicss-intellisense",
-		"tamasfe.even-better-toml"
+		"tamasfe.even-better-toml",
+		"bradlc.vscode-tailwindcss"
 	]
 }

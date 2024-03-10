@@ -8,7 +8,9 @@ const config = {
 	printWidth: 120,
 	// 是否逗号结尾
 	trailingComma: 'none',
-	endOfLine: 'lf'
+	endOfLine: 'lf',
+	// eslint-disable-ignore-pattern
+	plugins: ['prettier-plugin-tailwindcss']
 }
 
 module.exports = config
