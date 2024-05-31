@@ -1,0 +1,7 @@
+# 设置所有文件都使用LF格式的换行符
+* text eol=lf
+
+# 指定特定文件类型不使用LF格式的换行符
+*.png -text
+*.ico -text
+*.icns -text

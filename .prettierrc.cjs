@@ -13,4 +13,5 @@ const config = {
 	plugins: ['prettier-plugin-tailwindcss']
 }
 
+// eslint-disable-next-line no-undef
 module.exports = config

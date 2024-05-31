@@ -1,4 +1,5 @@
 /** @type {import('cz-git').UserConfig} */
+// eslint-disable-next-line no-undef
 module.exports = {
 	rules: {
 		// @see: https://commitlint.js.org/#/reference-rules
@@ -14,7 +15,7 @@ module.exports = {
 		'subject-case': [0]
 	},
 	prompt: {
-		scopes: ['fonted', 'rust'],
+		scopes: [],
 		alias: { fd: 'docs: fix typos' },
 		messages: {
 			type: '选择你要提交的类型 :',
@@ -66,11 +67,10 @@ module.exports = {
 			}
 		],
 		useEmoji: true,
-		emojiAlign: 'left',
+		emojiAlign: 'center',
 		useAI: false,
 		aiNumber: 1,
 		themeColorCode: '',
-		scopes: [],
 		allowCustomScopes: true,
 		allowEmptyScopes: true,
 		customScopesAlign: 'bottom',

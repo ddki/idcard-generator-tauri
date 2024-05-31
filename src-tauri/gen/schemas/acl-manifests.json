@@ -209,16 +209,7 @@
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
-			"permissions": [
-				"allow-new",
-				"allow-from-bytes",
-				"allow-from-png-bytes",
-				"allow-from-ico-bytes",
-				"allow-from-path",
-				"allow-rgba",
-				"allow-width",
-				"allow-height"
-			]
+			"permissions": ["allow-new", "allow-from-bytes", "allow-from-path", "allow-rgba", "allow-size"]
 		},
 		"permissions": {
 			"allow-from-bytes": {
@@ -226,25 +217,10 @@
 				"description": "Enables the from_bytes command without any pre-configured scope.",
 				"commands": { "allow": ["from_bytes"], "deny": [] }
 			},
-			"allow-from-ico-bytes": {
-				"identifier": "allow-from-ico-bytes",
-				"description": "Enables the from_ico_bytes command without any pre-configured scope.",
-				"commands": { "allow": ["from_ico_bytes"], "deny": [] }
-			},
 			"allow-from-path": {
 				"identifier": "allow-from-path",
 				"description": "Enables the from_path command without any pre-configured scope.",
 				"commands": { "allow": ["from_path"], "deny": [] }
-			},
-			"allow-from-png-bytes": {
-				"identifier": "allow-from-png-bytes",
-				"description": "Enables the from_png_bytes command without any pre-configured scope.",
-				"commands": { "allow": ["from_png_bytes"], "deny": [] }
-			},
-			"allow-height": {
-				"identifier": "allow-height",
-				"description": "Enables the height command without any pre-configured scope.",
-				"commands": { "allow": ["height"], "deny": [] }
 			},
 			"allow-new": {
 				"identifier": "allow-new",
@@ -256,35 +232,20 @@
 				"description": "Enables the rgba command without any pre-configured scope.",
 				"commands": { "allow": ["rgba"], "deny": [] }
 			},
-			"allow-width": {
-				"identifier": "allow-width",
-				"description": "Enables the width command without any pre-configured scope.",
-				"commands": { "allow": ["width"], "deny": [] }
+			"allow-size": {
+				"identifier": "allow-size",
+				"description": "Enables the size command without any pre-configured scope.",
+				"commands": { "allow": ["size"], "deny": [] }
 			},
 			"deny-from-bytes": {
 				"identifier": "deny-from-bytes",
 				"description": "Denies the from_bytes command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["from_bytes"] }
 			},
-			"deny-from-ico-bytes": {
-				"identifier": "deny-from-ico-bytes",
-				"description": "Denies the from_ico_bytes command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["from_ico_bytes"] }
-			},
 			"deny-from-path": {
 				"identifier": "deny-from-path",
 				"description": "Denies the from_path command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["from_path"] }
-			},
-			"deny-from-png-bytes": {
-				"identifier": "deny-from-png-bytes",
-				"description": "Denies the from_png_bytes command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["from_png_bytes"] }
-			},
-			"deny-height": {
-				"identifier": "deny-height",
-				"description": "Denies the height command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["height"] }
 			},
 			"deny-new": {
 				"identifier": "deny-new",
@@ -296,10 +257,10 @@
 				"description": "Denies the rgba command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["rgba"] }
 			},
-			"deny-width": {
-				"identifier": "deny-width",
-				"description": "Denies the width command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["width"] }
+			"deny-size": {
+				"identifier": "deny-size",
+				"description": "Denies the size command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["size"] }
 			}
 		},
 		"permission_sets": {},
@@ -716,6 +677,11 @@
 				"description": "Enables the open command without any pre-configured scope.",
 				"commands": { "allow": ["open"], "deny": [] }
 			},
+			"allow-spawn": {
+				"identifier": "allow-spawn",
+				"description": "Enables the spawn command without any pre-configured scope.",
+				"commands": { "allow": ["spawn"], "deny": [] }
+			},
 			"allow-stdin-write": {
 				"identifier": "allow-stdin-write",
 				"description": "Enables the stdin_write command without any pre-configured scope.",
@@ -735,6 +701,11 @@
 				"identifier": "deny-open",
 				"description": "Denies the open command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["open"] }
+			},
+			"deny-spawn": {
+				"identifier": "deny-spawn",
+				"description": "Denies the spawn command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["spawn"] }
 			},
 			"deny-stdin-write": {
 				"identifier": "deny-stdin-write",
@@ -788,7 +759,7 @@
 					"allOf": [{ "$ref": "#/definitions/ShellAllowedArgs" }],
 					"description": "The allowed arguments for the command execution."
 				},
-				"command": {
+				"cmd": {
 					"description": "The command name. It can start with a variable that resolves to a system base directory. The variables are: `$AUDIO`, `$CACHE`, `$CONFIG`, `$DATA`, `$LOCALDATA`, `$DESKTOP`, `$DOCUMENT`, `$DOWNLOAD`, `$EXE`, `$FONT`, `$HOME`, `$PICTURE`, `$PUBLIC`, `$RUNTIME`, `$TEMPLATE`, `$VIDEO`, `$RESOURCE`, `$APP`, `$LOG`, `$TEMP`, `$APPCONFIG`, `$APPDATA`, `$APPLOCALDATA`, `$APPCACHE`, `$APPLOG`.",
 					"type": "string"
 				},
@@ -798,7 +769,7 @@
 				},
 				"sidecar": { "description": "If this command is a sidecar command.", "type": "boolean" }
 			},
-			"required": ["args", "command", "name", "sidecar"],
+			"required": ["args", "cmd", "name", "sidecar"],
 			"title": "Entry",
 			"type": "object"
 		}
@@ -937,10 +908,20 @@
 			"permissions": []
 		},
 		"permissions": {
+			"allow-get-by-id": {
+				"identifier": "allow-get-by-id",
+				"description": "Enables the get_by_id command without any pre-configured scope.",
+				"commands": { "allow": ["get_by_id"], "deny": [] }
+			},
 			"allow-new": {
 				"identifier": "allow-new",
 				"description": "Enables the new command without any pre-configured scope.",
 				"commands": { "allow": ["new"], "deny": [] }
+			},
+			"allow-remove-by-id": {
+				"identifier": "allow-remove-by-id",
+				"description": "Enables the remove_by_id command without any pre-configured scope.",
+				"commands": { "allow": ["remove_by_id"], "deny": [] }
 			},
 			"allow-set-icon": {
 				"identifier": "allow-set-icon",
@@ -982,10 +963,20 @@
 				"description": "Enables the set_visible command without any pre-configured scope.",
 				"commands": { "allow": ["set_visible"], "deny": [] }
 			},
+			"deny-get-by-id": {
+				"identifier": "deny-get-by-id",
+				"description": "Denies the get_by_id command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["get_by_id"] }
+			},
 			"deny-new": {
 				"identifier": "deny-new",
 				"description": "Denies the new command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["new"] }
+			},
+			"deny-remove-by-id": {
+				"identifier": "deny-remove-by-id",
+				"description": "Denies the remove_by_id command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["remove_by_id"] }
 			},
 			"deny-set-icon": {
 				"identifier": "deny-set-icon",
@@ -1035,7 +1026,7 @@
 		"default_permission": {
 			"identifier": "default",
 			"description": "Allows checking for new updates and installing them",
-			"permissions": ["allow-check", "allow-download-and-install"]
+			"permissions": ["allow-check", "allow-download", "allow-install", "allow-download-and-install"]
 		},
 		"permissions": {
 			"allow-check": {
@@ -1043,20 +1034,40 @@
 				"description": "Enables the check command without any pre-configured scope.",
 				"commands": { "allow": ["check"], "deny": [] }
 			},
+			"allow-download": {
+				"identifier": "allow-download",
+				"description": "Enables the download command without any pre-configured scope.",
+				"commands": { "allow": ["download"], "deny": [] }
+			},
 			"allow-download-and-install": {
 				"identifier": "allow-download-and-install",
 				"description": "Enables the download_and_install command without any pre-configured scope.",
 				"commands": { "allow": ["download_and_install"], "deny": [] }
+			},
+			"allow-install": {
+				"identifier": "allow-install",
+				"description": "Enables the install command without any pre-configured scope.",
+				"commands": { "allow": ["install"], "deny": [] }
 			},
 			"deny-check": {
 				"identifier": "deny-check",
 				"description": "Denies the check command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["check"] }
 			},
+			"deny-download": {
+				"identifier": "deny-download",
+				"description": "Denies the download command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["download"] }
+			},
 			"deny-download-and-install": {
 				"identifier": "deny-download-and-install",
 				"description": "Denies the download_and_install command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["download_and_install"] }
+			},
+			"deny-install": {
+				"identifier": "deny-install",
+				"description": "Denies the install command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["install"] }
 			}
 		},
 		"permission_sets": {},
@@ -1108,6 +1119,11 @@
 				"identifier": "allow-set-webview-size",
 				"description": "Enables the set_webview_size command without any pre-configured scope.",
 				"commands": { "allow": ["set_webview_size"], "deny": [] }
+			},
+			"allow-set-webview-zoom": {
+				"identifier": "allow-set-webview-zoom",
+				"description": "Enables the set_webview_zoom command without any pre-configured scope.",
+				"commands": { "allow": ["set_webview_zoom"], "deny": [] }
 			},
 			"allow-webview-close": {
 				"identifier": "allow-webview-close",
@@ -1164,6 +1180,11 @@
 				"description": "Denies the set_webview_size command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["set_webview_size"] }
 			},
+			"deny-set-webview-zoom": {
+				"identifier": "deny-set-webview-zoom",
+				"description": "Denies the set_webview_zoom command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["set_webview_zoom"] }
+			},
 			"deny-webview-close": {
 				"identifier": "deny-webview-close",
 				"description": "Denies the webview_close command without any pre-configured scope.",
@@ -1206,7 +1227,9 @@
 				"allow-title",
 				"allow-current-monitor",
 				"allow-primary-monitor",
+				"allow-monitor-from-point",
 				"allow-available-monitors",
+				"allow-cursor-position",
 				"allow-theme",
 				"allow-internal-toggle-maximize"
 			]
@@ -1236,6 +1259,11 @@
 				"identifier": "allow-current-monitor",
 				"description": "Enables the current_monitor command without any pre-configured scope.",
 				"commands": { "allow": ["current_monitor"], "deny": [] }
+			},
+			"allow-cursor-position": {
+				"identifier": "allow-cursor-position",
+				"description": "Enables the cursor_position command without any pre-configured scope.",
+				"commands": { "allow": ["cursor_position"], "deny": [] }
 			},
 			"allow-destroy": {
 				"identifier": "allow-destroy",
@@ -1321,6 +1349,11 @@
 				"identifier": "allow-minimize",
 				"description": "Enables the minimize command without any pre-configured scope.",
 				"commands": { "allow": ["minimize"], "deny": [] }
+			},
+			"allow-monitor-from-point": {
+				"identifier": "allow-monitor-from-point",
+				"description": "Enables the monitor_from_point command without any pre-configured scope.",
+				"commands": { "allow": ["monitor_from_point"], "deny": [] }
 			},
 			"allow-outer-position": {
 				"identifier": "allow-outer-position",
@@ -1487,6 +1520,11 @@
 				"description": "Enables the start_dragging command without any pre-configured scope.",
 				"commands": { "allow": ["start_dragging"], "deny": [] }
 			},
+			"allow-start-resize-dragging": {
+				"identifier": "allow-start-resize-dragging",
+				"description": "Enables the start_resize_dragging command without any pre-configured scope.",
+				"commands": { "allow": ["start_resize_dragging"], "deny": [] }
+			},
 			"allow-theme": {
 				"identifier": "allow-theme",
 				"description": "Enables the theme command without any pre-configured scope.",
@@ -1536,6 +1574,11 @@
 				"identifier": "deny-current-monitor",
 				"description": "Denies the current_monitor command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["current_monitor"] }
+			},
+			"deny-cursor-position": {
+				"identifier": "deny-cursor-position",
+				"description": "Denies the cursor_position command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["cursor_position"] }
 			},
 			"deny-destroy": {
 				"identifier": "deny-destroy",
@@ -1621,6 +1664,11 @@
 				"identifier": "deny-minimize",
 				"description": "Denies the minimize command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["minimize"] }
+			},
+			"deny-monitor-from-point": {
+				"identifier": "deny-monitor-from-point",
+				"description": "Denies the monitor_from_point command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["monitor_from_point"] }
 			},
 			"deny-outer-position": {
 				"identifier": "deny-outer-position",
@@ -1786,6 +1834,11 @@
 				"identifier": "deny-start-dragging",
 				"description": "Denies the start_dragging command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["start_dragging"] }
+			},
+			"deny-start-resize-dragging": {
+				"identifier": "deny-start-resize-dragging",
+				"description": "Denies the start_resize_dragging command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["start_resize_dragging"] }
 			},
 			"deny-theme": {
 				"identifier": "deny-theme",

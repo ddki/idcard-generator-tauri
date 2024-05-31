@@ -5,17 +5,11 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-
-import { internalIpV4 } from 'internal-ip'
-
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-// @ts-ignore
 import ElementPlus from 'unplugin-element-plus/vite'
 
 // https://vitejs.dev/config/
-export default defineConfig(async ({ command, mode, ssrBuild }) => {
-	const host = await internalIpV4()
-
+export default defineConfig(async ({ mode }) => {
 	return {
 		base: mode === 'github-page' ? 'idcard-generator-tauri' : '',
 		plugins: [
@@ -43,14 +37,11 @@ export default defineConfig(async ({ command, mode, ssrBuild }) => {
 		// 防止 Vite 在记录某些消息时清除终端屏幕
 		clearScreen: false,
 		server: {
-			host: '0.0.0.0', // listen on all addresses
 			port: 5173,
-			// 如果端口已经在使用中，则设置为 true 退出，而不是自动尝试下一个可用端口。
 			strictPort: true,
-			hmr: {
-				protocol: 'ws',
-				host,
-				port: 5183
+			watch: {
+				// 3. tell vite to ignore watching `src-tauri`
+				ignored: ['**/src-tauri/**']
 			}
 		},
 		envPrefix: ['VITE_', 'TAURI_'],
