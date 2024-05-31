@@ -1,5 +1,19 @@
 # 📄 更新日志
 
+## [0.1.9](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.8...v0.1.9) (2024-05-31)
+
+### 📦️ 构建相关 | Changes that affect the build system or external dependencies
+
+- :package: update volta toolchain version ([7a8f0d9](https://github.com/ddki/idcard-generator-tauri/commit/7a8f0d917ab2a9e60b902ea28e7c528235e3a987))
+
+### 🎡 持续集成 | Changes to our CI configuration files and scripts
+
+- :ferris_wheel: upgrade github action pnpm v8-v9, nodejs to v21 ([f337bef](https://github.com/ddki/idcard-generator-tauri/commit/f337befb2c0d9c5916c117e7a4a30f8152313229))
+
+### 🔨 其他修改 | Other changes that do not modify src or test files
+
+- :hammer: upgrade dependencies version ([d4343a6](https://github.com/ddki/idcard-generator-tauri/commit/d4343a6c571419538920520004114ed967c87bd0))
+
 ## [0.1.8](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.7...v0.1.8) (2024-02-27)
 
 ## [0.1.7](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.6...v0.1.7) (2024-02-26)
