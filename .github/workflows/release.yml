@@ -19,14 +19,14 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 21
 
       # pnpm 并使用缓存安装包
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Get pnpm store directory
@@ -109,14 +109,14 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 19
+          node-version: 21
 
       # pnpm 并使用缓存安装包
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Get pnpm store directory
