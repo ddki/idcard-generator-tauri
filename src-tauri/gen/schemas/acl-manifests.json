@@ -1,67 +1,10 @@
 {
-	"app": {
+	"autostart": {
 		"default_permission": {
 			"identifier": "default",
-			"description": "Default permissions for the plugin.",
-			"permissions": ["allow-version", "allow-name", "allow-tauri-version"]
+			"description": "This permission set configures if your\napplication can enable or disable auto\nstarting the application on boot.\n\n#### Granted Permissions\n\nIt allows all to check, enable and\ndisable the automatic start on boot.\n\n",
+			"permissions": ["allow-enable", "allow-disable", "allow-is-enabled"]
 		},
-		"permissions": {
-			"allow-app-hide": {
-				"identifier": "allow-app-hide",
-				"description": "Enables the app_hide command without any pre-configured scope.",
-				"commands": { "allow": ["app_hide"], "deny": [] }
-			},
-			"allow-app-show": {
-				"identifier": "allow-app-show",
-				"description": "Enables the app_show command without any pre-configured scope.",
-				"commands": { "allow": ["app_show"], "deny": [] }
-			},
-			"allow-name": {
-				"identifier": "allow-name",
-				"description": "Enables the name command without any pre-configured scope.",
-				"commands": { "allow": ["name"], "deny": [] }
-			},
-			"allow-tauri-version": {
-				"identifier": "allow-tauri-version",
-				"description": "Enables the tauri_version command without any pre-configured scope.",
-				"commands": { "allow": ["tauri_version"], "deny": [] }
-			},
-			"allow-version": {
-				"identifier": "allow-version",
-				"description": "Enables the version command without any pre-configured scope.",
-				"commands": { "allow": ["version"], "deny": [] }
-			},
-			"deny-app-hide": {
-				"identifier": "deny-app-hide",
-				"description": "Denies the app_hide command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["app_hide"] }
-			},
-			"deny-app-show": {
-				"identifier": "deny-app-show",
-				"description": "Denies the app_show command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["app_show"] }
-			},
-			"deny-name": {
-				"identifier": "deny-name",
-				"description": "Denies the name command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["name"] }
-			},
-			"deny-tauri-version": {
-				"identifier": "deny-tauri-version",
-				"description": "Denies the tauri_version command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["tauri_version"] }
-			},
-			"deny-version": {
-				"identifier": "deny-version",
-				"description": "Denies the version command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["version"] }
-			}
-		},
-		"permission_sets": {},
-		"global_scope_schema": null
-	},
-	"autostart": {
-		"default_permission": null,
 		"permissions": {
 			"allow-disable": {
 				"identifier": "allow-disable",
@@ -97,64 +40,108 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"dialog": {
-		"default_permission": null,
+	"core": {
+		"default_permission": {
+			"identifier": "default",
+			"description": "Default core plugins set which includes:\n- 'core:path:default'\n- 'core:event:default'\n- 'core:window:default'\n- 'core:webview:default'\n- 'core:app:default'\n- 'core:image:default'\n- 'core:resources:default'\n- 'core:menu:default'\n- 'core:tray:default'\n",
+			"permissions": [
+				"core:path:default",
+				"core:event:default",
+				"core:window:default",
+				"core:webview:default",
+				"core:app:default",
+				"core:image:default",
+				"core:resources:default",
+				"core:menu:default",
+				"core:tray:default"
+			]
+		},
+		"permissions": {},
+		"permission_sets": {},
+		"global_scope_schema": null
+	},
+	"core:app": {
+		"default_permission": {
+			"identifier": "default",
+			"description": "Default permissions for the plugin.",
+			"permissions": ["allow-version", "allow-name", "allow-tauri-version"]
+		},
 		"permissions": {
-			"allow-ask": {
-				"identifier": "allow-ask",
-				"description": "Enables the ask command without any pre-configured scope.",
-				"commands": { "allow": ["ask"], "deny": [] }
+			"allow-app-hide": {
+				"identifier": "allow-app-hide",
+				"description": "Enables the app_hide command without any pre-configured scope.",
+				"commands": { "allow": ["app_hide"], "deny": [] }
 			},
-			"allow-confirm": {
-				"identifier": "allow-confirm",
-				"description": "Enables the confirm command without any pre-configured scope.",
-				"commands": { "allow": ["confirm"], "deny": [] }
+			"allow-app-show": {
+				"identifier": "allow-app-show",
+				"description": "Enables the app_show command without any pre-configured scope.",
+				"commands": { "allow": ["app_show"], "deny": [] }
 			},
-			"allow-message": {
-				"identifier": "allow-message",
-				"description": "Enables the message command without any pre-configured scope.",
-				"commands": { "allow": ["message"], "deny": [] }
+			"allow-default-window-icon": {
+				"identifier": "allow-default-window-icon",
+				"description": "Enables the default_window_icon command without any pre-configured scope.",
+				"commands": { "allow": ["default_window_icon"], "deny": [] }
 			},
-			"allow-open": {
-				"identifier": "allow-open",
-				"description": "Enables the open command without any pre-configured scope.",
-				"commands": { "allow": ["open"], "deny": [] }
+			"allow-name": {
+				"identifier": "allow-name",
+				"description": "Enables the name command without any pre-configured scope.",
+				"commands": { "allow": ["name"], "deny": [] }
 			},
-			"allow-save": {
-				"identifier": "allow-save",
-				"description": "Enables the save command without any pre-configured scope.",
-				"commands": { "allow": ["save"], "deny": [] }
+			"allow-set-app-theme": {
+				"identifier": "allow-set-app-theme",
+				"description": "Enables the set_app_theme command without any pre-configured scope.",
+				"commands": { "allow": ["set_app_theme"], "deny": [] }
 			},
-			"deny-ask": {
-				"identifier": "deny-ask",
-				"description": "Denies the ask command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["ask"] }
+			"allow-tauri-version": {
+				"identifier": "allow-tauri-version",
+				"description": "Enables the tauri_version command without any pre-configured scope.",
+				"commands": { "allow": ["tauri_version"], "deny": [] }
 			},
-			"deny-confirm": {
-				"identifier": "deny-confirm",
-				"description": "Denies the confirm command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["confirm"] }
+			"allow-version": {
+				"identifier": "allow-version",
+				"description": "Enables the version command without any pre-configured scope.",
+				"commands": { "allow": ["version"], "deny": [] }
 			},
-			"deny-message": {
-				"identifier": "deny-message",
-				"description": "Denies the message command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["message"] }
+			"deny-app-hide": {
+				"identifier": "deny-app-hide",
+				"description": "Denies the app_hide command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["app_hide"] }
 			},
-			"deny-open": {
-				"identifier": "deny-open",
-				"description": "Denies the open command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["open"] }
+			"deny-app-show": {
+				"identifier": "deny-app-show",
+				"description": "Denies the app_show command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["app_show"] }
 			},
-			"deny-save": {
-				"identifier": "deny-save",
-				"description": "Denies the save command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["save"] }
+			"deny-default-window-icon": {
+				"identifier": "deny-default-window-icon",
+				"description": "Denies the default_window_icon command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["default_window_icon"] }
+			},
+			"deny-name": {
+				"identifier": "deny-name",
+				"description": "Denies the name command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["name"] }
+			},
+			"deny-set-app-theme": {
+				"identifier": "deny-set-app-theme",
+				"description": "Denies the set_app_theme command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["set_app_theme"] }
+			},
+			"deny-tauri-version": {
+				"identifier": "deny-tauri-version",
+				"description": "Denies the tauri_version command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["tauri_version"] }
+			},
+			"deny-version": {
+				"identifier": "deny-version",
+				"description": "Denies the version command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["version"] }
 			}
 		},
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"event": {
+	"core:event": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
@@ -205,7 +192,7 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"image": {
+	"core:image": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
@@ -266,11 +253,34 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"menu": {
+	"core:menu": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
-			"permissions": []
+			"permissions": [
+				"allow-new",
+				"allow-append",
+				"allow-prepend",
+				"allow-insert",
+				"allow-remove",
+				"allow-remove-at",
+				"allow-items",
+				"allow-get",
+				"allow-popup",
+				"allow-create-default",
+				"allow-set-as-app-menu",
+				"allow-set-as-window-menu",
+				"allow-text",
+				"allow-set-text",
+				"allow-is-enabled",
+				"allow-set-enabled",
+				"allow-set-accelerator",
+				"allow-set-as-windows-menu-for-nsapp",
+				"allow-set-as-help-menu-for-nsapp",
+				"allow-is-checked",
+				"allow-set-checked",
+				"allow-set-icon"
+			]
 		},
 		"permissions": {
 			"allow-append": {
@@ -497,48 +507,7 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"notification": {
-		"default_permission": {
-			"identifier": "default",
-			"description": "Allows requesting permission, checking permission state and sending notifications",
-			"permissions": ["allow-is-permission-granted", "allow-request-permission", "allow-notify"]
-		},
-		"permissions": {
-			"allow-is-permission-granted": {
-				"identifier": "allow-is-permission-granted",
-				"description": "Enables the is_permission_granted command without any pre-configured scope.",
-				"commands": { "allow": ["is_permission_granted"], "deny": [] }
-			},
-			"allow-notify": {
-				"identifier": "allow-notify",
-				"description": "Enables the notify command without any pre-configured scope.",
-				"commands": { "allow": ["notify"], "deny": [] }
-			},
-			"allow-request-permission": {
-				"identifier": "allow-request-permission",
-				"description": "Enables the request_permission command without any pre-configured scope.",
-				"commands": { "allow": ["request_permission"], "deny": [] }
-			},
-			"deny-is-permission-granted": {
-				"identifier": "deny-is-permission-granted",
-				"description": "Denies the is_permission_granted command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["is_permission_granted"] }
-			},
-			"deny-notify": {
-				"identifier": "deny-notify",
-				"description": "Denies the notify command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["notify"] }
-			},
-			"deny-request-permission": {
-				"identifier": "deny-request-permission",
-				"description": "Denies the request_permission command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["request_permission"] }
-			}
-		},
-		"permission_sets": {},
-		"global_scope_schema": null
-	},
-	"path": {
+	"core:path": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
@@ -638,7 +607,7 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"resources": {
+	"core:resources": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
@@ -659,253 +628,23 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"shell": {
-		"default_permission": null,
-		"permissions": {
-			"allow-execute": {
-				"identifier": "allow-execute",
-				"description": "Enables the execute command without any pre-configured scope.",
-				"commands": { "allow": ["execute"], "deny": [] }
-			},
-			"allow-kill": {
-				"identifier": "allow-kill",
-				"description": "Enables the kill command without any pre-configured scope.",
-				"commands": { "allow": ["kill"], "deny": [] }
-			},
-			"allow-open": {
-				"identifier": "allow-open",
-				"description": "Enables the open command without any pre-configured scope.",
-				"commands": { "allow": ["open"], "deny": [] }
-			},
-			"allow-spawn": {
-				"identifier": "allow-spawn",
-				"description": "Enables the spawn command without any pre-configured scope.",
-				"commands": { "allow": ["spawn"], "deny": [] }
-			},
-			"allow-stdin-write": {
-				"identifier": "allow-stdin-write",
-				"description": "Enables the stdin_write command without any pre-configured scope.",
-				"commands": { "allow": ["stdin_write"], "deny": [] }
-			},
-			"deny-execute": {
-				"identifier": "deny-execute",
-				"description": "Denies the execute command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["execute"] }
-			},
-			"deny-kill": {
-				"identifier": "deny-kill",
-				"description": "Denies the kill command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["kill"] }
-			},
-			"deny-open": {
-				"identifier": "deny-open",
-				"description": "Denies the open command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["open"] }
-			},
-			"deny-spawn": {
-				"identifier": "deny-spawn",
-				"description": "Denies the spawn command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["spawn"] }
-			},
-			"deny-stdin-write": {
-				"identifier": "deny-stdin-write",
-				"description": "Denies the stdin_write command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["stdin_write"] }
-			}
-		},
-		"permission_sets": {},
-		"global_scope_schema": {
-			"$schema": "http://json-schema.org/draft-07/schema#",
-			"definitions": {
-				"ShellAllowedArg": {
-					"anyOf": [
-						{
-							"description": "A non-configurable argument that is passed to the command in the order it was specified.",
-							"type": "string"
-						},
-						{
-							"additionalProperties": false,
-							"description": "A variable that is set while calling the command from the webview API.",
-							"properties": {
-								"validator": {
-									"description": "[regex] validator to require passed values to conform to an expected input.\n\nThis will require the argument value passed to this variable to match the `validator` regex before it will be executed.\n\n[regex]: https://docs.rs/regex/latest/regex/#syntax",
-									"type": "string"
-								}
-							},
-							"required": ["validator"],
-							"type": "object"
-						}
-					],
-					"description": "A command argument allowed to be executed by the webview API."
-				},
-				"ShellAllowedArgs": {
-					"anyOf": [
-						{
-							"description": "Use a simple boolean to allow all or disable all arguments to this command configuration.",
-							"type": "boolean"
-						},
-						{
-							"description": "A specific set of [`ShellAllowedArg`] that are valid to call for the command configuration.",
-							"items": { "$ref": "#/definitions/ShellAllowedArg" },
-							"type": "array"
-						}
-					],
-					"description": "A set of command arguments allowed to be executed by the webview API.\n\nA value of `true` will allow any arguments to be passed to the command. `false` will disable all arguments. A list of [`ShellAllowedArg`] will set those arguments as the only valid arguments to be passed to the attached command configuration."
-				}
-			},
-			"description": "A command allowed to be executed by the webview API.",
-			"properties": {
-				"args": {
-					"allOf": [{ "$ref": "#/definitions/ShellAllowedArgs" }],
-					"description": "The allowed arguments for the command execution."
-				},
-				"cmd": {
-					"description": "The command name. It can start with a variable that resolves to a system base directory. The variables are: `$AUDIO`, `$CACHE`, `$CONFIG`, `$DATA`, `$LOCALDATA`, `$DESKTOP`, `$DOCUMENT`, `$DOWNLOAD`, `$EXE`, `$FONT`, `$HOME`, `$PICTURE`, `$PUBLIC`, `$RUNTIME`, `$TEMPLATE`, `$VIDEO`, `$RESOURCE`, `$APP`, `$LOG`, `$TEMP`, `$APPCONFIG`, `$APPDATA`, `$APPLOCALDATA`, `$APPCACHE`, `$APPLOG`.",
-					"type": "string"
-				},
-				"name": {
-					"description": "The name for this allowed shell command configuration.\n\nThis name will be used inside of the webview API to call this command along with any specified arguments.",
-					"type": "string"
-				},
-				"sidecar": { "description": "If this command is a sidecar command.", "type": "boolean" }
-			},
-			"required": ["args", "cmd", "name", "sidecar"],
-			"title": "Entry",
-			"type": "object"
-		}
-	},
-	"store": {
-		"default_permission": null,
-		"permissions": {
-			"allow-clear": {
-				"identifier": "allow-clear",
-				"description": "Enables the clear command without any pre-configured scope.",
-				"commands": { "allow": ["clear"], "deny": [] }
-			},
-			"allow-delete": {
-				"identifier": "allow-delete",
-				"description": "Enables the delete command without any pre-configured scope.",
-				"commands": { "allow": ["delete"], "deny": [] }
-			},
-			"allow-entries": {
-				"identifier": "allow-entries",
-				"description": "Enables the entries command without any pre-configured scope.",
-				"commands": { "allow": ["entries"], "deny": [] }
-			},
-			"allow-get": {
-				"identifier": "allow-get",
-				"description": "Enables the get command without any pre-configured scope.",
-				"commands": { "allow": ["get"], "deny": [] }
-			},
-			"allow-has": {
-				"identifier": "allow-has",
-				"description": "Enables the has command without any pre-configured scope.",
-				"commands": { "allow": ["has"], "deny": [] }
-			},
-			"allow-keys": {
-				"identifier": "allow-keys",
-				"description": "Enables the keys command without any pre-configured scope.",
-				"commands": { "allow": ["keys"], "deny": [] }
-			},
-			"allow-length": {
-				"identifier": "allow-length",
-				"description": "Enables the length command without any pre-configured scope.",
-				"commands": { "allow": ["length"], "deny": [] }
-			},
-			"allow-load": {
-				"identifier": "allow-load",
-				"description": "Enables the load command without any pre-configured scope.",
-				"commands": { "allow": ["load"], "deny": [] }
-			},
-			"allow-reset": {
-				"identifier": "allow-reset",
-				"description": "Enables the reset command without any pre-configured scope.",
-				"commands": { "allow": ["reset"], "deny": [] }
-			},
-			"allow-save": {
-				"identifier": "allow-save",
-				"description": "Enables the save command without any pre-configured scope.",
-				"commands": { "allow": ["save"], "deny": [] }
-			},
-			"allow-set": {
-				"identifier": "allow-set",
-				"description": "Enables the set command without any pre-configured scope.",
-				"commands": { "allow": ["set"], "deny": [] }
-			},
-			"allow-values": {
-				"identifier": "allow-values",
-				"description": "Enables the values command without any pre-configured scope.",
-				"commands": { "allow": ["values"], "deny": [] }
-			},
-			"deny-clear": {
-				"identifier": "deny-clear",
-				"description": "Denies the clear command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["clear"] }
-			},
-			"deny-delete": {
-				"identifier": "deny-delete",
-				"description": "Denies the delete command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["delete"] }
-			},
-			"deny-entries": {
-				"identifier": "deny-entries",
-				"description": "Denies the entries command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["entries"] }
-			},
-			"deny-get": {
-				"identifier": "deny-get",
-				"description": "Denies the get command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["get"] }
-			},
-			"deny-has": {
-				"identifier": "deny-has",
-				"description": "Denies the has command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["has"] }
-			},
-			"deny-keys": {
-				"identifier": "deny-keys",
-				"description": "Denies the keys command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["keys"] }
-			},
-			"deny-length": {
-				"identifier": "deny-length",
-				"description": "Denies the length command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["length"] }
-			},
-			"deny-load": {
-				"identifier": "deny-load",
-				"description": "Denies the load command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["load"] }
-			},
-			"deny-reset": {
-				"identifier": "deny-reset",
-				"description": "Denies the reset command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["reset"] }
-			},
-			"deny-save": {
-				"identifier": "deny-save",
-				"description": "Denies the save command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["save"] }
-			},
-			"deny-set": {
-				"identifier": "deny-set",
-				"description": "Denies the set command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["set"] }
-			},
-			"deny-values": {
-				"identifier": "deny-values",
-				"description": "Denies the values command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["values"] }
-			}
-		},
-		"permission_sets": {},
-		"global_scope_schema": null
-	},
-	"tray": {
+	"core:tray": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
-			"permissions": []
+			"permissions": [
+				"allow-new",
+				"allow-get-by-id",
+				"allow-remove-by-id",
+				"allow-set-icon",
+				"allow-set-menu",
+				"allow-set-tooltip",
+				"allow-set-title",
+				"allow-set-visible",
+				"allow-set-temp-dir-path",
+				"allow-set-icon-as-template",
+				"allow-set-show-menu-on-left-click"
+			]
 		},
 		"permissions": {
 			"allow-get-by-id": {
@@ -1022,64 +761,23 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"updater": {
-		"default_permission": {
-			"identifier": "default",
-			"description": "Allows checking for new updates and installing them",
-			"permissions": ["allow-check", "allow-download", "allow-install", "allow-download-and-install"]
-		},
-		"permissions": {
-			"allow-check": {
-				"identifier": "allow-check",
-				"description": "Enables the check command without any pre-configured scope.",
-				"commands": { "allow": ["check"], "deny": [] }
-			},
-			"allow-download": {
-				"identifier": "allow-download",
-				"description": "Enables the download command without any pre-configured scope.",
-				"commands": { "allow": ["download"], "deny": [] }
-			},
-			"allow-download-and-install": {
-				"identifier": "allow-download-and-install",
-				"description": "Enables the download_and_install command without any pre-configured scope.",
-				"commands": { "allow": ["download_and_install"], "deny": [] }
-			},
-			"allow-install": {
-				"identifier": "allow-install",
-				"description": "Enables the install command without any pre-configured scope.",
-				"commands": { "allow": ["install"], "deny": [] }
-			},
-			"deny-check": {
-				"identifier": "deny-check",
-				"description": "Denies the check command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["check"] }
-			},
-			"deny-download": {
-				"identifier": "deny-download",
-				"description": "Denies the download command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["download"] }
-			},
-			"deny-download-and-install": {
-				"identifier": "deny-download-and-install",
-				"description": "Denies the download_and_install command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["download_and_install"] }
-			},
-			"deny-install": {
-				"identifier": "deny-install",
-				"description": "Denies the install command without any pre-configured scope.",
-				"commands": { "allow": [], "deny": ["install"] }
-			}
-		},
-		"permission_sets": {},
-		"global_scope_schema": null
-	},
-	"webview": {
+	"core:webview": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
-			"permissions": ["allow-webview-position", "allow-webview-size", "allow-internal-toggle-devtools"]
+			"permissions": [
+				"allow-get-all-webviews",
+				"allow-webview-position",
+				"allow-webview-size",
+				"allow-internal-toggle-devtools"
+			]
 		},
 		"permissions": {
+			"allow-clear-all-browsing-data": {
+				"identifier": "allow-clear-all-browsing-data",
+				"description": "Enables the clear_all_browsing_data command without any pre-configured scope.",
+				"commands": { "allow": ["clear_all_browsing_data"], "deny": [] }
+			},
 			"allow-create-webview": {
 				"identifier": "allow-create-webview",
 				"description": "Enables the create_webview command without any pre-configured scope.",
@@ -1089,6 +787,11 @@
 				"identifier": "allow-create-webview-window",
 				"description": "Enables the create_webview_window command without any pre-configured scope.",
 				"commands": { "allow": ["create_webview_window"], "deny": [] }
+			},
+			"allow-get-all-webviews": {
+				"identifier": "allow-get-all-webviews",
+				"description": "Enables the get_all_webviews command without any pre-configured scope.",
+				"commands": { "allow": ["get_all_webviews"], "deny": [] }
 			},
 			"allow-internal-toggle-devtools": {
 				"identifier": "allow-internal-toggle-devtools",
@@ -1130,15 +833,30 @@
 				"description": "Enables the webview_close command without any pre-configured scope.",
 				"commands": { "allow": ["webview_close"], "deny": [] }
 			},
+			"allow-webview-hide": {
+				"identifier": "allow-webview-hide",
+				"description": "Enables the webview_hide command without any pre-configured scope.",
+				"commands": { "allow": ["webview_hide"], "deny": [] }
+			},
 			"allow-webview-position": {
 				"identifier": "allow-webview-position",
 				"description": "Enables the webview_position command without any pre-configured scope.",
 				"commands": { "allow": ["webview_position"], "deny": [] }
 			},
+			"allow-webview-show": {
+				"identifier": "allow-webview-show",
+				"description": "Enables the webview_show command without any pre-configured scope.",
+				"commands": { "allow": ["webview_show"], "deny": [] }
+			},
 			"allow-webview-size": {
 				"identifier": "allow-webview-size",
 				"description": "Enables the webview_size command without any pre-configured scope.",
 				"commands": { "allow": ["webview_size"], "deny": [] }
+			},
+			"deny-clear-all-browsing-data": {
+				"identifier": "deny-clear-all-browsing-data",
+				"description": "Denies the clear_all_browsing_data command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["clear_all_browsing_data"] }
 			},
 			"deny-create-webview": {
 				"identifier": "deny-create-webview",
@@ -1149,6 +867,11 @@
 				"identifier": "deny-create-webview-window",
 				"description": "Denies the create_webview_window command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["create_webview_window"] }
+			},
+			"deny-get-all-webviews": {
+				"identifier": "deny-get-all-webviews",
+				"description": "Denies the get_all_webviews command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["get_all_webviews"] }
 			},
 			"deny-internal-toggle-devtools": {
 				"identifier": "deny-internal-toggle-devtools",
@@ -1190,10 +913,20 @@
 				"description": "Denies the webview_close command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["webview_close"] }
 			},
+			"deny-webview-hide": {
+				"identifier": "deny-webview-hide",
+				"description": "Denies the webview_hide command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["webview_hide"] }
+			},
 			"deny-webview-position": {
 				"identifier": "deny-webview-position",
 				"description": "Denies the webview_position command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["webview_position"] }
+			},
+			"deny-webview-show": {
+				"identifier": "deny-webview-show",
+				"description": "Denies the webview_show command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["webview_show"] }
 			},
 			"deny-webview-size": {
 				"identifier": "deny-webview-size",
@@ -1204,11 +937,12 @@
 		"permission_sets": {},
 		"global_scope_schema": null
 	},
-	"window": {
+	"core:window": {
 		"default_permission": {
 			"identifier": "default",
 			"description": "Default permissions for the plugin.",
 			"permissions": [
+				"allow-get-all-windows",
 				"allow-scale-factor",
 				"allow-inner-position",
 				"allow-outer-position",
@@ -1224,6 +958,7 @@
 				"allow-is-minimizable",
 				"allow-is-closable",
 				"allow-is-visible",
+				"allow-is-enabled",
 				"allow-title",
 				"allow-current-monitor",
 				"allow-primary-monitor",
@@ -1270,6 +1005,11 @@
 				"description": "Enables the destroy command without any pre-configured scope.",
 				"commands": { "allow": ["destroy"], "deny": [] }
 			},
+			"allow-get-all-windows": {
+				"identifier": "allow-get-all-windows",
+				"description": "Enables the get_all_windows command without any pre-configured scope.",
+				"commands": { "allow": ["get_all_windows"], "deny": [] }
+			},
 			"allow-hide": {
 				"identifier": "allow-hide",
 				"description": "Enables the hide command without any pre-configured scope.",
@@ -1299,6 +1039,11 @@
 				"identifier": "allow-is-decorated",
 				"description": "Enables the is_decorated command without any pre-configured scope.",
 				"commands": { "allow": ["is_decorated"], "deny": [] }
+			},
+			"allow-is-enabled": {
+				"identifier": "allow-is-enabled",
+				"description": "Enables the is_enabled command without any pre-configured scope.",
+				"commands": { "allow": ["is_enabled"], "deny": [] }
 			},
 			"allow-is-focused": {
 				"identifier": "allow-is-focused",
@@ -1430,6 +1175,11 @@
 				"description": "Enables the set_effects command without any pre-configured scope.",
 				"commands": { "allow": ["set_effects"], "deny": [] }
 			},
+			"allow-set-enabled": {
+				"identifier": "allow-set-enabled",
+				"description": "Enables the set_enabled command without any pre-configured scope.",
+				"commands": { "allow": ["set_enabled"], "deny": [] }
+			},
 			"allow-set-focus": {
 				"identifier": "allow-set-focus",
 				"description": "Enables the set_focus command without any pre-configured scope.",
@@ -1495,15 +1245,30 @@
 				"description": "Enables the set_size command without any pre-configured scope.",
 				"commands": { "allow": ["set_size"], "deny": [] }
 			},
+			"allow-set-size-constraints": {
+				"identifier": "allow-set-size-constraints",
+				"description": "Enables the set_size_constraints command without any pre-configured scope.",
+				"commands": { "allow": ["set_size_constraints"], "deny": [] }
+			},
 			"allow-set-skip-taskbar": {
 				"identifier": "allow-set-skip-taskbar",
 				"description": "Enables the set_skip_taskbar command without any pre-configured scope.",
 				"commands": { "allow": ["set_skip_taskbar"], "deny": [] }
 			},
+			"allow-set-theme": {
+				"identifier": "allow-set-theme",
+				"description": "Enables the set_theme command without any pre-configured scope.",
+				"commands": { "allow": ["set_theme"], "deny": [] }
+			},
 			"allow-set-title": {
 				"identifier": "allow-set-title",
 				"description": "Enables the set_title command without any pre-configured scope.",
 				"commands": { "allow": ["set_title"], "deny": [] }
+			},
+			"allow-set-title-bar-style": {
+				"identifier": "allow-set-title-bar-style",
+				"description": "Enables the set_title_bar_style command without any pre-configured scope.",
+				"commands": { "allow": ["set_title_bar_style"], "deny": [] }
 			},
 			"allow-set-visible-on-all-workspaces": {
 				"identifier": "allow-set-visible-on-all-workspaces",
@@ -1585,6 +1350,11 @@
 				"description": "Denies the destroy command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["destroy"] }
 			},
+			"deny-get-all-windows": {
+				"identifier": "deny-get-all-windows",
+				"description": "Denies the get_all_windows command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["get_all_windows"] }
+			},
 			"deny-hide": {
 				"identifier": "deny-hide",
 				"description": "Denies the hide command without any pre-configured scope.",
@@ -1614,6 +1384,11 @@
 				"identifier": "deny-is-decorated",
 				"description": "Denies the is_decorated command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["is_decorated"] }
+			},
+			"deny-is-enabled": {
+				"identifier": "deny-is-enabled",
+				"description": "Denies the is_enabled command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["is_enabled"] }
 			},
 			"deny-is-focused": {
 				"identifier": "deny-is-focused",
@@ -1745,6 +1520,11 @@
 				"description": "Denies the set_effects command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["set_effects"] }
 			},
+			"deny-set-enabled": {
+				"identifier": "deny-set-enabled",
+				"description": "Denies the set_enabled command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["set_enabled"] }
+			},
 			"deny-set-focus": {
 				"identifier": "deny-set-focus",
 				"description": "Denies the set_focus command without any pre-configured scope.",
@@ -1810,15 +1590,30 @@
 				"description": "Denies the set_size command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["set_size"] }
 			},
+			"deny-set-size-constraints": {
+				"identifier": "deny-set-size-constraints",
+				"description": "Denies the set_size_constraints command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["set_size_constraints"] }
+			},
 			"deny-set-skip-taskbar": {
 				"identifier": "deny-set-skip-taskbar",
 				"description": "Denies the set_skip_taskbar command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["set_skip_taskbar"] }
 			},
+			"deny-set-theme": {
+				"identifier": "deny-set-theme",
+				"description": "Denies the set_theme command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["set_theme"] }
+			},
 			"deny-set-title": {
 				"identifier": "deny-set-title",
 				"description": "Denies the set_title command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["set_title"] }
+			},
+			"deny-set-title-bar-style": {
+				"identifier": "deny-set-title-bar-style",
+				"description": "Denies the set_title_bar_style command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["set_title_bar_style"] }
 			},
 			"deny-set-visible-on-all-workspaces": {
 				"identifier": "deny-set-visible-on-all-workspaces",
@@ -1864,6 +1659,605 @@
 				"identifier": "deny-unminimize",
 				"description": "Denies the unminimize command without any pre-configured scope.",
 				"commands": { "allow": [], "deny": ["unminimize"] }
+			}
+		},
+		"permission_sets": {},
+		"global_scope_schema": null
+	},
+	"dialog": {
+		"default_permission": {
+			"identifier": "default",
+			"description": "This permission set configures the types of dialogs\navailable from the dialog plugin.\n\n#### Granted Permissions\n\nAll dialog types are enabled.\n\n\n",
+			"permissions": ["allow-ask", "allow-confirm", "allow-message", "allow-save", "allow-open"]
+		},
+		"permissions": {
+			"allow-ask": {
+				"identifier": "allow-ask",
+				"description": "Enables the ask command without any pre-configured scope.",
+				"commands": { "allow": ["ask"], "deny": [] }
+			},
+			"allow-confirm": {
+				"identifier": "allow-confirm",
+				"description": "Enables the confirm command without any pre-configured scope.",
+				"commands": { "allow": ["confirm"], "deny": [] }
+			},
+			"allow-message": {
+				"identifier": "allow-message",
+				"description": "Enables the message command without any pre-configured scope.",
+				"commands": { "allow": ["message"], "deny": [] }
+			},
+			"allow-open": {
+				"identifier": "allow-open",
+				"description": "Enables the open command without any pre-configured scope.",
+				"commands": { "allow": ["open"], "deny": [] }
+			},
+			"allow-save": {
+				"identifier": "allow-save",
+				"description": "Enables the save command without any pre-configured scope.",
+				"commands": { "allow": ["save"], "deny": [] }
+			},
+			"deny-ask": {
+				"identifier": "deny-ask",
+				"description": "Denies the ask command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["ask"] }
+			},
+			"deny-confirm": {
+				"identifier": "deny-confirm",
+				"description": "Denies the confirm command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["confirm"] }
+			},
+			"deny-message": {
+				"identifier": "deny-message",
+				"description": "Denies the message command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["message"] }
+			},
+			"deny-open": {
+				"identifier": "deny-open",
+				"description": "Denies the open command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["open"] }
+			},
+			"deny-save": {
+				"identifier": "deny-save",
+				"description": "Denies the save command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["save"] }
+			}
+		},
+		"permission_sets": {},
+		"global_scope_schema": null
+	},
+	"notification": {
+		"default_permission": {
+			"identifier": "default",
+			"description": "This permission set configures which\nnotification features are by default exposed.\n\n#### Granted Permissions\n\nIt allows all notification related features.\n\n",
+			"permissions": [
+				"allow-is-permission-granted",
+				"allow-request-permission",
+				"allow-notify",
+				"allow-register-action-types",
+				"allow-register-listener",
+				"allow-cancel",
+				"allow-get-pending",
+				"allow-remove-active",
+				"allow-get-active",
+				"allow-check-permissions",
+				"allow-show",
+				"allow-batch",
+				"allow-list-channels",
+				"allow-delete-channel",
+				"allow-create-channel",
+				"allow-permission-state"
+			]
+		},
+		"permissions": {
+			"allow-batch": {
+				"identifier": "allow-batch",
+				"description": "Enables the batch command without any pre-configured scope.",
+				"commands": { "allow": ["batch"], "deny": [] }
+			},
+			"allow-cancel": {
+				"identifier": "allow-cancel",
+				"description": "Enables the cancel command without any pre-configured scope.",
+				"commands": { "allow": ["cancel"], "deny": [] }
+			},
+			"allow-check-permissions": {
+				"identifier": "allow-check-permissions",
+				"description": "Enables the check_permissions command without any pre-configured scope.",
+				"commands": { "allow": ["check_permissions"], "deny": [] }
+			},
+			"allow-create-channel": {
+				"identifier": "allow-create-channel",
+				"description": "Enables the create_channel command without any pre-configured scope.",
+				"commands": { "allow": ["create_channel"], "deny": [] }
+			},
+			"allow-delete-channel": {
+				"identifier": "allow-delete-channel",
+				"description": "Enables the delete_channel command without any pre-configured scope.",
+				"commands": { "allow": ["delete_channel"], "deny": [] }
+			},
+			"allow-get-active": {
+				"identifier": "allow-get-active",
+				"description": "Enables the get_active command without any pre-configured scope.",
+				"commands": { "allow": ["get_active"], "deny": [] }
+			},
+			"allow-get-pending": {
+				"identifier": "allow-get-pending",
+				"description": "Enables the get_pending command without any pre-configured scope.",
+				"commands": { "allow": ["get_pending"], "deny": [] }
+			},
+			"allow-is-permission-granted": {
+				"identifier": "allow-is-permission-granted",
+				"description": "Enables the is_permission_granted command without any pre-configured scope.",
+				"commands": { "allow": ["is_permission_granted"], "deny": [] }
+			},
+			"allow-list-channels": {
+				"identifier": "allow-list-channels",
+				"description": "Enables the list_channels command without any pre-configured scope.",
+				"commands": { "allow": ["list_channels"], "deny": [] }
+			},
+			"allow-notify": {
+				"identifier": "allow-notify",
+				"description": "Enables the notify command without any pre-configured scope.",
+				"commands": { "allow": ["notify"], "deny": [] }
+			},
+			"allow-permission-state": {
+				"identifier": "allow-permission-state",
+				"description": "Enables the permission_state command without any pre-configured scope.",
+				"commands": { "allow": ["permission_state"], "deny": [] }
+			},
+			"allow-register-action-types": {
+				"identifier": "allow-register-action-types",
+				"description": "Enables the register_action_types command without any pre-configured scope.",
+				"commands": { "allow": ["register_action_types"], "deny": [] }
+			},
+			"allow-register-listener": {
+				"identifier": "allow-register-listener",
+				"description": "Enables the register_listener command without any pre-configured scope.",
+				"commands": { "allow": ["register_listener"], "deny": [] }
+			},
+			"allow-remove-active": {
+				"identifier": "allow-remove-active",
+				"description": "Enables the remove_active command without any pre-configured scope.",
+				"commands": { "allow": ["remove_active"], "deny": [] }
+			},
+			"allow-request-permission": {
+				"identifier": "allow-request-permission",
+				"description": "Enables the request_permission command without any pre-configured scope.",
+				"commands": { "allow": ["request_permission"], "deny": [] }
+			},
+			"allow-show": {
+				"identifier": "allow-show",
+				"description": "Enables the show command without any pre-configured scope.",
+				"commands": { "allow": ["show"], "deny": [] }
+			},
+			"deny-batch": {
+				"identifier": "deny-batch",
+				"description": "Denies the batch command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["batch"] }
+			},
+			"deny-cancel": {
+				"identifier": "deny-cancel",
+				"description": "Denies the cancel command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["cancel"] }
+			},
+			"deny-check-permissions": {
+				"identifier": "deny-check-permissions",
+				"description": "Denies the check_permissions command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["check_permissions"] }
+			},
+			"deny-create-channel": {
+				"identifier": "deny-create-channel",
+				"description": "Denies the create_channel command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["create_channel"] }
+			},
+			"deny-delete-channel": {
+				"identifier": "deny-delete-channel",
+				"description": "Denies the delete_channel command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["delete_channel"] }
+			},
+			"deny-get-active": {
+				"identifier": "deny-get-active",
+				"description": "Denies the get_active command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["get_active"] }
+			},
+			"deny-get-pending": {
+				"identifier": "deny-get-pending",
+				"description": "Denies the get_pending command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["get_pending"] }
+			},
+			"deny-is-permission-granted": {
+				"identifier": "deny-is-permission-granted",
+				"description": "Denies the is_permission_granted command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["is_permission_granted"] }
+			},
+			"deny-list-channels": {
+				"identifier": "deny-list-channels",
+				"description": "Denies the list_channels command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["list_channels"] }
+			},
+			"deny-notify": {
+				"identifier": "deny-notify",
+				"description": "Denies the notify command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["notify"] }
+			},
+			"deny-permission-state": {
+				"identifier": "deny-permission-state",
+				"description": "Denies the permission_state command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["permission_state"] }
+			},
+			"deny-register-action-types": {
+				"identifier": "deny-register-action-types",
+				"description": "Denies the register_action_types command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["register_action_types"] }
+			},
+			"deny-register-listener": {
+				"identifier": "deny-register-listener",
+				"description": "Denies the register_listener command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["register_listener"] }
+			},
+			"deny-remove-active": {
+				"identifier": "deny-remove-active",
+				"description": "Denies the remove_active command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["remove_active"] }
+			},
+			"deny-request-permission": {
+				"identifier": "deny-request-permission",
+				"description": "Denies the request_permission command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["request_permission"] }
+			},
+			"deny-show": {
+				"identifier": "deny-show",
+				"description": "Denies the show command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["show"] }
+			}
+		},
+		"permission_sets": {},
+		"global_scope_schema": null
+	},
+	"shell": {
+		"default_permission": {
+			"identifier": "default",
+			"description": "This permission set configures which\nshell functionality is exposed by default.\n\n#### Granted Permissions\n\nIt allows to use the `open` functionality without any specific\nscope pre-configured. It will allow opening `http(s)://`,\n`tel:` and `mailto:` links.\n",
+			"permissions": ["allow-open"]
+		},
+		"permissions": {
+			"allow-execute": {
+				"identifier": "allow-execute",
+				"description": "Enables the execute command without any pre-configured scope.",
+				"commands": { "allow": ["execute"], "deny": [] }
+			},
+			"allow-kill": {
+				"identifier": "allow-kill",
+				"description": "Enables the kill command without any pre-configured scope.",
+				"commands": { "allow": ["kill"], "deny": [] }
+			},
+			"allow-open": {
+				"identifier": "allow-open",
+				"description": "Enables the open command without any pre-configured scope.",
+				"commands": { "allow": ["open"], "deny": [] }
+			},
+			"allow-spawn": {
+				"identifier": "allow-spawn",
+				"description": "Enables the spawn command without any pre-configured scope.",
+				"commands": { "allow": ["spawn"], "deny": [] }
+			},
+			"allow-stdin-write": {
+				"identifier": "allow-stdin-write",
+				"description": "Enables the stdin_write command without any pre-configured scope.",
+				"commands": { "allow": ["stdin_write"], "deny": [] }
+			},
+			"deny-execute": {
+				"identifier": "deny-execute",
+				"description": "Denies the execute command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["execute"] }
+			},
+			"deny-kill": {
+				"identifier": "deny-kill",
+				"description": "Denies the kill command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["kill"] }
+			},
+			"deny-open": {
+				"identifier": "deny-open",
+				"description": "Denies the open command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["open"] }
+			},
+			"deny-spawn": {
+				"identifier": "deny-spawn",
+				"description": "Denies the spawn command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["spawn"] }
+			},
+			"deny-stdin-write": {
+				"identifier": "deny-stdin-write",
+				"description": "Denies the stdin_write command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["stdin_write"] }
+			}
+		},
+		"permission_sets": {},
+		"global_scope_schema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"anyOf": [
+				{
+					"additionalProperties": false,
+					"properties": {
+						"args": {
+							"allOf": [{ "$ref": "#/definitions/ShellScopeEntryAllowedArgs" }],
+							"description": "The allowed arguments for the command execution."
+						},
+						"cmd": {
+							"description": "The command name. It can start with a variable that resolves to a system base directory. The variables are: `$AUDIO`, `$CACHE`, `$CONFIG`, `$DATA`, `$LOCALDATA`, `$DESKTOP`, `$DOCUMENT`, `$DOWNLOAD`, `$EXE`, `$FONT`, `$HOME`, `$PICTURE`, `$PUBLIC`, `$RUNTIME`, `$TEMPLATE`, `$VIDEO`, `$RESOURCE`, `$LOG`, `$TEMP`, `$APPCONFIG`, `$APPDATA`, `$APPLOCALDATA`, `$APPCACHE`, `$APPLOG`.",
+							"type": "string"
+						},
+						"name": {
+							"description": "The name for this allowed shell command configuration.\n\nThis name will be used inside of the webview API to call this command along with any specified arguments.",
+							"type": "string"
+						}
+					},
+					"required": ["cmd", "name"],
+					"type": "object"
+				},
+				{
+					"additionalProperties": false,
+					"properties": {
+						"args": {
+							"allOf": [{ "$ref": "#/definitions/ShellScopeEntryAllowedArgs" }],
+							"description": "The allowed arguments for the command execution."
+						},
+						"name": {
+							"description": "The name for this allowed shell command configuration.\n\nThis name will be used inside of the webview API to call this command along with any specified arguments.",
+							"type": "string"
+						},
+						"sidecar": { "description": "If this command is a sidecar command.", "type": "boolean" }
+					},
+					"required": ["name", "sidecar"],
+					"type": "object"
+				}
+			],
+			"definitions": {
+				"ShellScopeEntryAllowedArg": {
+					"anyOf": [
+						{
+							"description": "A non-configurable argument that is passed to the command in the order it was specified.",
+							"type": "string"
+						},
+						{
+							"additionalProperties": false,
+							"description": "A variable that is set while calling the command from the webview API.",
+							"properties": {
+								"raw": {
+									"default": false,
+									"description": "Marks the validator as a raw regex, meaning the plugin should not make any modification at runtime.\n\nThis means the regex will not match on the entire string by default, which might be exploited if your regex allow unexpected input to be considered valid. When using this option, make sure your regex is correct.",
+									"type": "boolean"
+								},
+								"validator": {
+									"description": "[regex] validator to require passed values to conform to an expected input.\n\nThis will require the argument value passed to this variable to match the `validator` regex before it will be executed.\n\nThe regex string is by default surrounded by `^...$` to match the full string. For example the `https?://\\w+` regex would be registered as `^https?://\\w+$`.\n\n[regex]: <https://docs.rs/regex/latest/regex/#syntax>",
+									"type": "string"
+								}
+							},
+							"required": ["validator"],
+							"type": "object"
+						}
+					],
+					"description": "A command argument allowed to be executed by the webview API."
+				},
+				"ShellScopeEntryAllowedArgs": {
+					"anyOf": [
+						{
+							"description": "Use a simple boolean to allow all or disable all arguments to this command configuration.",
+							"type": "boolean"
+						},
+						{
+							"description": "A specific set of [`ShellScopeEntryAllowedArg`] that are valid to call for the command configuration.",
+							"items": { "$ref": "#/definitions/ShellScopeEntryAllowedArg" },
+							"type": "array"
+						}
+					],
+					"description": "A set of command arguments allowed to be executed by the webview API.\n\nA value of `true` will allow any arguments to be passed to the command. `false` will disable all arguments. A list of [`ShellScopeEntryAllowedArg`] will set those arguments as the only valid arguments to be passed to the attached command configuration."
+				}
+			},
+			"description": "Shell scope entry.",
+			"title": "ShellScopeEntry"
+		}
+	},
+	"store": {
+		"default_permission": {
+			"identifier": "default",
+			"description": "This permission set configures what kind of\noperations are available from the store plugin.\n\n#### Granted Permissions\n\nAll operations are enabled by default.\n\n",
+			"permissions": [
+				"allow-create-store",
+				"allow-clear",
+				"allow-delete",
+				"allow-entries",
+				"allow-get",
+				"allow-has",
+				"allow-keys",
+				"allow-length",
+				"allow-load",
+				"allow-reset",
+				"allow-save",
+				"allow-set",
+				"allow-values"
+			]
+		},
+		"permissions": {
+			"allow-clear": {
+				"identifier": "allow-clear",
+				"description": "Enables the clear command without any pre-configured scope.",
+				"commands": { "allow": ["clear"], "deny": [] }
+			},
+			"allow-create-store": {
+				"identifier": "allow-create-store",
+				"description": "Enables the create_store command without any pre-configured scope.",
+				"commands": { "allow": ["create_store"], "deny": [] }
+			},
+			"allow-delete": {
+				"identifier": "allow-delete",
+				"description": "Enables the delete command without any pre-configured scope.",
+				"commands": { "allow": ["delete"], "deny": [] }
+			},
+			"allow-entries": {
+				"identifier": "allow-entries",
+				"description": "Enables the entries command without any pre-configured scope.",
+				"commands": { "allow": ["entries"], "deny": [] }
+			},
+			"allow-get": {
+				"identifier": "allow-get",
+				"description": "Enables the get command without any pre-configured scope.",
+				"commands": { "allow": ["get"], "deny": [] }
+			},
+			"allow-has": {
+				"identifier": "allow-has",
+				"description": "Enables the has command without any pre-configured scope.",
+				"commands": { "allow": ["has"], "deny": [] }
+			},
+			"allow-keys": {
+				"identifier": "allow-keys",
+				"description": "Enables the keys command without any pre-configured scope.",
+				"commands": { "allow": ["keys"], "deny": [] }
+			},
+			"allow-length": {
+				"identifier": "allow-length",
+				"description": "Enables the length command without any pre-configured scope.",
+				"commands": { "allow": ["length"], "deny": [] }
+			},
+			"allow-load": {
+				"identifier": "allow-load",
+				"description": "Enables the load command without any pre-configured scope.",
+				"commands": { "allow": ["load"], "deny": [] }
+			},
+			"allow-reset": {
+				"identifier": "allow-reset",
+				"description": "Enables the reset command without any pre-configured scope.",
+				"commands": { "allow": ["reset"], "deny": [] }
+			},
+			"allow-save": {
+				"identifier": "allow-save",
+				"description": "Enables the save command without any pre-configured scope.",
+				"commands": { "allow": ["save"], "deny": [] }
+			},
+			"allow-set": {
+				"identifier": "allow-set",
+				"description": "Enables the set command without any pre-configured scope.",
+				"commands": { "allow": ["set"], "deny": [] }
+			},
+			"allow-values": {
+				"identifier": "allow-values",
+				"description": "Enables the values command without any pre-configured scope.",
+				"commands": { "allow": ["values"], "deny": [] }
+			},
+			"deny-clear": {
+				"identifier": "deny-clear",
+				"description": "Denies the clear command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["clear"] }
+			},
+			"deny-create-store": {
+				"identifier": "deny-create-store",
+				"description": "Denies the create_store command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["create_store"] }
+			},
+			"deny-delete": {
+				"identifier": "deny-delete",
+				"description": "Denies the delete command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["delete"] }
+			},
+			"deny-entries": {
+				"identifier": "deny-entries",
+				"description": "Denies the entries command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["entries"] }
+			},
+			"deny-get": {
+				"identifier": "deny-get",
+				"description": "Denies the get command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["get"] }
+			},
+			"deny-has": {
+				"identifier": "deny-has",
+				"description": "Denies the has command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["has"] }
+			},
+			"deny-keys": {
+				"identifier": "deny-keys",
+				"description": "Denies the keys command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["keys"] }
+			},
+			"deny-length": {
+				"identifier": "deny-length",
+				"description": "Denies the length command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["length"] }
+			},
+			"deny-load": {
+				"identifier": "deny-load",
+				"description": "Denies the load command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["load"] }
+			},
+			"deny-reset": {
+				"identifier": "deny-reset",
+				"description": "Denies the reset command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["reset"] }
+			},
+			"deny-save": {
+				"identifier": "deny-save",
+				"description": "Denies the save command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["save"] }
+			},
+			"deny-set": {
+				"identifier": "deny-set",
+				"description": "Denies the set command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["set"] }
+			},
+			"deny-values": {
+				"identifier": "deny-values",
+				"description": "Denies the values command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["values"] }
+			}
+		},
+		"permission_sets": {},
+		"global_scope_schema": null
+	},
+	"updater": {
+		"default_permission": {
+			"identifier": "default",
+			"description": "This permission set configures which kind of\nupdater functions are exposed to the frontend.\n\n#### Granted Permissions\n\nThe full workflow from checking for updates to installing them\nis enabled.\n\n",
+			"permissions": ["allow-check", "allow-download", "allow-install", "allow-download-and-install"]
+		},
+		"permissions": {
+			"allow-check": {
+				"identifier": "allow-check",
+				"description": "Enables the check command without any pre-configured scope.",
+				"commands": { "allow": ["check"], "deny": [] }
+			},
+			"allow-download": {
+				"identifier": "allow-download",
+				"description": "Enables the download command without any pre-configured scope.",
+				"commands": { "allow": ["download"], "deny": [] }
+			},
+			"allow-download-and-install": {
+				"identifier": "allow-download-and-install",
+				"description": "Enables the download_and_install command without any pre-configured scope.",
+				"commands": { "allow": ["download_and_install"], "deny": [] }
+			},
+			"allow-install": {
+				"identifier": "allow-install",
+				"description": "Enables the install command without any pre-configured scope.",
+				"commands": { "allow": ["install"], "deny": [] }
+			},
+			"deny-check": {
+				"identifier": "deny-check",
+				"description": "Denies the check command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["check"] }
+			},
+			"deny-download": {
+				"identifier": "deny-download",
+				"description": "Denies the download command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["download"] }
+			},
+			"deny-download-and-install": {
+				"identifier": "deny-download-and-install",
+				"description": "Denies the download_and_install command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["download_and_install"] }
+			},
+			"deny-install": {
+				"identifier": "deny-install",
+				"description": "Denies the install command without any pre-configured scope.",
+				"commands": { "allow": [], "deny": ["install"] }
 			}
 		},
 		"permission_sets": {},

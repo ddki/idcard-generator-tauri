@@ -3,8 +3,8 @@
 	windows_subsystem = "windows"
 )]
 
+
 use tauri::{AppHandle, Manager};
-use tauri_plugin_autostart::MacosLauncher;
 use tauri_plugin_notification::NotificationExt;
 
 mod app;
@@ -74,23 +74,6 @@ fn main() {
 			#[cfg(all(desktop))]
 			{
 				app::tray::create_tray(handle)?;
-			}
-			// 默认设置
-			let mut store =
-				tauri_plugin_store::StoreBuilder::new("settings.json").build(handle.clone());
-			let _ = store.load().is_err_and(|_| {
-				// 初始化默认设置
-				let _ = store.insert("single-instance".to_string(), serde_json::json!(true));
-				let _ = store.insert("autostart".to_string(), serde_json::json!(false));
-				store.save().is_ok()
-			});
-			// 是否开机启动
-			let autostart = store.get("autostart").unwrap_or(&serde_json::json!(false));
-			if autostart.is_boolean() && autostart.as_bool().unwrap() {
-				let _ = handle.plugin(tauri_plugin_autostart::init(
-					MacosLauncher::LaunchAgent,
-					None,
-				));
 			}
 			Ok(())
 		})
