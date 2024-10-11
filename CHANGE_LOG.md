@@ -1,5 +1,11 @@
 # 📄 更新日志
 
+## [0.1.10](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.9...v0.1.10) (2024-10-11)
+
+### ✨ 新增功能 | A new feature
+
+- :sparkles: upgrade tauri to 2.0.2 ([da6a566](https://github.com/ddki/idcard-generator-tauri/commit/da6a5662a47a2e7822fcc63376ba90ccdb0dd4d4))
+
 ## [0.1.9](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.8...v0.1.9) (2024-05-31)
 
 ### 📦️ 构建相关 | Changes that affect the build system or external dependencies
