@@ -4,7 +4,7 @@ module.exports = {
 		allowSameVersion: true
 	},
 	hooks: {
-		'after:bump': ['npx prettier --write {package,./src-tauri/tauri.conf}.json', 'npx esmo scripts/changelog.ts']
+		'after:bump': ['npx prettier --write {package,./src-tauri/tauri.conf}.json', 'npx esno scripts/changelog.ts']
 	},
 	git: {
 		commitMessage: "🔖 release: v${version}",

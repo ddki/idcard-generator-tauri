@@ -35,7 +35,41 @@ export default defineConfig(async ({ mode }) => {
 			})
 		],
 		optimizeDeps: {
-			include: ['@kangc/v-md-editor/lib/theme/vuepress.js']
+			// 按需引入的 Element Plus 组件样式是深层模块，Vite 只有在真正 import 到时才会发现。
+			// 路由组件是懒加载的，首次进入某个页面时才发现 table/drawer/date-picker 等依赖，
+			// 于是触发 “optimized dependencies changed. reloading” 整页刷新。
+			// 这里把用到的组件样式入口全部预构建，切成路由时就不会再重新优化。
+			include: [
+				'element-plus/es/components/alert/style/css',
+				'element-plus/es/components/autocomplete/style/css',
+				'element-plus/es/components/button/style/css',
+				'element-plus/es/components/cascader/style/css',
+				'element-plus/es/components/collapse/style/css',
+				'element-plus/es/components/collapse-item/style/css',
+				'element-plus/es/components/container/style/css',
+				'element-plus/es/components/date-picker/style/css',
+				'element-plus/es/components/dialog/style/css',
+				'element-plus/es/components/drawer/style/css',
+				'element-plus/es/components/empty/style/css',
+				'element-plus/es/components/form/style/css',
+				'element-plus/es/components/form-item/style/css',
+				'element-plus/es/components/input/style/css',
+				'element-plus/es/components/input-number/style/css',
+				'element-plus/es/components/menu/style/css',
+				'element-plus/es/components/menu-item/style/css',
+				'element-plus/es/components/message/style/css',
+				'element-plus/es/components/option/style/css',
+				'element-plus/es/components/radio/style/css',
+				'element-plus/es/components/radio-button/style/css',
+				'element-plus/es/components/radio-group/style/css',
+				'element-plus/es/components/select/style/css',
+				'element-plus/es/components/switch/style/css',
+				'element-plus/es/components/table/style/css',
+				'element-plus/es/components/table-column/style/css',
+				'element-plus/es/components/tabs/style/css',
+				'element-plus/es/components/tag/style/css',
+				'element-plus/es/components/tooltip/style/css'
+			]
 		},
 		resolve: {
 			alias: {
