@@ -100,13 +100,6 @@ jobs:
             args: ''
           - platform: windows-latest
             args: ''
-    outputs:
-      releaseId: ${{ steps.tauri-action.outputs.releaseId }}
-      releaseHtmlUrl: ${{ steps.tauri-action.outputs.releaseHtmlUrl }}
-      releaseUploadUrl: ${{ steps.tauri-action.outputs.releaseUploadUrl }}
-      artifactPaths: ${{ steps.tauri-action.outputs.artifactPaths }}
-      appVersion: ${{ steps.tauri-action.outputs.appVersion }}
-
     runs-on: ${{ matrix.platform }}
     steps:
       - name: echo release_id

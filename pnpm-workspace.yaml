@@ -2,3 +2,8 @@ allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   vue-demi: true
+
+# 本机 Windows 禁止遍历 reparse point（ERROR_UNTRUSTED_MOUNT_POINT / os error 448），
+# isolated 布局依赖 node_modules/.pnpm/node_modules 下的 junction 做依赖提升，
+# 会触发 ERR_PNPM_CMD_SHIM_READ_MANIFEST。改用 hoisted 扁平布局，不创建任何 junction。
+nodeLinker: hoisted
