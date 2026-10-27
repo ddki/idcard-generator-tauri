@@ -16,7 +16,7 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
 		.tooltip("证件生成器")
 		.icon(app.default_window_icon().unwrap().clone())
 		.menu(&menus)
-		.menu_on_left_click(true)
+		.show_menu_on_left_click(true)
 		.on_menu_event(move |app, event| match event.id.as_ref() {
 			"setting" => {
 				println!("open setting...");

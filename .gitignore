@@ -33,4 +33,7 @@ playwright-report/
 auto-imports.d.ts
 components.d.ts
 
+# mise 本地覆盖配置
+.mise.local.toml
+
 ~

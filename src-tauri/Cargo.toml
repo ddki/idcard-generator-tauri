@@ -7,29 +7,29 @@ license = ""
 repository = "https://github.com/ddki/idcard-generator-tauri"
 default-run = "idcard-generator"
 edition = "2021"
-rust-version = "1.73"
+rust-version = "1.90"
 
 [build-dependencies.tauri-build]
-version = "2.0.1"
+version = "2.7.4"
 features = [ ]
 
 [dependencies]
-serde_json = "1.0"
-tauri-plugin-shell = "2.0.1"
-tauri-plugin-dialog = "2.0.1"
-tauri-plugin-updater = "2.0.2"
-tauri-plugin-autostart = "2.0.1"
-tauri-plugin-single-instance = "2.0.1"
-tauri-plugin-store = "2.0.1"
-tauri-plugin-notification = "2.0.1"
-log = "0.4.22"
+serde_json = "1.0.154"
+tauri-plugin-shell = "2.5.0"
+tauri-plugin-dialog = "2.8.3"
+tauri-plugin-updater = "2.14.0"
+tauri-plugin-autostart = "2.7.0"
+tauri-plugin-single-instance = "2.5.4"
+tauri-plugin-store = "2.5.0"
+tauri-plugin-notification = "2.7.0"
+log = "0.4.34"
 
   [dependencies.serde]
-  version = "1.0"
+  version = "1.0.229"
   features = [ "derive" ]
 
   [dependencies.tauri]
-  version = "2.0.2"
+  version = "2.12.5"
   features = [ "devtools", "tray-icon", "config-json5" ]
 
 [features]

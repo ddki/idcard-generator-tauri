@@ -1,0 +1,12 @@
+# 开发工具链版本管理（mise 替代 Volta）
+#
+# 安装 mise：
+#   Windows  winget install jdx.mise
+#   macOS    brew install mise
+#   Linux    curl https://mise.run | sh
+#
+# 然后在本目录执行 `mise install` 即可获得与 CI 一致的 Node / pnpm 版本。
+
+[tools]
+node = "26.12.1"
+pnpm = "12.15.0"
