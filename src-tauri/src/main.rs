@@ -3,21 +3,40 @@
 	windows_subsystem = "windows"
 )]
 
+use std::sync::Mutex;
 
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Manager, State};
 use tauri_plugin_notification::NotificationExt;
+use tauri_plugin_store::StoreExt;
 
 mod app;
 
+/// 运行期设置状态。
+/// 用内存状态而不是每次读 store 文件，是为了让开关切换后立刻对“关闭窗口”生效，
+/// 同时避开 plugin-store 实例缓存导致的读到旧值的问题。
+#[derive(Default)]
+struct RuntimeSettings {
+	close_to_tray: Mutex<bool>,
+}
+
 #[tauri::command]
 fn close_splashscreen(app: AppHandle) {
-	println!("close-splashscreen");
-	// Close splashscreen
-	if let Some(splashscreen) = app.get_webview_window("splashscreen") {
-		splashscreen.close().unwrap();
+	// 先显示并聚焦主窗口，再关闭闪屏：顺序反过来会出现两者都不可见的空档，造成闪烁
+	if let Some(main) = app.get_webview_window("main") {
+		let _ = main.show();
+		let _ = main.set_focus();
 	}
-	// Show main window
-	app.get_webview_window("main").unwrap().show().unwrap();
+	if let Some(splashscreen) = app.get_webview_window("splashscreen") {
+		let _ = splashscreen.close();
+	}
+}
+
+/// 前端切换“后台常驻”时调用，即时生效。
+#[tauri::command]
+fn set_close_to_tray(state: State<'_, RuntimeSettings>, enabled: bool) {
+	if let Ok(mut value) = state.close_to_tray.lock() {
+		*value = enabled;
+	}
 }
 
 fn main() {
@@ -37,47 +56,65 @@ fn main() {
 		.plugin(tauri_plugin_store::Builder::default().build())
 		.plugin(tauri_plugin_dialog::init())
 		.plugin(tauri_plugin_updater::Builder::new().build())
-		.on_window_event(|window, event| match event {
-			tauri::WindowEvent::CloseRequested { api, .. } => {
-				println!("窗口关闭...");
-				window.hide().unwrap();
-				api.prevent_close();
-				// let store = tauri_plugin_store::StoreBuilder::new("settings.json")
-				// 	.build(window.app_handle().clone());
-				// let single_instance = store.get("single-instance");
-				// println!("single-instance: {:?}", single_instance);
-				// match single_instance {
-				// 	Some(flag) => {
-				// 		if !flag.as_bool().unwrap() {
-				// 			match window.label() {
-				// 				"main" => {
-				// 					println!("后台常驻关闭，退出程序...");
-				// 					window.close().unwrap();
-				// 					api.prevent_close();
-				// 					std::process::exit(0);
-				// 				}
-				// 				_ => {}
-				// 			}
-				// 		} else {
-				// 			window.hide().unwrap();
-				// 			api.prevent_close();
-				// 		}
-				// 	}
-				// 	None => {}
-				// }
+		.plugin(tauri_plugin_autostart::init(
+			tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+			None,
+		))
+		.on_window_event(|window, event| {
+			if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+				// 只有主窗口受“后台常驻”开关控制，启动画面等窗口正常关闭
+				if window.label() != "main" {
+					return;
+				}
+
+				let keep_running = window
+					.state::<RuntimeSettings>()
+					.close_to_tray
+					.lock()
+					.map(|value| *value)
+					.unwrap_or(false);
+
+				if keep_running {
+					let _ = window.hide();
+					api.prevent_close();
+				} else {
+					window.app_handle().exit(0);
+				}
 			}
-			_ => {}
 		})
 		.setup(|app| {
-			let handle = app.handle();
+			// 用持久化设置初始化运行期状态，默认关闭
+			let close_to_tray = app
+				.store("settings.json")
+				.ok()
+				.and_then(|store| store.get("close-to-tray"))
+				.and_then(|value| value.as_bool())
+				.unwrap_or(false);
+			app.manage(RuntimeSettings {
+				close_to_tray: Mutex::new(close_to_tray),
+			});
+
+			// 存储目录与历史记录
+			app.manage(app::storage::init(app.handle())?);
+
 			// 设置任务栏图标
 			#[cfg(all(desktop))]
 			{
-				app::tray::create_tray(handle)?;
+				app::tray::create_tray(app.handle())?;
 			}
 			Ok(())
 		})
-		.invoke_handler(tauri::generate_handler![close_splashscreen])
+		.invoke_handler(tauri::generate_handler![
+			close_splashscreen,
+			set_close_to_tray,
+			app::storage::storage_info,
+			app::storage::set_data_dir,
+			app::storage::reset_data_dir,
+			app::storage::clear_cache,
+			app::storage::history_load,
+			app::storage::history_save,
+			app::storage::history_clear
+		])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }

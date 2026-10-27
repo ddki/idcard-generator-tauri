@@ -1,5 +1,16 @@
 @import 'tailwindcss';
 
+/* 整页铺满窗口：页面内各区域用 flex 瓜分高度，避免出现整页滚动 */
+html,
+body,
+#app {
+	height: 100%;
+}
+
+body {
+	overflow: hidden;
+}
+
 /* 左栏底部操作按钮：多页面通用，等宽网格铺满内容宽度 */
 .left-form .form-actions .el-form-item__content {
 	display: grid;

@@ -177,6 +177,10 @@ jobs:
         with:
           releaseId: ${{ needs.create-release.outputs.release_id }}
           args: ${{ matrix.args }}
+          # 生成并上传 latest.json 到该 Release，供客户端 updater 检查更新
+          uploadUpdaterJson: true
+          uploadUpdaterSignatures: true
+          # Windows 同时产出 NSIS 与 MSI 时，latest.json 指向 NSIS（与应用内 installMode: passive 匹配）
           updaterJsonPreferNsis: true
 
   publish-release:

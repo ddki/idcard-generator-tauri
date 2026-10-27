@@ -46,7 +46,9 @@ export default defineConfig(async ({ mode }) => {
 		// 防止 Vite 在记录某些消息时清除终端屏幕
 		clearScreen: false,
 		server: {
-			port: 5173,
+			// 5173 落在 Windows 的 winnat 排除端口段（5083-5182，Hyper-V/WSL2/Docker 保留）内，
+			// 绑定会报 EACCES，因此改用 Tauri 默认的 1420
+			port: 1420,
 			strictPort: true,
 			watch: {
 				// 3. tell vite to ignore watching `src-tauri`

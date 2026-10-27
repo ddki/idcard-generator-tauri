@@ -1,66 +1,79 @@
 <template>
-	<div class="left-form" ref="form">
-		<el-form :inline="true" size="default" label-width="90px" label-position="left" label-suffix=":">
-			<el-form-item label="姓名">
-				<el-input v-model="formData.name" placeholder="姓名" />
-			</el-form-item>
-			<el-form-item label="民族">
-				<el-input v-model="formData.nation" placeholder="民族" />
-			</el-form-item>
-			<el-form-item label="身份证号">
-				<el-input v-model="formData.idCard" placeholder="身份证号" @change="onChangeIdCard" />
-			</el-form-item>
-			<el-form-item label="性别">
-				<el-input v-model="formData.sexText" placeholder="性别" />
-			</el-form-item>
-			<el-form-item label="住址">
-				<el-input v-model="formData.address" placeholder="住址" />
-			</el-form-item>
-			<el-form-item label="签发机关">
-				<el-input v-model="formData.office" placeholder="签发机关" />
-			</el-form-item>
-			<el-form-item label="有效期起期">
-				<el-date-picker
-					v-model="formData.startDate"
-					type="date"
-					placeholder="有效期起期"
-					format="YYYY-MM-DD"
-					value-format="YYYY-MM-DD"
-				/>
-			</el-form-item>
-			<el-form-item label="有效期类型">
-				<el-select v-model="formData.validityType" placeholder="有效期类型" @change="onChangeValidityType">
-					<el-option
-						v-for="item in validityTypeOptions"
-						:key="item.value"
-						:label="item.text"
-						:value="item.value"
-					></el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="有效期止期">
-				<el-date-picker
-					v-model="formData.endDate"
-					type="date"
-					placeholder="有效期止期"
-					format="YYYY-MM-DD"
-					value-format="YYYY-MM-DD"
-				/>
-			</el-form-item>
-			<el-form-item class="form-actions">
-				<el-button type="primary" @click="onSubmit">生成</el-button>
-				<el-button type="primary" @click="onInit">初始化</el-button>
-			</el-form-item>
-		</el-form>
-	</div>
-	<div class="content">
-		<div class="image">
-			<p class="image__title">国徽面</p>
-			<canvas class="image__canvas" id="fontCanvas"></canvas>
+	<div class="viewer">
+		<div class="left-form" ref="form">
+			<el-form :inline="true" size="default" label-width="90px" label-position="left" label-suffix=":">
+				<el-form-item label="姓名">
+					<el-input v-model="formData.name" placeholder="姓名" />
+				</el-form-item>
+				<el-form-item label="民族">
+					<el-input v-model="formData.nation" placeholder="民族" />
+				</el-form-item>
+				<el-form-item label="身份证号">
+					<el-input v-model="formData.idCard" placeholder="身份证号" @change="onChangeIdCard" />
+				</el-form-item>
+				<el-form-item label="性别">
+					<el-input v-model="formData.sexText" placeholder="性别" />
+				</el-form-item>
+				<el-form-item label="住址">
+					<el-input v-model="formData.address" placeholder="住址" />
+				</el-form-item>
+				<el-form-item label="签发机关">
+					<el-input v-model="formData.office" placeholder="签发机关" />
+				</el-form-item>
+				<el-form-item label="有效期起期">
+					<el-date-picker
+						v-model="formData.startDate"
+						type="date"
+						placeholder="有效期起期"
+						format="YYYY-MM-DD"
+						value-format="YYYY-MM-DD"
+					/>
+				</el-form-item>
+				<el-form-item label="有效期类型">
+					<el-select v-model="formData.validityType" placeholder="有效期类型" @change="onChangeValidityType">
+						<el-option
+							v-for="item in validityTypeOptions"
+							:key="item.value"
+							:label="item.text"
+							:value="item.value"
+						></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="有效期止期">
+					<el-date-picker
+						v-model="formData.endDate"
+						type="date"
+						placeholder="有效期止期"
+						format="YYYY-MM-DD"
+						value-format="YYYY-MM-DD"
+					/>
+				</el-form-item>
+				<el-form-item class="form-actions">
+					<el-button type="primary" @click="onSubmit">生成</el-button>
+					<el-button type="primary" @click="onInit">初始化</el-button>
+				</el-form-item>
+			</el-form>
 		</div>
-		<div class="image">
-			<p class="image__title">人像面</p>
-			<canvas class="image__canvas" id="backCanvas"></canvas>
+		<div class="content-wrap">
+			<div class="content-toolbar">
+				<ImageLayoutToggle v-model="verticalLayout" />
+			</div>
+			<div class="content" :class="{ 'content--vertical': verticalLayout }">
+				<section class="image-card">
+					<div class="image-card__head">
+						<span class="image-card__mark"></span>
+						<h3 class="image-card__title">国徽面</h3>
+					</div>
+					<canvas class="image-card__canvas" id="fontCanvas"></canvas>
+				</section>
+				<section class="image-card">
+					<div class="image-card__head">
+						<span class="image-card__mark image-card__mark--alt"></span>
+						<h3 class="image-card__title">人像面</h3>
+					</div>
+					<canvas class="image-card__canvas" id="backCanvas"></canvas>
+				</section>
+			</div>
 		</div>
 	</div>
 </template>
@@ -70,7 +83,8 @@ import IdcardConstant from '../../constant/idcard'
 import { getBirthdayArrayFromIdCard, getSexFromIdCard } from '../../utils/IdCardUtils'
 import * as AssetsUtils from '../../utils/AssetsUtils'
 import type { IdCardImageInput } from 'idCard'
-import { computed, nextTick, onMounted, reactive } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import ImageLayoutToggle from '@/components/ImageLayoutToggle.vue'
 
 const props = defineProps({
 	name: {
@@ -142,6 +156,13 @@ const formData = reactive<IdCardImageInput>({
 	validityType: initFormData.validityType,
 	startDate: initFormData.startDate,
 	endDate: initFormData.endDate
+})
+
+/** 两张照片的排列方式：水平（左右）/ 垂直（上下） */
+const LAYOUT_STORAGE_KEY = 'idcard-generator:idcard-image-layout'
+const verticalLayout = ref(localStorage.getItem(LAYOUT_STORAGE_KEY) === 'vertical')
+watch(verticalLayout, (value) => {
+	localStorage.setItem(LAYOUT_STORAGE_KEY, value ? 'vertical' : 'horizontal')
 })
 
 const validityTypeOptions = IdcardConstant.validityTypeData
@@ -277,12 +298,20 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+/* 整页横向铺满，左右两栏都撑满窗口高度 */
+.viewer {
+	display: flex;
+	flex: 1;
+	height: 100%;
+	min-height: 0;
+}
+
 .left-form {
-	float: left;
+	flex: none;
 	box-sizing: border-box;
 	width: 320px;
-	height: 100%;
 	padding: 20px;
+	overflow-y: auto;
 	box-shadow: var(--el-box-shadow-light);
 
 	// 表单项撑满左栏宽度，控件随之自适应，左右留白一致
@@ -304,15 +333,84 @@ onMounted(() => {
 		margin-right: 0;
 	}
 }
-.content {
-	margin-left: 340px;
+.content-wrap {
+	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
 	padding: 20px;
 	box-shadow: var(--el-box-shadow-light);
-	&__image {
-		&__title {
-			text-align: lfet;
-		}
-	}
 }
 
+/* 排列方式切换按钮：浮在照片区右上角 */
+.content-toolbar {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	z-index: 2;
+}
+
+.content {
+	display: flex;
+	flex: 1;
+	gap: 20px;
+	min-height: 0;
+}
+
+/* 垂直排列：上下堆叠 */
+.content--vertical {
+	flex-direction: column;
+}
+
+.image-card {
+	display: flex;
+	flex: 1 1 0;
+	flex-direction: column;
+	gap: 12px;
+	min-width: 0;
+	min-height: 0;
+	padding: 16px;
+	border: 1px solid var(--el-border-color-lighter);
+	border-radius: 10px;
+	background: var(--el-fill-color-lighter);
+}
+
+.image-card__head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* 标题前的强调色条 */
+.image-card__mark {
+	width: 4px;
+	height: 16px;
+	border-radius: 2px;
+	background: var(--el-color-primary);
+}
+
+.image-card__mark--alt {
+	background: var(--el-color-success);
+}
+
+.image-card__title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	color: var(--el-text-color-primary);
+}
+
+/* 画布随卡片剩余空间缩放，按比例居中，窗口变化时自动适配 */
+.image-card__canvas {
+	display: block;
+	flex: 1;
+	width: 100%;
+	height: 100%;
+	min-height: 0;
+	object-fit: contain;
+	border-radius: 6px;
+}
 </style>

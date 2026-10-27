@@ -3,10 +3,12 @@
 		"identifier": "default",
 		"description": "Capability for the main window",
 		"local": true,
-		"windows": ["main", "setting"],
+		"windows": ["main"],
 		"permissions": [
+			"core:event:allow-listen",
 			"shell:allow-open",
 			"updater:allow-check",
+			"updater:allow-download-and-install",
 			"dialog:allow-open",
 			"dialog:allow-save",
 			"dialog:allow-confirm",
