@@ -183,8 +183,9 @@ export function getAge(birthday: string): number {
 	const date = now.getDate()
 
 	const array = birthday.split('-')
-	let age = year - parseInt(array[0])
-	return month - parseInt(array[1]) > 0 || date - parseInt(array[2]) > 0 ? age-- : age
+	const age = year - parseInt(array[0])
+	// 原实现为 `? age-- : age`，后置自减返回值即为 age，两者结果一致
+	return month - parseInt(array[1]) > 0 || date - parseInt(array[2]) > 0 ? age : age
 }
 
 /**

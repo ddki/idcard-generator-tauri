@@ -30,13 +30,13 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { getVersion } from '@tauri-apps/api/app'
+import { getAppVersion } from '@/utils/VersionUtils'
 import { Store } from '@tauri-apps/plugin-store'
 import { check } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { ElMessage } from 'element-plus'
 
-const appVersion = await getVersion()
+const appVersion = await getAppVersion()
 
 const store = new Store('settings.json')
 

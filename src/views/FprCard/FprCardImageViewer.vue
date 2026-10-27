@@ -54,7 +54,7 @@
 					value-format="YYYY-MM-DD"
 				/>
 			</el-form-item>
-			<el-form-item>
+			<el-form-item class="form-actions">
 				<el-button type="primary" @click="onSubmit">生成</el-button>
 				<el-button type="primary" @click="onInit">初始化</el-button>
 			</el-form-item>
@@ -165,7 +165,7 @@ console.log('formData = ', formData)
 const country = ref(props.countryText)
 const countries = ref<Country[]>(JSON_COUNTRY)
 
-const queryCountrySearch = (queryString: string, cb: any) => {
+const queryCountrySearch = (queryString: string, cb: (data: Country[]) => void) => {
 	const results = queryString ? countries.value.filter(createCountryFilter(queryString)) : countries.value
 	console.log('results = ', results)
 	cb(results)
@@ -307,14 +307,34 @@ onMounted(() => {
 <style lang="less" scoped>
 .left-form {
 	float: left;
+	box-sizing: border-box;
 	width: 320px;
 	height: 100%;
 	padding: 20px;
 	box-shadow: var(--el-box-shadow-light);
+
+	// 表单项撑满左栏宽度，控件随之自适应，左右留白一致
+	:deep(.el-form--inline .el-form-item) {
+		width: 100%;
+		margin-right: 0;
+	}
+
+	:deep(.el-form-item__content > .el-input),
+	:deep(.el-form-item__content > .el-select),
+	:deep(.el-form-item__content > .el-cascader),
+	:deep(.el-form-item__content > .el-autocomplete),
+	:deep(.el-form-item__content > .el-input-number) {
+		width: 100%;
+	}
+
+	// Element Plus 2.14 给 el-select 加了 margin-right: 8px
+	:deep(.el-select) {
+		margin-right: 0;
+	}
 }
 
 .content {
-	margin-left: 380px;
+	margin-left: 340px;
 	padding: 20px;
 	box-shadow: var(--el-box-shadow-light);
 
@@ -325,8 +345,4 @@ onMounted(() => {
 	}
 }
 
-.el-button {
-	width: 95px;
-	margin-bottom: 10px;
-}
 </style>

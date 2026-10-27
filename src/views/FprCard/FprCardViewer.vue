@@ -1,6 +1,6 @@
 <template>
 	<div class="left-form" ref="form">
-		<el-form :inline="true" size="default" label-width="90px" label-position="left" label-suffix="：">
+		<el-form :inline="true" size="default" label-width="100px" label-position="left" label-suffix="：">
 			<el-form-item label="国家/地区">
 				<el-autocomplete
 					v-model="country"
@@ -48,7 +48,7 @@
 			<el-form-item label="生成个数">
 				<el-input-number v-model="formData.number" :min="1" :max="100" placeholder="生成个数" />
 			</el-form-item>
-			<el-form-item>
+			<el-form-item class="form-actions">
 				<el-button type="primary" @click="onSubmit">生成</el-button>
 			</el-form-item>
 		</el-form>
@@ -135,7 +135,7 @@ const formData = reactive<FprCardInput>({
 
 const countries = ref<Country[]>(JSON_COUNTRY)
 
-const queryCountrySearch = (queryString: string, cb: any) => {
+const queryCountrySearch = (queryString: string, cb: (data: Country[]) => void) => {
 	const results = queryString ? countries.value.filter(createCountryFilter(queryString)) : countries.value
 	console.log('results = ', results)
 	cb(results)
@@ -227,22 +227,39 @@ onMounted(() => {
 <style lang="less" scoped>
 .left-form {
 	float: left;
+	box-sizing: border-box;
 	width: 320px;
 	height: 100%;
 	padding: 20px;
 	box-shadow: var(--el-box-shadow-light);
+
+	// 表单项撑满左栏宽度，控件随之自适应，左右留白一致
+	:deep(.el-form--inline .el-form-item) {
+		width: 100%;
+		margin-right: 0;
+	}
+
+	:deep(.el-form-item__content > .el-input),
+	:deep(.el-form-item__content > .el-select),
+	:deep(.el-form-item__content > .el-cascader),
+	:deep(.el-form-item__content > .el-autocomplete),
+	:deep(.el-form-item__content > .el-input-number) {
+		width: 100%;
+	}
+
+	// Element Plus 2.14 给 el-select 加了 margin-right: 8px
+	:deep(.el-select) {
+		margin-right: 0;
+	}
 }
 
 .content {
-	margin-left: 380px;
+	margin-left: 340px;
 	padding: 20px;
 	box-shadow: var(--el-box-shadow-light);
 }
 
-.el-button {
-	width: 260px;
-	margin-bottom: 10px;
-}
+
 .el-date-picker {
 	width: 300px;
 }
