@@ -1,5 +1,31 @@
 # 📄 更新日志
 
+## [0.1.11](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.10...v0.1.11) (2026-10-27)
+
+### ✨ 新增功能 | A new feature
+
+- :sparkles: 完善设置弹窗、历史记录与自动更新 ([e9322f7](https://github.com/ddki/idcard-generator-tauri/commit/e9322f7d530f07fd7b2c7905cd34acbec8aa6486))
+
+### 🐛 修复缺陷 | A bug fix
+
+- :bug: use HKCU keypath for wix per-user install ([9e50c6f](https://github.com/ddki/idcard-generator-tauri/commit/9e50c6fce04b1c11f739b73efa73dada67b7e992))
+
+### ♻️ 代码重构 | A code change that neither fixes a bug nor adds a feature
+
+- :recycle: refine card viewers and add version utils ([16e8960](https://github.com/ddki/idcard-generator-tauri/commit/16e89602e25be2850f64501f03578bded3a52f11))
+
+### 📦️ 构建相关 | Changes that affect the build system or external dependencies
+
+- :package: eslint9 flat config and wix installer template ([6b0934f](https://github.com/ddki/idcard-generator-tauri/commit/6b0934f58b18f2444fe659fe03d71b83c3b87d51))
+
+### 🎡 持续集成 | Changes to our CI configuration files and scripts
+
+- :ferris_wheel: expand release matrix and upgrade github actions ([693a267](https://github.com/ddki/idcard-generator-tauri/commit/693a267816448df2c59f2ae9214cfa2fc0c00f61))
+
+### 🔨 其他修改 | Other changes that do not modify src or test files
+
+- **deps:** :arrow_up: upgrade tauri to 2.12.5 and refresh toolchain ([b4a4d52](https://github.com/ddki/idcard-generator-tauri/commit/b4a4d5226592075eebbd04aec181cb62a04a678f))
+
 ## [0.1.10](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.9...v0.1.10) (2024-10-11)
 
 ### ✨ 新增功能 | A new feature
