@@ -33,6 +33,7 @@
 			"digestAlgorithm": "sha256",
 			"timestampUrl": "",
 			"wix": {
+				"template": "./wix/peruser.wxs",
 				"language": ["zh-CN"]
 			}
 		}

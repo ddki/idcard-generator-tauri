@@ -10,7 +10,9 @@ const config = {
 	trailingComma: 'none',
 	endOfLine: 'lf',
 	// eslint-disable-ignore-pattern
-	plugins: ['prettier-plugin-tailwindcss']
+	plugins: ['prettier-plugin-tailwindcss'],
+	// Tailwind CSS v4 需要显式指定 CSS 入口
+	tailwindStylesheet: './src/styles/index.css'
 }
 
 // eslint-disable-next-line no-undef

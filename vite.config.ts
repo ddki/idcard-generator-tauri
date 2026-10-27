@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
@@ -8,10 +9,18 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import ElementPlus from 'unplugin-element-plus/vite'
 
+const { version } = JSON.parse(readFileSync(fileURLToPath(new URL('./package.json', import.meta.url)), 'utf-8')) as {
+	version: string
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
 	return {
 		base: mode === 'github-page' ? 'idcard-generator-tauri' : '',
+		// 纯 Web 构建下没有 Tauri API，版本号回退到 package.json
+		define: {
+			__APP_VERSION__: JSON.stringify(version)
+		},
 		plugins: [
 			vue(),
 			vueJsx(),
@@ -46,7 +55,8 @@ export default defineConfig(async ({ mode }) => {
 		},
 		envPrefix: ['VITE_', 'TAURI_'],
 		build: {
-			target: ['es2021', 'chrome100', 'safari13'],
+			// Tauri 2 使用系统 WebView（Windows: WebView2 / macOS: WKWebView 15+）
+			target: ['es2022', 'chrome105', 'safari15'],
 			// don't minify for debug builds
 			minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
 			// produce sourcemaps for debug builds

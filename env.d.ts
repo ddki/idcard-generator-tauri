@@ -1,4 +1,8 @@
 /// <reference types="vite/client" />
+
+// 构建时由 vite define 注入的 package.json 版本号
+declare const __APP_VERSION__: string
+
 interface ImportMetaEnv {
 	readonly VITE_APP_TITLE: string
 	readonly VITE_APP_GOOGLE_ANALYTICS_SCRIPT: string
@@ -10,7 +14,6 @@ interface ImportMeta {
 
 declare module '*.vue' {
 	import type { DefineComponent } from 'vue'
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
-	const component: DefineComponent<{}, {}, any>
+	const component: DefineComponent
 	export default component
 }

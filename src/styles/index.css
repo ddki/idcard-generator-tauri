@@ -1,3 +1,19 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* 左栏底部操作按钮：多页面通用，等宽网格铺满内容宽度 */
+.left-form .form-actions .el-form-item__content {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	width: 100%;
+}
+
+.left-form .form-actions .el-button {
+	margin: 0;
+	width: 100%;
+}
+
+/* 只有一个按钮时横跨整行 */
+.left-form .form-actions .el-button:only-child {
+	grid-column: 1 / -1;
+}
