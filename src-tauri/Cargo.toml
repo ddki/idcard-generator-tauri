@@ -1,6 +1,6 @@
 [package]
 name = "idcard-generator"
-version = "0.1.11"
+version = "0.1.12"
 description = "中国居民身份证生成器"
 authors = [ "ddki" ]
 license = ""

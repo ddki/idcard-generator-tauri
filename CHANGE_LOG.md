@@ -1,5 +1,11 @@
 # 📄 更新日志
 
+## [0.1.12](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.11...v0.1.12) (2026-10-27)
+
+### 🔨 其他修改 | Other changes that do not modify src or test files
+
+- :hammer: 清理未使用依赖并优化开发期依赖预构建 ([cf24355](https://github.com/ddki/idcard-generator-tauri/commit/cf243550af9e0d8310ded5da4056c966e6d0a3ed))
+
 ## [0.1.11](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.10...v0.1.11) (2026-10-27)
 
 ### ✨ 新增功能 | A new feature
