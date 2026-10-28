@@ -76,10 +76,11 @@
 
 ## :computer: System Support
 
-发布包由 GitHub Actions 在 `windows-latest`、`macos-latest`、`ubuntu-22.04`、`ubuntu-22.04-arm` 上构建，因此：
+发布包由 GitHub Actions 在 `windows-latest`、`macos-latest`、`ubuntu-22.04`、`ubuntu-22.04-arm` 上构建，其中 **Linux 跑在 `debian:buster` 容器内**，因此：
 
-- Linux 产物基于 Ubuntu 22.04 编译，要求 **glibc ≥ 2.35**，并依赖 **webkit2gtk-4.0 + libsoup2.4**（Tauri v1）；
-- Linux arm64 构建使用 GitHub 的 arm runner，**仅公开仓库可用**；
+- Linux 产物基于 Debian 10（buster）编译，要求 **glibc ≥ 2.28**，并依赖 **webkit2gtk-4.0 + libsoup2.4**（Tauri v1）；
+- glibc 只标定下限、向上兼容，所以一套产物同时覆盖 UOS V20 / deepin 20.x / 麒麟 V10（Debian 10 底座）以及更新的发行版；
+- Linux arm64 构建使用 GitHub 的 arm runner（跑同一个容器的 arm64 镜像层），**仅公开仓库可用**；
 - 每个平台同时提供 **x86_64(amd64)** 与 **arm64(aarch64)** 产物（Windows 仅 x64）。
 
 | 系统                               | 架构                  | 支持 | 说明                                                                   |
@@ -92,9 +93,9 @@
 | deepin 23+                         | x86_64 / arm64        | ✅   | Debian 12 底座，使用 deb 包                                            |
 | 统信 UOS V25（2500）               | x86_64 / arm64        | ✅   | Debian 12 底座，使用 deb 包                                            |
 | 麒麟 V11                           | x86_64 / arm64        | ✅   | Debian 12 底座，使用 deb 包                                            |
-| deepin 20.x（20.1 ~ 20.9）         | —                     | ❌   | Debian 10 底座、glibc 2.28、webkit2gtk-4.0，低于构建基线               |
-| 统信 UOS V20（1050 / 1060 / 1070） | —                     | ❌   | Debian 10 底座、glibc 2.28，低于构建基线（与 Tauri 版本无关）          |
-| 麒麟 V10（SP1 / SP2 / SP3）        | —                     | ❌   | Debian 10 底座、glibc 2.28、webkit2gtk-4.0，低于构建基线               |
+| deepin 20.x（20.1 ~ 20.9）         | x86_64 / arm64        | ✅   | Debian 10 底座、glibc 2.28，与构建基线一致                             |
+| 统信 UOS V20（1050 / 1060 / 1070） | x86_64 / arm64        | ✅   | Debian 10 底座、glibc 2.28，与构建基线一致                             |
+| 麒麟 V10（SP1 / SP2 / SP3）        | x86_64 / arm64        | ✅   | Debian 10 底座、glibc 2.28，与构建基线一致                             |
 | Fedora                             | x86_64 / arm64        | ⚠️   | 提供 rpm 产物，但未在 Fedora 上实机验证，依赖包名可能与 rpm 声明不一致 |
 
 > 说明：Linux 依赖库缺失时，deb 可通过 `sudo apt install -y libwebkit2gtk-4.0-37 libayatana-appindicator3-1` 补齐。
@@ -103,20 +104,20 @@
 
 下表根据仓库 git 历史整理（`v0.1.4` 起才有 CI 发布流水线；Tauri 版本取自各 tag 的 `src-tauri/Cargo.toml`）：
 
-| 程序版本                       | Tauri 版本         | Linux 构建环境                                   | 可运行的国产系统              |
-| ------------------------------ | ------------------ | ------------------------------------------------ | ----------------------------- |
-| v0.1.0 ~ v0.1.3                | 1.0.0-rc.2         | 无 GitHub Actions，未产出官方 Linux 安装包       | —（仅有本地 / Windows 产物）  |
-| v0.1.4 ~ v0.1.9                | 2.0.0-alpha ~ beta | ubuntu-latest（当时为 Ubuntu 22.04，glibc 2.35） | UOS V25、deepin 23+、麒麟 V11 |
-| v0.1.10 及以后（含当前开发版） | 2.0.1 ~ 2.12.x     | ubuntu-22.04 / ubuntu-22.04-arm                  | UOS V25、deepin 23+、麒麟 V11 |
-| tauri1_v0.1.14 及以后          | 1.8.3              | ubuntu-22.04 / ubuntu-22.04-arm                  | UOS V25、deepin 23+、麒麟 V11 |
+| 程序版本                       | Tauri 版本         | Linux 构建环境                                   | 可运行的国产系统                  |
+| ------------------------------ | ------------------ | ------------------------------------------------ | --------------------------------- |
+| v0.1.0 ~ v0.1.3                | 1.0.0-rc.2         | 无 GitHub Actions，未产出官方 Linux 安装包       | —（仅有本地 / Windows 产物）      |
+| v0.1.4 ~ v0.1.9                | 2.0.0-alpha ~ beta | ubuntu-latest（当时为 Ubuntu 22.04，glibc 2.35） | UOS V25、deepin 23+、麒麟 V11     |
+| v0.1.10 及以后（含当前开发版） | 2.0.1 ~ 2.12.x     | ubuntu-22.04 / ubuntu-22.04-arm                  | UOS V25、deepin 23+、麒麟 V11     |
+| tauri1_v0.1.14 及以后          | 1.8.3              | debian:buster 容器（amd64 / arm64）              | UOS V20+、deepin 20.x+、麒麟 V10+ |
 
-**关于 UOS V20 该用哪个版本：没有任何已发布版本可用。** 原因：
+**关于 UOS V20 的可用性：**
 
-1. Tauri 1.x 时期（`v0.1.0 ~ v0.1.3`）仓库还没有发布流水线，也就没有官方的 Linux 包；
-2. 从 `v0.1.4` 开始有了流水线，但 Tauri 已经升级到 2.x，构建机固定为 Ubuntu 22.04，产物要求 glibc ≥ 2.35 与 webkit2gtk-4.1；
-3. UOS V20 / deepin 20.x / 麒麟 V10 是 Debian 10 底座，只有 glibc 2.28 与 webkit2gtk-4.0，运行时会直接报 glib 或 webkit 库缺失。
+1. `v0.1.0 ~ v0.1.3` 时期仓库还没有发布流水线，没有官方 Linux 包；
+2. `v0.1.4 ~ v0.1.13` 的产物在 Ubuntu 22.04（glibc 2.35）上编译，V20 只有 glibc 2.28，运行时会直接报 glibc / webkit 库缺失；
+3. 自 **tauri1_v0.1.14**（本分支）起，Linux 构建移进 `debian:buster` 容器，产物 glibc 下限降到 2.28，**UOS V20 / deepin 20.x / 麒麟 V10 可直接安装**。
 
-若确实需要在 UOS V20 上使用，可以基于 `tauri-v1` 分支源码在 V20 环境内自行编译（该分支已固定到 Tauri 1.8），但仍需自行解决 webkit2gtk-4.0 / glibc 2.28 的依赖，这不属于官方支持范围。
+> V20 上优先用 **AppImage**：它会自带 gtk / libsoup / webkit2gtk，不依赖目标机是否装了这些库（glibc 仍需系统提供）。用 deb 时若缺运行时依赖，可执行 `sudo apt install -y libwebkit2gtk-4.0-37 libappindicator3-1` 补齐。
 
 ## ⚠️ 免责声明
 

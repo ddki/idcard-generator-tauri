@@ -90,17 +90,25 @@ jobs:
           # macOS Intel：在 Apple Silicon runner 上交叉编译
           - platform: macos-latest
             args: '--target x86_64-apple-darwin'
-          # Linux amd64：Tauri v1 依赖 webkit2gtk-4.0 + libsoup2.4、glibc ≥ 2.35，
-          # 可装于 Ubuntu 22.04+ / Debian 12+ / deepin 23+ / 统信 UOS V25(2500) / 麒麟 V11
-          # 注意：统信 UOS V20 全系（1050/1060/1070，glibc 2.28）不在支持范围内
+          # Linux amd64：在 debian:buster 容器内构建。
+          # buster = glibc 2.28，与 UOS V20 / deepin 20.x / 麒麟 V10 同一底座，
+          # 产物向下兼容 glibc 2.28，向上兼容更新的发行版；
+          # Tauri v1 另外依赖 webkit2gtk-4.0 + libsoup2.4（Debian 10 起即有）
           - platform: ubuntu-22.04
             args: ''
-          # Linux arm64：覆盖 UOS V25 / 麒麟 V11 的 ARM 机型（公开仓库才有 arm runner）
+            container: debian:buster
+          # Linux arm64：覆盖国产 Linux（含 UOS V20）的 ARM 机型（公开仓库才有 arm runner）
+          # debian:buster 是 multi-arch 镜像，arm runner 上会自动拉 arm64 层
           - platform: ubuntu-22.04-arm
             args: ''
+            container: debian:buster
           - platform: windows-latest
             args: ''
     runs-on: ${{ matrix.platform }}
+    # 只有 Linux 条目声明了 container。直接写 ${{ matrix.container }} 时，
+    # 未声明的条目会被解析成空串并触发 "invalid container" 校验失败，
+    # 所以用 `… || null` 兜底成「不使用容器」
+    container: ${{ matrix.container != '' && matrix.container || null }}
     steps:
       - name: echo release_id
         run: echo "release_id = ${{ needs.create-release.outputs.release_id }}" ${{ needs.create-release.outputs.release_id }}
@@ -116,25 +124,39 @@ jobs:
           # macOS 上需要同时具备两个 target 才能交叉编译出 arm64 / x86_64 双架构
           targets: ${{ startsWith(matrix.platform, 'macos') && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      # 依赖清单与 matrix 中的平台名必须一致，否则 Linux 上不会安装系统依赖
+      # debian:buster 已进入 EOL，源迁到 archive.debian.org 且 Release 已过期，
+      # 不切源 + 不关有效期校验的话 apt-get update 会直接失败
+      - name: switch apt to debian archive (buster only)
+        if: startsWith(matrix.platform, 'ubuntu')
+        run: |
+          echo 'deb [trusted=yes] http://archive.debian.org/debian buster main' > /etc/apt/sources.list
+          echo 'deb [trusted=yes] http://archive.debian.org/debian-security buster/updates main' >> /etc/apt/sources.list
+          echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10-no-check-valid-until
+          echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/10-retries
+
+      # 依赖清单与 matrix 中的平台名必须一致，否则 Linux 上不会安装系统依赖。
+      # 容器内已是 root，不能用 sudo。
+      # buster 没有 libayatana-appindicator3-dev，用等价的 libappindicator3-dev。
       - name: install dependencies (ubuntu only)
         if: startsWith(matrix.platform, 'ubuntu')
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          apt-get update
+          apt-get install -y --no-install-recommends \
             libwebkit2gtk-4.0-dev \
             libgtk-3-dev \
             build-essential \
+            pkg-config \
             curl \
             wget \
             file \
             libssl-dev \
-            libayatana-appindicator3-dev \
+            libappindicator3-dev \
             librsvg2-dev \
             patchelf \
             xdg-utils \
             libfuse2 \
-            rpm
+            rpm \
+            ca-certificates
 
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
@@ -170,6 +192,16 @@ jobs:
 
       - name: Install frontend dependencies
         run: pnpm install
+
+      # 把 glibc / node 基线打到日志里：glibc 决定了产物能跑的最低发行版，
+      # node 也需要在 glibc 2.28 上能真正启动（Node 官方 x64 要求 glibc ≥ 2.28）
+      - name: print build baseline (linux only)
+        if: startsWith(matrix.platform, 'ubuntu')
+        run: |
+          cat /etc/os-release | head -2
+          ldd --version | head -1
+          node -v
+          pnpm -v
 
       - uses: tauri-apps/tauri-action@v0
         id: tauri-action
