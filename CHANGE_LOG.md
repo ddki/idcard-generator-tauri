@@ -1,5 +1,16 @@
 # 📄 更新日志
 
+## [2.0.0](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.13...v2.0.0) (2026-10-28)
+
+### 📦️ 构建相关 | Changes that affect the build system or external dependencies
+
+- :package: 版本号升至 `2.0.0`，与 Tauri 2 大版本对齐；`master` 此后按 `v2.x` 编号发布
+- :package: Tauri v1 维护线改用独立分支 `tauri-v1`（版本自 `v1.0.0` 起），与本分支互不影响
+
+### 🔨 其他修改 | Other changes that do not modify src or test files
+
+- :hammer: 本次仅调整版本号与分支发版策略，功能与 `v0.1.13` 保持一致
+
 ## [0.1.13](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.12...v0.1.13) (2026-10-28)
 
 ### ✨ 新增功能 | A new feature

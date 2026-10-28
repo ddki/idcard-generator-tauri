@@ -1,7 +1,7 @@
 {
 	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
 	"productName": "idcard-generator",
-	"version": "0.1.13",
+	"version": "2.0.0",
 	"identifier": "idcard-generator.ddki.github.io",
 	"build": {
 		"beforeBuildCommand": "pnpm run build",
