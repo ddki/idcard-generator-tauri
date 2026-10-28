@@ -1469,7 +1469,7 @@ dependencies = [
 
 [[package]]
 name = "idcard-generator"
-version = "0.1.14"
+version = "1.0.0"
 dependencies = [
  "serde",
  "serde_json",

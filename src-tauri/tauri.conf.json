@@ -9,7 +9,7 @@
 	},
 	"package": {
 		"productName": "idcard-generator",
-		"version": "0.1.14"
+		"version": "1.0.0"
 	},
 	"tauri": {
 		"allowlist": {
@@ -70,7 +70,7 @@
 		},
 		"systemTray": {
 			"iconPath": "icons/32x32.png",
-			"iconAsTemplate": true
+			"iconAsTemplate": false
 		},
 		"windows": [
 			{

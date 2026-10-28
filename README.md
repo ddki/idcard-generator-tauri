@@ -70,7 +70,7 @@
 
 项目基于 tauri 开发。 Windows 运行依赖于 MicrosoftEdgeWebView2Runtime，Windows10 2004 版本以后系统内置 WebView2Runtime，之前版本系统需要安装它， 官方下载地址：https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/#download-section
 
-> 分支说明：`master` 使用 Tauri v2；`tauri-v1` 分支固定在 **Tauri v1（1.8.x）**，发布 tag 形如 `tauri1_v0.1.14`，两者互不影响。
+> 分支说明：`master` 使用 Tauri v2（版本停在 `v0.1.x`）；`tauri-v1` 分支固定在 **Tauri v1（1.8.x）**，从 `v1.0.0` 起独立编号，两者互不影响。
 
 各系统与 CPU 架构的支持情况见 [System Support](#computer-system-support)。
 
@@ -109,13 +109,13 @@
 | v0.1.0 ~ v0.1.3                | 1.0.0-rc.2         | 无 GitHub Actions，未产出官方 Linux 安装包       | —（仅有本地 / Windows 产物）      |
 | v0.1.4 ~ v0.1.9                | 2.0.0-alpha ~ beta | ubuntu-latest（当时为 Ubuntu 22.04，glibc 2.35） | UOS V25、deepin 23+、麒麟 V11     |
 | v0.1.10 及以后（含当前开发版） | 2.0.1 ~ 2.12.x     | ubuntu-22.04 / ubuntu-22.04-arm                  | UOS V25、deepin 23+、麒麟 V11     |
-| tauri1_v0.1.14 及以后          | 1.8.3              | debian:buster 容器（amd64 / arm64）              | UOS V20+、deepin 20.x+、麒麟 V10+ |
+| v1.0.0 及以后（tauri-v1 分支） | 1.8.3              | debian:buster 容器（amd64 / arm64）              | UOS V20+、deepin 20.x+、麒麟 V10+ |
 
 **关于 UOS V20 的可用性：**
 
 1. `v0.1.0 ~ v0.1.3` 时期仓库还没有发布流水线，没有官方 Linux 包；
 2. `v0.1.4 ~ v0.1.13` 的产物在 Ubuntu 22.04（glibc 2.35）上编译，V20 只有 glibc 2.28，运行时会直接报 glibc / webkit 库缺失；
-3. 自 **tauri1_v0.1.14**（本分支）起，Linux 构建移进 `debian:buster` 容器，产物 glibc 下限降到 2.28，**UOS V20 / deepin 20.x / 麒麟 V10 可直接安装**。
+3. 自 **v1.0.0**（本分支）起，Linux 构建移进 `debian:buster` 容器，产物 glibc 下限降到 2.28，**UOS V20 / deepin 20.x / 麒麟 V10 可直接安装**。
 
 > V20 上优先用 **AppImage**：它会自带 gtk / libsoup / webkit2gtk，不依赖目标机是否装了这些库（glibc 仍需系统提供）。用 deb 时若缺运行时依赖，可执行 `sudo apt install -y libwebkit2gtk-4.0-37 libappindicator3-1` 补齐。
 

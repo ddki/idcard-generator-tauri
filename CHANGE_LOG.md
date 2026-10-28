@@ -1,5 +1,18 @@
 # 📄 更新日志
 
+## [1.0.0](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.13...v1.0.0) (2026-10-28)
+
+### 📦️ 构建相关 | Changes that affect the build system or external dependencies
+
+- :package: 后端整体降级到 Tauri v1（1.8.3）：`tauri.conf.json` 改用 v1 结构（`build.devPath` / `distDir` / `package.version` / `allowlist` / `tauri.updater`），移除 v2 的 capabilities 与 gen/schemas
+- :package: 用原生实现替代 v2 插件：设置持久化（settings.json）、开机自启（注册表 / LaunchAgent / desktop 文件）、单实例（回环 TCP 唤醒）
+- :package: 前端改用 `@tauri-apps/api` v1（`tauri` / `dialog` / `shell` / `updater` / `process`），移除 6 个 `@tauri-apps/plugin-*` 依赖
+- :package: CI 切换到 Tauri v1 依赖（webkit2gtk-4.0）、`tauri-action@v0`，新增 frontend/rust 检查流水线；tauri-v1 分支从 `v1.0.0` 起独立编号
+
+### 🔨 其他修改 | Other changes that do not modify src or test files
+
+- :hammer: 清理脚本与依赖：删除未使用的 `scripts/update.ts`、`changelog-config.cjs` 引用及 `@actions/github` / `node-fetch`
+
 ## [0.1.13](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.12...v0.1.13) (2026-10-28)
 
 ### ✨ 新增功能 | A new feature

@@ -7,11 +7,10 @@ module.exports = {
 		'after:bump': ['npx prettier --write {package,./src-tauri/tauri.conf}.json', 'npx esno scripts/changelog.ts']
 	},
 	git: {
-		// Tauri v1 分支的 tag/提交使用 tauri1_v 前缀，与 master(v2) 区分
-		commitMessage: '🔖 release: tauri1_v${version}',
-		tagName: 'tauri1_v${version}',
-		tagAnnotation: 'tauri1_v${version}',
-		tagArgs: ['-a', '-m', 'tauri1_v${version}']
+		commitMessage: '🔖 release: v${version}',
+		tagName: 'v${version}',
+		tagAnnotation: 'v${version}',
+		tagArgs: ['-a', '-m', 'v${version}']
 	},
 	plugins: {
 		'@release-it/conventional-changelog': {
