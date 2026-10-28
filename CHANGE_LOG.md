@@ -1,5 +1,19 @@
 # 📄 更新日志
 
+## [0.1.13](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.12...v0.1.13) (2026-10-28)
+
+### ✨ 新增功能 | A new feature
+
+- :sparkles: 支持人像照片选择与裁剪 ([c30a6d7](https://github.com/ddki/idcard-generator-tauri/commit/c30a6d7adcb79b50e074763d88f466186a20ded7))
+
+### 📦️ 构建相关 | Changes that affect the build system or external dependencies
+
+- :package: 同步 Cargo.lock 版本与 tauri 生成的 schema ([73ce620](https://github.com/ddki/idcard-generator-tauri/commit/73ce620a6e6c8d4c904169eb092d605da467507d))
+
+### 🔨 其他修改 | Other changes that do not modify src or test files
+
+- :hammer: 移除未使用的 JSX 工具链依赖 ([c31d68c](https://github.com/ddki/idcard-generator-tauri/commit/c31d68c23e842bdbe9eedce1bc3cbf66591d097a))
+
 ## [0.1.12](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.11...v0.1.12) (2026-10-27)
 
 ### 🔨 其他修改 | Other changes that do not modify src or test files
