@@ -115,7 +115,7 @@ fn set_enabled(app: &AppHandle, id: &str, exe: &str, enabled: bool) -> Result<()
 
 #[cfg(target_os = "linux")]
 fn desktop_path(app: &AppHandle, id: &str) -> Option<PathBuf> {
-	let config = app.path_resolver().app_config_dir().ok()?;
+	let config = app.path_resolver().app_config_dir()?;
 	// app_config_dir 形如 ~/.config/<identifier>，自启项要放在 ~/.config/autostart
 	let base = config.parent()?.to_path_buf();
 	Some(base.join("autostart").join(format!("{id}.desktop")))
