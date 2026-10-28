@@ -1,6 +1,7 @@
 <template>
 	<div class="viewer">
 		<div class="left-form" ref="form">
+			<PhotoPicker v-model="userPhoto" :sex="formData.sexText" />
 			<el-form :inline="true" size="default" label-width="90px" label-position="left" label-suffix=":">
 				<el-form-item label="姓">
 					<el-input v-model="formData.firstName" placeholder="姓" />
@@ -92,9 +93,12 @@ import * as AssetsUtils from '../../utils/AssetsUtils'
 import type { FprCardImageInput } from 'fprCard'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import ImageLayoutToggle from '@/components/ImageLayoutToggle.vue'
+import PhotoPicker from '@/components/PhotoPicker.vue'
 import type { Country } from 'baseModel'
 import { JSON_COUNTRY } from '../../utils/AssetsUtils'
 import { pinyin } from 'pinyin-pro'
+import { FPR_CANVAS, FPR_PHOTO } from '@/constant/photo'
+import { drawUserPhoto, loadImage } from '@/utils/ImageUtils'
 
 const props = defineProps({
 	firstName: {
@@ -213,11 +217,11 @@ watch(verticalLayout, (value) => {
 const validityTypeOptions = IdcardConstant.validityTypeData
 const imageData = reactive({
 	fontImage: AssetsUtils.FPR_IMAGE_FONT,
-	backImage: AssetsUtils.FPR_IMAGE_BACK,
-	userImage: AssetsUtils.IMAGE_USER_DEFAULT,
-	userMaleImage: AssetsUtils.IMAGE_USER_MALE,
-	userFemaleImage: AssetsUtils.IMAGE_USER_FEMALE
+	backImage: AssetsUtils.FPR_IMAGE_BACK
 })
+
+/** 当前使用的人像图，由人像选择器维护（预制人像或用户上传裁剪后的结果） */
+const userPhoto = ref('')
 
 /* eslint-disable */
 const reg = /\-/g
@@ -242,7 +246,7 @@ const onChangeValidityType = (value: string): void => {
 	}
 }
 
-const onSubmit = (): void => {
+const onSubmit = async (): Promise<void> => {
 	if (formData.birthday == null || formData.birthday == undefined || formData.length < 8 || formData.cardNumber) {
 		formData.birthday = getBirthdayFromIdCard(formData.cardNumber)
 	}
@@ -253,59 +257,50 @@ const onSubmit = (): void => {
 		formData.countryText = country
 	}
 	console.log('data: ', formData)
-	nextTick(() => {
-		const fontCanvasElement = document.getElementById('fontCanvas') as HTMLCanvasElement
-		fontCanvasElement.width = 600
-		fontCanvasElement.height = 394
-		const fontContext: CanvasRenderingContext2D = fontCanvasElement.getContext('2d') || new CanvasRenderingContext2D()
-		const fontImage = new Image(1200)
-		fontImage.onload = () => {
-			fontContext.drawImage(fontImage, 0, 0, fontCanvasElement.width, fontCanvasElement.height)
-		}
-		fontImage.src = imageData.fontImage || ''
+	await nextTick()
+	const fontCanvasElement = document.getElementById('fontCanvas') as HTMLCanvasElement
+	fontCanvasElement.width = FPR_CANVAS.width
+	fontCanvasElement.height = FPR_CANVAS.height
+	const fontContext = fontCanvasElement.getContext('2d')
+	const fontImage = await loadImage(imageData.fontImage || '')
+	if (fontContext && fontImage) {
+		fontContext.drawImage(fontImage, 0, 0, fontCanvasElement.width, fontCanvasElement.height)
+	}
 
-		const backCanvasElement = document.getElementById('backCanvas') as HTMLCanvasElement
-		backCanvasElement.width = 600
-		backCanvasElement.height = 394
-		backCanvasElement.style.letterSpacing = '2px'
-		const backContext: CanvasRenderingContext2D = backCanvasElement.getContext('2d') || new CanvasRenderingContext2D()
-		const backImage = new Image(1200)
-		const photoImage = new Image(30)
-		backImage.onload = () => {
-			backContext.drawImage(backImage, 0, 0, backCanvasElement.width, backCanvasElement.height)
-			backContext.font = 'normal normal 300 22px 黑体'
-			backContext.fillStyle = '#000'
-			const cnName = [formData.firstName, formData.lastName].join('')
-			const pinyinName = pinyin([formData.firstName, formData.lastName].join(','), {
-				toneType: 'none'
-			}).toUpperCase()
-			backContext.fillText(pinyinName, 85, 130)
-			backContext.fillText(cnName, 85, 160)
-			backContext.fillText(formData.sexText, 85, 215)
-			backContext.fillText(formData.countryText, 85, 265)
-			backContext.fillText(formData.birthday, 200, 215)
-			// 有效期
-			backContext.fillText(dateStr.value, 85, 310)
+	const backCanvasElement = document.getElementById('backCanvas') as HTMLCanvasElement
+	backCanvasElement.width = FPR_CANVAS.width
+	backCanvasElement.height = FPR_CANVAS.height
+	backCanvasElement.style.letterSpacing = '2px'
+	const backContext = backCanvasElement.getContext('2d')
+	const backImage = await loadImage(imageData.backImage || '')
+	if (!backContext || !backImage) {
+		return
+	}
+	backContext.drawImage(backImage, 0, 0, backCanvasElement.width, backCanvasElement.height)
+	backContext.font = 'normal normal 300 22px 黑体'
+	backContext.fillStyle = '#000'
+	const cnName = [formData.firstName, formData.lastName].join('')
+	const pinyinName = pinyin([formData.firstName, formData.lastName].join(','), {
+		toneType: 'none'
+	}).toUpperCase()
+	backContext.fillText(pinyinName, 85, 130)
+	backContext.fillText(cnName, 85, 160)
+	backContext.fillText(formData.sexText, 85, 215)
+	backContext.fillText(formData.countryText, 85, 265)
+	backContext.fillText(formData.birthday, 200, 215)
+	// 有效期
+	backContext.fillText(dateStr.value, 85, 310)
 
-			const array = formData.cardNumber.split('')
-			let cardNumberText = ''
-			for (let index = 0; index < array.length; index++) {
-				const element = array[index]
-				cardNumberText += element + ''
-			}
-			backContext.fillText(cardNumberText, 175, 340)
+	const array = formData.cardNumber.split('')
+	let cardNumberText = ''
+	for (let index = 0; index < array.length; index++) {
+		const element = array[index]
+		cardNumberText += element + ''
+	}
+	backContext.fillText(cardNumberText, 175, 340)
 
-			backContext.drawImage(photoImage, 355, 90, 180, 200)
-		}
-		if (formData.sexText.indexOf('男') != -1) {
-			photoImage.src = imageData.userMaleImage || ''
-		} else if (formData.sexText.indexOf('女') != -1) {
-			photoImage.src = imageData.userFemaleImage || ''
-		} else {
-			photoImage.src = imageData.userImage || ''
-		}
-		backImage.src = imageData.backImage || ''
-	})
+	// 人像：按 cover 叠加到人像区域，背景保持透明
+	await drawUserPhoto(backContext, userPhoto.value, FPR_PHOTO)
 }
 
 const onInit = (): void => {
@@ -318,10 +313,19 @@ const onInit = (): void => {
 	formData.endDate = initFormData.endDate
 }
 
-onMounted(() => {
-	nextTick(() => {
+/** 首帧绘制完成后，人像/底色改动才触发自动重绘 */
+const rendered = ref(false)
+
+watch(userPhoto, () => {
+	if (rendered.value) {
 		onSubmit()
-	})
+	}
+})
+
+onMounted(async () => {
+	await nextTick()
+	await onSubmit()
+	rendered.value = true
 })
 </script>
 

@@ -31,9 +31,4 @@ declare module 'idCard' {
 		startDate: string
 		endDate: string
 	}
-
-	export interface IdCardImageInfo {
-		fontImage: string
-		backImage: string
-	}
 }

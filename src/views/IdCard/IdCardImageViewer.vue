@@ -1,6 +1,7 @@
 <template>
 	<div class="viewer">
 		<div class="left-form" ref="form">
+			<PhotoPicker v-model="userPhoto" :sex="formData.sexText" />
 			<el-form :inline="true" size="default" label-width="90px" label-position="left" label-suffix=":">
 				<el-form-item label="姓名">
 					<el-input v-model="formData.name" placeholder="姓名" />
@@ -85,6 +86,9 @@ import * as AssetsUtils from '../../utils/AssetsUtils'
 import type { IdCardImageInput } from 'idCard'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import ImageLayoutToggle from '@/components/ImageLayoutToggle.vue'
+import PhotoPicker from '@/components/PhotoPicker.vue'
+import { IDCARD_CANVAS, IDCARD_PHOTO } from '@/constant/photo'
+import { drawUserPhoto, loadImage } from '@/utils/ImageUtils'
 
 const props = defineProps({
 	name: {
@@ -168,11 +172,11 @@ watch(verticalLayout, (value) => {
 const validityTypeOptions = IdcardConstant.validityTypeData
 const imageData = reactive({
 	fontImage: AssetsUtils.IMAGE_IDCARD_FONT,
-	backImage: AssetsUtils.IMAGE_IDCARD_BACK,
-	userImage: AssetsUtils.IMAGE_USER_DEFAULT,
-	userMaleImage: AssetsUtils.IMAGE_USER_MALE,
-	userFemaleImage: AssetsUtils.IMAGE_USER_FEMALE
+	backImage: AssetsUtils.IMAGE_IDCARD_BACK
 })
+
+/** 当前使用的人像图，由人像选择器维护（预制人像或用户上传裁剪后的结果） */
+const userPhoto = ref('')
 
 /* eslint-disable */
 const reg = /\-/g
@@ -204,78 +208,68 @@ const onChangeValidityType = (value: string): void => {
 	}
 }
 
-const onSubmit = (): void => {
-	nextTick(() => {
-		const fontCanvasElement = document.getElementById('fontCanvas') as HTMLCanvasElement
-		fontCanvasElement.width = 600
-		fontCanvasElement.height = 378
-		const fontContext: CanvasRenderingContext2D = fontCanvasElement.getContext('2d') || new CanvasRenderingContext2D()
-		const fontImage = new Image(1200)
-		fontImage.onload = () => {
-			fontContext.drawImage(fontImage, 0, 0, fontCanvasElement.width, fontCanvasElement.height)
-			fontContext.font = 'normal normal 300 22px 黑体'
-			fontContext.fillStyle = '#000'
-			fontContext.fillText(formData.office, 260, 287)
-			fontContext.fillText(dateStr.value, 260, 330)
-		}
-		fontImage.src = imageData.fontImage || ''
+const onSubmit = async (): Promise<void> => {
+	await nextTick()
+	const fontCanvasElement = document.getElementById('fontCanvas') as HTMLCanvasElement
+	fontCanvasElement.width = IDCARD_CANVAS.width
+	fontCanvasElement.height = IDCARD_CANVAS.height
+	const fontContext = fontCanvasElement.getContext('2d')
+	const fontImage = await loadImage(imageData.fontImage || '')
+	if (fontContext && fontImage) {
+		fontContext.drawImage(fontImage, 0, 0, fontCanvasElement.width, fontCanvasElement.height)
+		fontContext.font = 'normal normal 300 22px 黑体'
+		fontContext.fillStyle = '#000'
+		fontContext.fillText(formData.office, 260, 287)
+		fontContext.fillText(dateStr.value, 260, 330)
+	}
 
-		const backCanvasElement = document.getElementById('backCanvas') as HTMLCanvasElement
-		backCanvasElement.width = 600
-		backCanvasElement.height = 378
-		backCanvasElement.style.letterSpacing = '2px'
-		const backContext: CanvasRenderingContext2D = backCanvasElement.getContext('2d') || new CanvasRenderingContext2D()
-		const backImage = new Image(1200)
-		const photoImage = new Image(30)
-		backImage.onload = () => {
-			backContext.drawImage(backImage, 0, 0, backCanvasElement.width, backCanvasElement.height)
-			backContext.font = 'normal normal 300 22px 黑体'
-			backContext.fillStyle = '#000'
-			backContext.fillText(formData.name, 115, 85)
-			backContext.fillText(formData.sexText, 115, 128)
-			backContext.fillText(formData.nation, 245, 128)
-			const arr = getBirthdayArrayFromIdCard(formData.idCard)
-			backContext.fillText(arr[0], 115, 172)
-			backContext.fillText(arr[1], 210, 172)
-			backContext.fillText(arr[2], 270, 172)
-			const address = formData.address
-			// 地址换行
-			const textWith = 240
-			let lineW = 0
-			let initH = 216
-			let substrIndex = 0
-			for (let i = 0; i < address.length; i++) {
-				lineW += backContext.measureText(address[i]).width
-				if (lineW > textWith) {
-					backContext.fillText(address.substring(substrIndex, i), 115, initH)
-					initH += 28
-					lineW = 0
-					substrIndex = i
-				}
-				if (i === address.length - 1) {
-					backContext.fillText(address.substring(substrIndex, i + 1), 115, initH)
-				}
-			}
-			// backContext.fillText(formData.address, 110, 216)
-			const array = formData.idCard.split('')
-			let idCardText = ''
-			for (let index = 0; index < array.length; index++) {
-				const element = array[index]
-				idCardText += element + ''
-			}
-			backContext.fillText(idCardText, 180, 330)
+	const backCanvasElement = document.getElementById('backCanvas') as HTMLCanvasElement
+	backCanvasElement.width = IDCARD_CANVAS.width
+	backCanvasElement.height = IDCARD_CANVAS.height
+	backCanvasElement.style.letterSpacing = '2px'
+	const backContext = backCanvasElement.getContext('2d')
+	const backImage = await loadImage(imageData.backImage || '')
+	if (!backContext || !backImage) {
+		return
+	}
+	backContext.drawImage(backImage, 0, 0, backCanvasElement.width, backCanvasElement.height)
+	backContext.font = 'normal normal 300 22px 黑体'
+	backContext.fillStyle = '#000'
+	backContext.fillText(formData.name, 115, 85)
+	backContext.fillText(formData.sexText, 115, 128)
+	backContext.fillText(formData.nation, 245, 128)
+	const arr = getBirthdayArrayFromIdCard(formData.idCard)
+	backContext.fillText(arr[0], 115, 172)
+	backContext.fillText(arr[1], 210, 172)
+	backContext.fillText(arr[2], 270, 172)
+	const address = formData.address
+	// 地址换行
+	const textWith = 240
+	let lineW = 0
+	let initH = 216
+	let substrIndex = 0
+	for (let i = 0; i < address.length; i++) {
+		lineW += backContext.measureText(address[i]).width
+		if (lineW > textWith) {
+			backContext.fillText(address.substring(substrIndex, i), 115, initH)
+			initH += 28
+			lineW = 0
+			substrIndex = i
+		}
+		if (i === address.length - 1) {
+			backContext.fillText(address.substring(substrIndex, i + 1), 115, initH)
+		}
+	}
+	const array = formData.idCard.split('')
+	let idCardText = ''
+	for (let index = 0; index < array.length; index++) {
+		const element = array[index]
+		idCardText += element + ''
+	}
+	backContext.fillText(idCardText, 180, 330)
 
-			backContext.drawImage(photoImage, 385, 60, 180, 200)
-		}
-		if (formData.sexText === '男') {
-			photoImage.src = imageData.userMaleImage || ''
-		} else if (formData.sexText === '女') {
-			photoImage.src = imageData.userFemaleImage || ''
-		} else {
-			photoImage.src = imageData.userImage || ''
-		}
-		backImage.src = imageData.backImage || ''
-	})
+	// 人像：按 cover 叠加到人像区域，背景保持透明
+	await drawUserPhoto(backContext, userPhoto.value, IDCARD_PHOTO)
 }
 
 const onInit = (): void => {
@@ -289,11 +283,20 @@ const onInit = (): void => {
 	formData.endDate = initFormData.endDate
 }
 
-onMounted(() => {
-	onChangeIdCard(props.idCard as string)
-	nextTick(() => {
+/** 首帧绘制完成后，人像/底色改动才触发自动重绘 */
+const rendered = ref(false)
+
+watch(userPhoto, () => {
+	if (rendered.value) {
 		onSubmit()
-	})
+	}
+})
+
+onMounted(async () => {
+	onChangeIdCard(props.idCard as string)
+	await nextTick()
+	await onSubmit()
+	rendered.value = true
 })
 </script>
 

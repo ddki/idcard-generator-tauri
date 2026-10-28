@@ -1,5 +1,5 @@
 import IdcardConstant from '../constant/idcard'
-import type { IdCardImageInfo, IdCardImageInput, IdCardInfo, IdCardInput } from 'idCard'
+import type { IdCardInfo, IdCardInput } from 'idCard'
 import type { FprCardInfo, FprCardInput } from 'fprCard'
 import { JSON_CITY, JSON_COUNTRY } from './AssetsUtils'
 import { FIRST_NAMES, LAST_NAMES, STREET_NAMES } from '@/constant'
@@ -43,20 +43,6 @@ export function generateFprCardInfo(param: FprCardInput): FprCardInfo {
 		birthday: param.birthday || getBirthday(param.age),
 		mobile: getMobile(),
 		country: country
-	}
-
-	return result
-}
-
-/**
- * 根据输入信息生成身份证照片
- * @param params 输入
- * @returns 身份证照片
- */
-export function generateIdCardImage(params: IdCardImageInput): IdCardImageInfo {
-	const result: IdCardImageInfo = {
-		fontImage: params.name,
-		backImage: params.name
 	}
 
 	return result

@@ -3,7 +3,6 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -23,7 +22,6 @@ export default defineConfig(async ({ mode }) => {
 		},
 		plugins: [
 			vue(),
-			vueJsx(),
 			ElementPlus({
 				useSource: true
 			}),
@@ -63,6 +61,7 @@ export default defineConfig(async ({ mode }) => {
 				'element-plus/es/components/radio-button/style/css',
 				'element-plus/es/components/radio-group/style/css',
 				'element-plus/es/components/select/style/css',
+				'element-plus/es/components/slider/style/css',
 				'element-plus/es/components/switch/style/css',
 				'element-plus/es/components/table/style/css',
 				'element-plus/es/components/table-column/style/css',
