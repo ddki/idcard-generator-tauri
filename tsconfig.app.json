@@ -8,7 +8,7 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"types": ["element-plus/global", "pinia-plugin-persist", "@tauri-apps/api"],
+		"types": ["element-plus/global", "@tauri-apps/api"],
 		"module": "ESNext",
 		"moduleResolution": "node",
 		"target": "ESNext"
