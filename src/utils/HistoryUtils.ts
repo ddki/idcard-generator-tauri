@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core'
+import { invoke } from '@tauri-apps/api/tauri'
 import { isDesktop } from './SettingUtils'
 
 /** 历史记录类型：身份证 / 外国人永久居留证 */

@@ -1,56 +1,48 @@
 use tauri::{
-	menu::{Menu, MenuItem},
-	tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-	AppHandle, Emitter, Manager, Runtime,
+	AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
+	SystemTrayMenuItem,
 };
 
 use crate::app;
 
-pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
-	let setting = MenuItem::with_id(app, "setting", "设置", true, None::<&str>)?;
-	let check_update = MenuItem::with_id(app, "check_update", "检查更新", true, None::<&str>)?;
-	let quit = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
-	let menus = Menu::with_items(app, &[&setting, &check_update, &quit])?;
+/// 托盘菜单项 id
+const MENU_SETTING: &str = "setting";
+const MENU_CHECK_UPDATE: &str = "check_update";
+const MENU_QUIT: &str = "quit";
 
-	let _ = TrayIconBuilder::with_id("tary")
-		.tooltip("证件生成器")
-		.icon(app.default_window_icon().unwrap().clone())
-		.menu(&menus)
-		.show_menu_on_left_click(true)
-		.on_menu_event(move |app, event| match event.id.as_ref() {
-			"setting" => {
-				// 设置已经是主页内的弹窗，这里把主窗口带到前台并通知前端打开它
-				if let Some(window) = app.get_webview_window("main") {
-					let _ = window.show();
-					let _ = window.unminimize();
-					let _ = window.set_focus();
+/// 创建托盘。图标取自 tauri.conf.json 的 `tauri.systemTray.iconPath`。
+pub fn create(app: &AppHandle) -> tauri::Result<()> {
+	let handle = app.clone();
+
+	let menu = SystemTrayMenu::new()
+		.add_item(CustomMenuItem::new(MENU_SETTING, "设置"))
+		.add_native_item(SystemTrayMenuItem::Separator)
+		.add_item(CustomMenuItem::new(MENU_CHECK_UPDATE, "检查更新"))
+		.add_native_item(SystemTrayMenuItem::Separator)
+		.add_item(CustomMenuItem::new(MENU_QUIT, "退出"));
+
+	let _ = SystemTray::new()
+		.with_menu(menu)
+		.with_tooltip("证件生成器")
+		.on_event(move |event| match event {
+			SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+				MENU_SETTING => {
+					// 设置已经是主页内的弹窗，这里把主窗口带到前台并通知前端打开它
+					app::focus_main(&handle);
+					let _ = handle.emit_all("open-setting", ());
 				}
-				let _ = app.emit("open-setting", ());
-			}
-			"check_update" => {
-				println!("check update ....");
-				app::updater::check_update(app.clone());
-			}
-			"quit" => {
-				app.exit(0);
-			}
+				MENU_CHECK_UPDATE => {
+					// 更新流程由前端驱动（检查/确认/安装），这里只负责唤起窗口
+					app::focus_main(&handle);
+					let _ = handle.emit_all("check-update", ());
+				}
+				MENU_QUIT => handle.exit(0),
+				_ => {}
+			},
+			SystemTrayEvent::LeftClick { .. } => app::focus_main(&handle),
 			_ => {}
 		})
-		.on_tray_icon_event(|tray, event| {
-			if let TrayIconEvent::Click {
-				button: MouseButton::Left,
-        button_state: MouseButtonState::Up,
-        ..
-      } = event
-			{
-				let app = tray.app_handle();
-				if let Some(window) = app.get_webview_window("main") {
-					let _ = window.show();
-					let _ = window.set_focus();
-				}
-			}
-		})
-		.build(app);
+		.build(app)?;
 
 	Ok(())
 }

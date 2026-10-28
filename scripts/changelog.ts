@@ -3,7 +3,6 @@ import c from 'kleur'
 
 import { $argv, relativePath, LOG_PATH, UPDATE_LOG_PATH, packageJSON } from './utils'
 import path from 'path'
-import { test } from 'node:test'
 
 export default function changelog(tag: string) {
 	/* eslint-disable */

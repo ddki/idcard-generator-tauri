@@ -70,13 +70,15 @@
 
 项目基于 tauri 开发。 Windows 运行依赖于 MicrosoftEdgeWebView2Runtime，Windows10 2004 版本以后系统内置 WebView2Runtime，之前版本系统需要安装它， 官方下载地址：https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/#download-section
 
+> 分支说明：`master` 使用 Tauri v2；`tauri-v1` 分支固定在 **Tauri v1（1.8.x）**，发布 tag 形如 `tauri1_v0.1.14`，两者互不影响。
+
 各系统与 CPU 架构的支持情况见 [System Support](#computer-system-support)。
 
 ## :computer: System Support
 
 发布包由 GitHub Actions 在 `windows-latest`、`macos-latest`、`ubuntu-22.04`、`ubuntu-22.04-arm` 上构建，因此：
 
-- Linux 产物基于 Ubuntu 22.04 编译，要求 **glibc ≥ 2.35**，并依赖 **webkit2gtk-4.1 + libsoup3**；
+- Linux 产物基于 Ubuntu 22.04 编译，要求 **glibc ≥ 2.35**，并依赖 **webkit2gtk-4.0 + libsoup2.4**（Tauri v1）；
 - Linux arm64 构建使用 GitHub 的 arm runner，**仅公开仓库可用**；
 - 每个平台同时提供 **x86_64(amd64)** 与 **arm64(aarch64)** 产物（Windows 仅 x64）。
 
@@ -91,11 +93,11 @@
 | 统信 UOS V25（2500）               | x86_64 / arm64        | ✅   | Debian 12 底座，使用 deb 包                                            |
 | 麒麟 V11                           | x86_64 / arm64        | ✅   | Debian 12 底座，使用 deb 包                                            |
 | deepin 20.x（20.1 ~ 20.9）         | —                     | ❌   | Debian 10 底座、glibc 2.28、webkit2gtk-4.0，低于构建基线               |
-| 统信 UOS V20（1050 / 1060 / 1070） | —                     | ❌   | Debian 10 底座、glibc 2.28、webkit2gtk-4.0，Tauri v2 应用无法运行      |
+| 统信 UOS V20（1050 / 1060 / 1070） | —                     | ❌   | Debian 10 底座、glibc 2.28，低于构建基线（与 Tauri 版本无关）          |
 | 麒麟 V10（SP1 / SP2 / SP3）        | —                     | ❌   | Debian 10 底座、glibc 2.28、webkit2gtk-4.0，低于构建基线               |
 | Fedora                             | x86_64 / arm64        | ⚠️   | 提供 rpm 产物，但未在 Fedora 上实机验证，依赖包名可能与 rpm 声明不一致 |
 
-> 说明：Linux 依赖库缺失时，deb 可通过 `sudo apt install -y libwebkit2gtk-4.1-0 libayatana-appindicator3-1` 补齐。
+> 说明：Linux 依赖库缺失时，deb 可通过 `sudo apt install -y libwebkit2gtk-4.0-37 libayatana-appindicator3-1` 补齐。
 
 ### 程序版本与国产系统对照
 
@@ -106,6 +108,7 @@
 | v0.1.0 ~ v0.1.3                | 1.0.0-rc.2         | 无 GitHub Actions，未产出官方 Linux 安装包       | —（仅有本地 / Windows 产物）  |
 | v0.1.4 ~ v0.1.9                | 2.0.0-alpha ~ beta | ubuntu-latest（当时为 Ubuntu 22.04，glibc 2.35） | UOS V25、deepin 23+、麒麟 V11 |
 | v0.1.10 及以后（含当前开发版） | 2.0.1 ~ 2.12.x     | ubuntu-22.04 / ubuntu-22.04-arm                  | UOS V25、deepin 23+、麒麟 V11 |
+| tauri1_v0.1.14 及以后          | 1.8.3              | ubuntu-22.04 / ubuntu-22.04-arm                  | UOS V25、deepin 23+、麒麟 V11 |
 
 **关于 UOS V20 该用哪个版本：没有任何已发布版本可用。** 原因：
 
@@ -113,7 +116,7 @@
 2. 从 `v0.1.4` 开始有了流水线，但 Tauri 已经升级到 2.x，构建机固定为 Ubuntu 22.04，产物要求 glibc ≥ 2.35 与 webkit2gtk-4.1；
 3. UOS V20 / deepin 20.x / 麒麟 V10 是 Debian 10 底座，只有 glibc 2.28 与 webkit2gtk-4.0，运行时会直接报 glib 或 webkit 库缺失。
 
-若确实需要在 UOS V20 上使用，只能自行在 V20 环境里用 Tauri 1.x 源码（`v0.1.3` 及更早）编译并自行降级依赖，这不属于官方支持范围，也不再随项目更新。
+若确实需要在 UOS V20 上使用，可以基于 `tauri-v1` 分支源码在 V20 环境内自行编译（该分支已固定到 Tauri 1.8），但仍需自行解决 webkit2gtk-4.0 / glibc 2.28 的依赖，这不属于官方支持范围。
 
 ## ⚠️ 免责声明
 

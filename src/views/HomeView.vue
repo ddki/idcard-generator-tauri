@@ -41,12 +41,13 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { listen } from '@tauri-apps/api/event'
 import HeaderMenu from './HeaderMenuViewer.vue'
 import SettingDialog from '@/components/SettingDialog.vue'
 import { useRoute } from 'vue-router'
 import { isDesktop, loadSettings } from '@/utils/SettingUtils'
+import { checkUpdate, installUpdateAndRelaunch } from '@/utils/UpdaterUtils'
 
 const route = useRoute()
 const routerPath = ref(route.path)
@@ -58,12 +59,17 @@ const showDisclaimer = ref(true)
 const keepAliveViews = ['IdCardViewer', 'FprCardViewer']
 
 let unlistenOpenSetting: (() => void) | null = null
+let unlistenCheckUpdate: (() => void) | null = null
 
 onMounted(async () => {
 	if (isDesktop()) {
 		// 托盘菜单里的「设置」通过事件唤起这里的弹窗
 		unlistenOpenSetting = await listen('open-setting', () => {
 			settingVisible.value = true
+		})
+		// 托盘菜单里的「检查更新」由前端驱动完整更新流程
+		unlistenCheckUpdate = await listen('check-update', () => {
+			void runUpdate(true)
 		})
 	}
 
@@ -74,6 +80,8 @@ onMounted(async () => {
 onUnmounted(() => {
 	unlistenOpenSetting?.()
 	unlistenOpenSetting = null
+	unlistenCheckUpdate?.()
+	unlistenCheckUpdate = null
 })
 
 watch(
@@ -104,26 +112,40 @@ async function checkUpdateOnStart() {
 		if (!settings.checkUpdateOnStart) {
 			return
 		}
+		await runUpdate(false)
+	} catch (error) {
+		console.error('启动时检查更新失败：', error)
+	}
+}
 
-		const { check } = await import('@tauri-apps/plugin-updater')
-		const update = await check()
-		if (!update?.available) {
+/**
+ * 执行一次完整更新流程。
+ * @param interactive 托盘/手动触发时为 true：会提示「已是最新版本」等反馈
+ */
+async function runUpdate(interactive: boolean) {
+	try {
+		const result = await checkUpdate()
+		if (!result.shouldUpdate) {
+			if (interactive) {
+				ElMessage.success('当前已是最新版本')
+			}
 			return
 		}
 
-		await ElMessageBox.confirm(`发现新版本 ${update.version}，是否立即更新？`, '发现更新', {
+		await ElMessageBox.confirm(`发现新版本 ${result.version}，是否立即更新？`, '发现更新', {
 			confirmButtonText: '立即更新',
 			cancelButtonText: '稍后再说',
 			type: 'info'
 		})
 
-		await update.downloadAndInstall()
-		const { relaunch } = await import('@tauri-apps/plugin-process')
-		await relaunch()
+		await installUpdateAndRelaunch()
 	} catch (error) {
 		// 用户选择「稍后再说」时 ElMessageBox 会 reject('cancel')，不视为异常
 		if (error !== 'cancel' && error !== 'close') {
-			console.error('启动时检查更新失败：', error)
+			console.error('检查更新失败：', error)
+			if (interactive) {
+				ElMessage.error('获取更新失败，请检查网络后重试')
+			}
 		}
 	}
 }

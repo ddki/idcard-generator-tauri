@@ -1,38 +1,34 @@
 [package]
 name = "idcard-generator"
-version = "0.1.13"
+version = "0.1.14"
 description = "中国居民身份证生成器"
 authors = [ "ddki" ]
 license = ""
 repository = "https://github.com/ddki/idcard-generator-tauri"
 default-run = "idcard-generator"
 edition = "2021"
-rust-version = "1.90"
+rust-version = "1.70"
 
-[build-dependencies.tauri-build]
-version = "2.7.4"
-features = [ ]
+[build-dependencies]
+tauri-build = { version = "1.5", features = [ ] }
 
 [dependencies]
-serde_json = "1.0.154"
-tauri-plugin-shell = "2.5.0"
-tauri-plugin-dialog = "2.8.3"
-tauri-plugin-updater = "2.14.0"
-tauri-plugin-autostart = "2.7.0"
-tauri-plugin-single-instance = "2.5.4"
-tauri-plugin-store = "2.5.0"
-tauri-plugin-notification = "2.7.0"
+serde = { version = "1", features = [ "derive" ] }
+serde_json = "1"
+tauri = { version = "1.8", features = [
+  "shell-open",
+  "dialog-open",
+  "process-relaunch",
+  "updater",
+  "system-tray",
+  "devtools",
+] }
 
-  [dependencies.serde]
-  version = "1.0.229"
-  features = [ "derive" ]
-
-  [dependencies.tauri]
-  version = "2.12.5"
-  features = [ "devtools", "tray-icon" ]
+[target.'cfg(windows)'.dependencies]
+winreg = "0.52"
 
 [features]
-default = [ "custom-protocol" ]
+# Tauri v1：生产构建（custom protocol）由 CLI 通过此 feature 打开
 custom-protocol = [ "tauri/custom-protocol" ]
 
 [profile.release]

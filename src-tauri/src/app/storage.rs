@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Manager, Runtime, State};
+use tauri::{AppHandle, Runtime, State};
 
 /// 数据目录指针，固定放在 app config 目录，这样即使数据目录被改到别处也能找回来
 const BOOTSTRAP_FILE: &str = "storage.json";
@@ -94,11 +94,13 @@ fn clear_dir_contents(dir: &Path) -> Result<u64, String> {
 
 		if file_type.is_dir() {
 			let (bytes, _) = dir_stats(&path);
-			fs::remove_dir_all(&path).map_err(|error| format!("删除 {} 失败：{error}", path.display()))?;
+			fs::remove_dir_all(&path)
+				.map_err(|error| format!("删除 {} 失败：{error}", path.display()))?;
 			freed += bytes;
 		} else if file_type.is_file() {
 			let size = entry.metadata().map(|meta| meta.len()).unwrap_or(0);
-			fs::remove_file(&path).map_err(|error| format!("删除 {} 失败：{error}", path.display()))?;
+			fs::remove_file(&path)
+				.map_err(|error| format!("删除 {} 失败：{error}", path.display()))?;
 			freed += size;
 		}
 	}
@@ -147,13 +149,14 @@ impl StorageState {
 	}
 }
 
-pub fn init<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<StorageState> {
-	let path = app.path();
-	let config_dir = path.app_config_dir()?;
-	let app_data_dir = path.app_data_dir()?;
-	let app_local_data_dir = path.app_local_data_dir()?;
-	let cache_dir = path.app_cache_dir()?;
-	let log_dir = path.app_log_dir()?;
+pub fn init<R: Runtime>(app: &AppHandle<R>) -> Result<StorageState, String> {
+	let path = app.path_resolver();
+	// v1 的 PathResolver 返回 Option：拿不到系统目录时明确报错，避免后续写入出现“幽灵路径”
+	let config_dir = path.app_config_dir().ok_or("无法定位配置目录")?;
+	let app_data_dir = path.app_data_dir().ok_or("无法定位数据目录")?;
+	let app_local_data_dir = path.app_local_data_dir().ok_or("无法定位本地数据目录")?;
+	let cache_dir = path.app_cache_dir().ok_or("无法定位缓存目录")?;
+	let log_dir = path.app_log_dir().ok_or("无法定位日志目录")?;
 
 	let _ = fs::create_dir_all(&config_dir);
 	let _ = fs::create_dir_all(&app_data_dir);
@@ -276,7 +279,10 @@ pub fn history_load(state: State<'_, StorageState>) -> HistoryData {
 }
 
 #[tauri::command]
-pub fn history_save(state: State<'_, StorageState>, entries: Vec<serde_json::Value>) -> Result<(), String> {
+pub fn history_save(
+	state: State<'_, StorageState>,
+	entries: Vec<serde_json::Value>,
+) -> Result<(), String> {
 	let data_dir = state.data_dir();
 	let _ = fs::create_dir_all(&data_dir);
 
@@ -289,7 +295,8 @@ pub fn history_save(state: State<'_, StorageState>, entries: Vec<serde_json::Val
 	};
 
 	let content = serde_json::to_vec(&data).map_err(|error| error.to_string())?;
-	fs::write(history_path(&data_dir), content).map_err(|error| format!("写入历史记录失败：{error}"))
+	fs::write(history_path(&data_dir), content)
+		.map_err(|error| format!("写入历史记录失败：{error}"))
 }
 
 #[tauri::command]

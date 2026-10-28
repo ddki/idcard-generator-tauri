@@ -72,7 +72,6 @@ export default defineConfig(async ({ mode }) => {
 		},
 		resolve: {
 			alias: {
-				'@tauri-apps/api': fileURLToPath(new URL('./node_modules/@tauri-apps/api', import.meta.url)),
 				'@': fileURLToPath(new URL('./src', import.meta.url))
 			}
 		},
@@ -90,8 +89,9 @@ export default defineConfig(async ({ mode }) => {
 		},
 		envPrefix: ['VITE_', 'TAURI_'],
 		build: {
-			// Tauri 2 使用系统 WebView（Windows: WebView2 / macOS: WKWebView 15+）
-			target: ['es2022', 'chrome105', 'safari15'],
+			// Tauri v1 使用系统 WebView（Windows: WebView2 / macOS: WKWebView 15+ / Linux: WebKitGTK 4.0）
+			// Linux 侧对应 Ubuntu 22.04+ 的 WebKitGTK 2.36，与 safari15 基本对齐
+			target: ['es2021', 'chrome105', 'safari15'],
 			// don't minify for debug builds
 			minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
 			// produce sourcemaps for debug builds

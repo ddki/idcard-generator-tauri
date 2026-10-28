@@ -1,46 +1,76 @@
 {
-	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
-	"productName": "idcard-generator",
-	"version": "0.1.13",
-	"identifier": "idcard-generator.ddki.github.io",
+	"$schema": "https://schema.tauri.app/config/1",
 	"build": {
-		"beforeBuildCommand": "pnpm run build",
 		"beforeDevCommand": "pnpm run dev",
-		"devUrl": "http://localhost:1420",
-		"frontendDist": "../dist"
+		"beforeBuildCommand": "pnpm run build",
+		"devPath": "http://localhost:1420",
+		"distDir": "../dist",
+		"withGlobalTauri": false
 	},
-	"bundle": {
-		"active": true,
-		"category": "DeveloperTool",
-		"shortDescription": "",
-		"longDescription": "",
-		"copyright": "ddki",
-		"externalBin": [],
-		"license": "GPL-3.0",
-		"licenseFile": "../LICENSE",
-		"resources": [],
-		"targets": "all",
-		"icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
-		"macOS": {
-			"entitlements": null,
-			"exceptionDomain": "",
-			"frameworks": [],
-			"providerShortName": null,
-			"signingIdentity": null
-		},
-		"windows": {
-			"certificateThumbprint": null,
-			"digestAlgorithm": "sha256",
-			"timestampUrl": "",
-			"wix": {
-				"template": "./wix/peruser.wxs",
-				"language": ["zh-CN"]
+	"package": {
+		"productName": "idcard-generator",
+		"version": "0.1.14"
+	},
+	"tauri": {
+		"allowlist": {
+			"all": false,
+			"shell": {
+				"all": false,
+				"open": true
+			},
+			"dialog": {
+				"all": false,
+				"open": true
+			},
+			"process": {
+				"all": false,
+				"relaunch": true
 			}
-		}
-	},
-	"app": {
+		},
+		"bundle": {
+			"active": true,
+			"targets": "all",
+			"identifier": "idcard-generator.ddki.github.io",
+			"icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+			"resources": [],
+			"externalBin": [],
+			"copyright": "ddki",
+			"category": "DeveloperTool",
+			"shortDescription": "",
+			"longDescription": "",
+			"macOS": {
+				"entitlements": null,
+				"exceptionDomain": "",
+				"frameworks": [],
+				"providerShortName": null,
+				"signingIdentity": null
+			},
+			"windows": {
+				"certificateThumbprint": null,
+				"digestAlgorithm": "sha256",
+				"timestampUrl": "",
+				"wix": {
+					"template": "./wix/peruser.wxs",
+					"license": "../LICENSE",
+					"language": ["zh-CN"]
+				}
+			}
+		},
 		"security": {
 			"csp": null
+		},
+		"updater": {
+			"active": true,
+			"dialog": false,
+			"endpoints": ["https://github.com/ddki/idcard-generator-tauri/releases/latest/download/latest.json"],
+			"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE5NEExOThEQkE2RUI3RjUKUldUMXQyNjZqUmxLR1hVaFRCaTBtc0dwSWoyWXBDZVd5UVQ3V040VnFZanBFZzMvaXJoT0tjbkoK",
+			"windows": {
+				"installMode": "passive"
+			}
+		},
+		"systemTray": {
+			"iconPath": "icons/32x32.png",
+			"iconAsTemplate": true
 		},
 		"windows": [
 			{
@@ -64,19 +94,8 @@
 				"label": "main",
 				"visible": false,
 				"center": true,
-				"focus": true,
-				"shadow": true
+				"focus": true
 			}
 		]
-	},
-	"plugins": {
-		"updater": {
-			"endpoints": ["https://github.com/ddki/idcard-generator-tauri/releases/latest/download/latest.json"],
-			"active": true,
-			"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE5NEExOThEQkE2RUI3RjUKUldUMXQyNjZqUmxLR1hVaFRCaTBtc0dwSWoyWXBDZVd5UVQ3V040VnFZanBFZzMvaXJoT0tjbkoK",
-			"windows": {
-				"installMode": "passive"
-			}
-		}
 	}
 }

@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { mergeConfig, type ConfigEnv, type UserConfig } from 'vite'
 import { configDefaults, defineConfig } from 'vitest/config'
-import viteConfigExport from './vite.config'
+import viteConfigExport from './vite.config.ts'
 
 // vite.config.ts 导出的是函数式配置，Vite 8 的 mergeConfig 无法直接合并函数，需先求值
 const viteConfigFn = viteConfigExport as unknown as (env: ConfigEnv) => UserConfig | Promise<UserConfig>

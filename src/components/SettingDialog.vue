@@ -171,6 +171,7 @@ import {
 	setDataDir,
 	type StorageInfo
 } from '@/utils/StorageUtils'
+import { checkUpdate, installUpdateAndRelaunch } from '@/utils/UpdaterUtils'
 
 const visible = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ (event: 'settings-changed'): void }>()
@@ -372,12 +373,9 @@ const onCheckUpdate = async () => {
 	}
 	checking.value = true
 	try {
-		const { check } = await import('@tauri-apps/plugin-updater')
-		const update = await check()
-		if (update?.available) {
-			await update.downloadAndInstall()
-			const { relaunch } = await import('@tauri-apps/plugin-process')
-			await relaunch()
+		const result = await checkUpdate()
+		if (result.shouldUpdate) {
+			await installUpdateAndRelaunch()
 			return
 		}
 		ElMessage.success('当前已是最新版本')

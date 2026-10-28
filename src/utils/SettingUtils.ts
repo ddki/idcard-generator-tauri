@@ -1,5 +1,4 @@
-import { invoke } from '@tauri-apps/api/core'
-import { Store } from '@tauri-apps/plugin-store'
+import { invoke } from '@tauri-apps/api/tauri'
 
 /** 设置项存储文件名（Rust 端关闭窗口时读取同一个文件） */
 export const SETTINGS_STORE_FILE = 'settings.json'
@@ -30,7 +29,7 @@ export const DEFAULT_SETTINGS: Readonly<AppSettings> = Object.freeze({
 	showDisclaimer: true
 })
 
-/** 设置项 -> store 键名 */
+/** 设置项 -> 持久化键名（Rust 端读写同一个 JSON 文件） */
 const SETTING_KEYS: Record<keyof AppSettings, string> = {
 	autostart: 'autostart',
 	closeToTray: 'close-to-tray',
@@ -39,18 +38,22 @@ const SETTING_KEYS: Record<keyof AppSettings, string> = {
 	showDisclaimer: 'show-disclaimer'
 }
 
-/** 纯 Web 构建没有 Tauri Store，用 localStorage 保存界面偏好 */
-const WEB_STORAGE_KEY = 'idcard-generator:settings'
-
 /** 旧版本把“后台常驻”写在 single-instance 键下，读取时兼容一次 */
 const LEGACY_CLOSE_TO_TRAY_KEY = 'single-instance'
 
+/** 纯 Web 构建没有 Tauri 命令，用 localStorage 保存界面偏好 */
+const WEB_STORAGE_KEY = 'idcard-generator:settings'
+
+/** Rust 端 settings_load 返回的原始 JSON 对象 */
+type SettingsPayload = Record<string, unknown>
+
 /**
  * 是否运行在 Tauri 容器内。
- * 纯 Web 构建（GitHub Pages）没有 Tauri API，设置项需要降级处理。
+ * v1 由 webview 注入 `__TAURI__`（withGlobalTauri）与 `__TAURI_IPC__`；
+ * 纯 Web 构建（GitHub Pages）两者都不存在，需要降级处理。
  */
 export function isDesktop(): boolean {
-	return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+	return typeof window !== 'undefined' && ('__TAURI_IPC__' in window || '__TAURI__' in window)
 }
 
 /** 把任意值收敛到合法的历史上限范围 */
@@ -62,13 +65,19 @@ export function normalizeHistoryLimit(value: unknown): number {
 	return Math.min(HISTORY_LIMIT_MAX, Math.max(HISTORY_LIMIT_MIN, Math.round(limit)))
 }
 
-let storePromise: Promise<Store> | null = null
+/** 布尔项读取：缺失或类型不符时返回 undefined，交给默认值兜底 */
+function readBoolean(payload: SettingsPayload, key: string): boolean | undefined {
+	const value = payload[key]
+	return typeof value === 'boolean' ? value : undefined
+}
 
-function getStore(): Promise<Store> {
-	if (!storePromise) {
-		storePromise = Store.load(SETTINGS_STORE_FILE, { autoSave: false })
+async function loadPayload(): Promise<SettingsPayload> {
+	try {
+		return await invoke<SettingsPayload>('settings_load')
+	} catch (error) {
+		console.error('读取设置失败：', error)
+		return {}
 	}
-	return storePromise
 }
 
 /** 读取 Web 端的界面偏好 */
@@ -92,28 +101,17 @@ export async function loadSettings(): Promise<AppSettings> {
 		}
 	}
 
-	try {
-		const store = await getStore()
-		const [autostart, closeToTray, legacyCloseToTray, checkUpdateOnStart, historyLimit, showDisclaimer] =
-			await Promise.all([
-				store.get<boolean>(SETTING_KEYS.autostart),
-				store.get<boolean>(SETTING_KEYS.closeToTray),
-				store.get<boolean>(LEGACY_CLOSE_TO_TRAY_KEY),
-				store.get<boolean>(SETTING_KEYS.checkUpdateOnStart),
-				store.get<number>(SETTING_KEYS.historyLimit),
-				store.get<boolean>(SETTING_KEYS.showDisclaimer)
-			])
+	const payload = await loadPayload()
 
-		return {
-			autostart: autostart ?? DEFAULT_SETTINGS.autostart,
-			closeToTray: closeToTray ?? legacyCloseToTray ?? DEFAULT_SETTINGS.closeToTray,
-			checkUpdateOnStart: checkUpdateOnStart ?? DEFAULT_SETTINGS.checkUpdateOnStart,
-			historyLimit: normalizeHistoryLimit(historyLimit),
-			showDisclaimer: showDisclaimer ?? DEFAULT_SETTINGS.showDisclaimer
-		}
-	} catch (error) {
-		console.error('读取设置失败：', error)
-		return { ...DEFAULT_SETTINGS }
+	return {
+		autostart: readBoolean(payload, SETTING_KEYS.autostart) ?? DEFAULT_SETTINGS.autostart,
+		closeToTray:
+			readBoolean(payload, SETTING_KEYS.closeToTray) ??
+			readBoolean(payload, LEGACY_CLOSE_TO_TRAY_KEY) ??
+			DEFAULT_SETTINGS.closeToTray,
+		checkUpdateOnStart: readBoolean(payload, SETTING_KEYS.checkUpdateOnStart) ?? DEFAULT_SETTINGS.checkUpdateOnStart,
+		historyLimit: normalizeHistoryLimit(payload[SETTING_KEYS.historyLimit]),
+		showDisclaimer: readBoolean(payload, SETTING_KEYS.showDisclaimer) ?? DEFAULT_SETTINGS.showDisclaimer
 	}
 }
 
@@ -124,9 +122,7 @@ export async function saveSetting<K extends keyof AppSettings>(key: K, value: Ap
 		return
 	}
 
-	const store = await getStore()
-	await store.set(SETTING_KEYS[key], value)
-	await store.save()
+	await invoke('settings_save', { key: SETTING_KEYS[key], value })
 }
 
 /** 切换“后台常驻”：落盘后通知 Rust 端，关闭窗口的行为立即改变 */
@@ -149,7 +145,5 @@ export async function applyAutostart(enabled: boolean): Promise<boolean> {
 		return enabled
 	}
 
-	const autostart = await import('@tauri-apps/plugin-autostart')
-	await (enabled ? autostart.enable() : autostart.disable())
-	return await autostart.isEnabled()
+	return await invoke<boolean>('autostart_set', { enabled })
 }

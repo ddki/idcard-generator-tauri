@@ -5,15 +5,12 @@
 
 use std::sync::Mutex;
 
-use tauri::{AppHandle, Manager, State};
-use tauri_plugin_notification::NotificationExt;
-use tauri_plugin_store::StoreExt;
+use tauri::{AppHandle, Manager, State, WindowEvent};
 
 mod app;
 
 /// 运行期设置状态。
-/// 用内存状态而不是每次读 store 文件，是为了让开关切换后立刻对“关闭窗口”生效，
-/// 同时避开 plugin-store 实例缓存导致的读到旧值的问题。
+/// 用内存状态而不是每次读设置文件，是为了让开关切换后立刻对“关闭窗口”生效。
 #[derive(Default)]
 struct RuntimeSettings {
 	close_to_tray: Mutex<bool>,
@@ -22,11 +19,11 @@ struct RuntimeSettings {
 #[tauri::command]
 fn close_splashscreen(app: AppHandle) {
 	// 先显示并聚焦主窗口，再关闭闪屏：顺序反过来会出现两者都不可见的空档，造成闪烁
-	if let Some(main) = app.get_webview_window("main") {
+	if let Some(main) = app.get_window("main") {
 		let _ = main.show();
 		let _ = main.set_focus();
 	}
-	if let Some(splashscreen) = app.get_webview_window("splashscreen") {
+	if let Some(splashscreen) = app.get_window("splashscreen") {
 		let _ = splashscreen.close();
 	}
 }
@@ -40,28 +37,17 @@ fn set_close_to_tray(state: State<'_, RuntimeSettings>, enabled: bool) {
 }
 
 fn main() {
+	// 单实例：抢不到端口的进程说明已有实例在跑，唤醒它之后直接退出
+	let instance = app::single_instance::acquire();
+	if matches!(instance, app::single_instance::Instance::Secondary) {
+		return;
+	}
+
 	tauri::Builder::default()
-		.plugin(tauri_plugin_shell::init())
-		.plugin(tauri_plugin_notification::init())
-		.plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
-			println!("{}, {argv:?}, {cwd}", app.package_info().name);
-			app.get_webview_window("main").unwrap().show().unwrap();
-			app.notification()
-				.builder()
-				.title("This app is already running!")
-				.body("You can find it in the tray menu.")
-				.show()
-				.unwrap();
-		}))
-		.plugin(tauri_plugin_store::Builder::default().build())
-		.plugin(tauri_plugin_dialog::init())
-		.plugin(tauri_plugin_updater::Builder::new().build())
-		.plugin(tauri_plugin_autostart::init(
-			tauri_plugin_autostart::MacosLauncher::LaunchAgent,
-			None,
-		))
-		.on_window_event(|window, event| {
-			if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+		.on_window_event(|event| {
+			if let WindowEvent::CloseRequested { api, .. } = event.event() {
+				let window = event.window();
+
 				// 只有主窗口受“后台常驻”开关控制，启动画面等窗口正常关闭
 				if window.label() != "main" {
 					return;
@@ -82,31 +68,42 @@ fn main() {
 				}
 			}
 		})
-		.setup(|app| {
+		.setup(move |app| {
+			let handle = app.handle();
+
 			// 用持久化设置初始化运行期状态，默认关闭
-			let close_to_tray = app
-				.store("settings.json")
-				.ok()
-				.and_then(|store| store.get("close-to-tray"))
-				.and_then(|value| value.as_bool())
+			let settings = app::settings::init(&handle);
+			let close_to_tray = settings
+				.get_bool(&[
+					app::settings::CLOSE_TO_TRAY,
+					app::settings::LEGACY_CLOSE_TO_TRAY,
+				])
 				.unwrap_or(false);
+			app.manage(settings);
 			app.manage(RuntimeSettings {
 				close_to_tray: Mutex::new(close_to_tray),
 			});
 
 			// 存储目录与历史记录
-			app.manage(app::storage::init(app.handle())?);
+			app.manage(app::storage::init(&handle)?);
 
 			// 设置任务栏图标
-			#[cfg(all(desktop))]
-			{
-				app::tray::create_tray(app.handle())?;
+			app::tray::create(&handle)?;
+
+			// 已有实例再次启动时，由这里把主窗口唤回前台
+			if let app::single_instance::Instance::Primary(listener) = instance {
+				app::single_instance::listen(listener, handle.clone());
 			}
+
 			Ok(())
 		})
 		.invoke_handler(tauri::generate_handler![
 			close_splashscreen,
 			set_close_to_tray,
+			app::autostart::autostart_is_enabled,
+			app::autostart::autostart_set,
+			app::settings::settings_load,
+			app::settings::settings_save,
 			app::storage::storage_info,
 			app::storage::set_data_dir,
 			app::storage::reset_data_dir,

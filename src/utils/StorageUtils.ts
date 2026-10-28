@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core'
+import { invoke } from '@tauri-apps/api/tauri'
 import { isDesktop } from './SettingUtils'
 
 export interface StorageInfo {
@@ -39,7 +39,7 @@ export async function chooseDirectory(defaultPath?: string): Promise<string | nu
 		return null
 	}
 
-	const { open } = await import('@tauri-apps/plugin-dialog')
+	const { open } = await import('@tauri-apps/api/dialog')
 	const selected = await open({
 		directory: true,
 		multiple: false,
@@ -65,7 +65,7 @@ export async function clearCache(): Promise<number> {
 
 /** 用系统文件资源管理器打开目录 */
 export async function openPath(path: string): Promise<void> {
-	const { open } = await import('@tauri-apps/plugin-shell')
+	const { open } = await import('@tauri-apps/api/shell')
 	await open(path)
 }
 

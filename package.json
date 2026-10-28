@@ -1,6 +1,6 @@
 {
 	"name": "idcard-generator",
-	"version": "0.1.13",
+	"version": "0.1.14",
 	"author": "ddki",
 	"private": true,
 	"type": "module",
@@ -20,18 +20,10 @@
 		"clean:lib": "rimraf node_modules",
 		"reinstall": "rimraf pnpm-lock.yaml && rimraf package.lock.json && rimraf node_modules && pnpm install",
 		"commit": "git-cz",
-		"changelog": "conventional-changelog -p angular -i CHANGE_LOG.md -s -n changelog-config.cjs",
 		"release": "npx release-it --increment patch --config .release-it.cjs",
-		"script:changelog": "npx esno scripts/changelog.ts --version ",
-		"script:update": "npx esno scripts/update.ts"
+		"script:changelog": "npx esno scripts/changelog.ts --version "
 	},
 	"dependencies": {
-		"@tauri-apps/plugin-autostart": "^2.7.0",
-		"@tauri-apps/plugin-dialog": "^2.8.3",
-		"@tauri-apps/plugin-process": "2.4.0",
-		"@tauri-apps/plugin-shell": "^2.5.0",
-		"@tauri-apps/plugin-store": "2.5.0",
-		"@tauri-apps/plugin-updater": "2.14.0",
 		"element-plus": "^2.14.7",
 		"pinyin-pro": "^3.29.5",
 		"vue": "^3.5.44",
@@ -39,7 +31,6 @@
 		"vue-router": "^5.4.0"
 	},
 	"devDependencies": {
-		"@actions/github": "^9.1.1",
 		"@commitlint/cli": "^21.2.4",
 		"@commitlint/config-conventional": "^21.2.4",
 		"@commitlint/types": "^21.2.3",
@@ -47,8 +38,8 @@
 		"@release-it/bumper": "^8.0.1",
 		"@release-it/conventional-changelog": "^12.0.2",
 		"@tailwindcss/postcss": "^4.3.3",
-		"@tauri-apps/api": "2.12.4",
-		"@tauri-apps/cli": "2.12.4",
+		"@tauri-apps/api": "^1.6.0",
+		"@tauri-apps/cli": "^1.6.3",
 		"@types/node": "^26.6.5",
 		"@vitejs/plugin-vue": "^6.0.10",
 		"@vue/eslint-config-prettier": "^10.2.0",
@@ -65,7 +56,6 @@
 		"kleur": "^4.1.5",
 		"less": "^4.9.1",
 		"minimist": "^1.2.8",
-		"node-fetch": "^3.3.2",
 		"npm-run-all": "^4.1.5",
 		"postcss": "^8.5.31",
 		"prettier": "^3.9.10",

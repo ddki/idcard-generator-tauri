@@ -3,7 +3,8 @@ name: Release CI
 on:
   push:
     tags:
-      - 'v*'
+      # Tauri v1 分支使用 tauri1_v 前缀，避免与 master(v2) 的 v* tag 冲突
+      - 'tauri1_v*'
 
 jobs:
   create-release:
@@ -50,7 +51,7 @@ jobs:
         run: pnpm run script:changelog
 
       - name: get app version
-        # 版本号
+        # 版本号（tag 形如 tauri1_v0.1.14）
         run: echo "app_version=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
       - name: get app name
@@ -63,8 +64,8 @@ jobs:
         with:
           owner: ${{ github.actor }}
           # 发布的可选标签。 如果省略，将使用 git ref （如果它是标签）。
-          tag: 'v${{ env.app_version }}'
-          name: '${{ env.app_name }} v${{ env.app_version }}'
+          tag: 'tauri1_v${{ env.app_version }}'
+          name: '${{ env.app_name }} tauri1_v${{ env.app_version }}'
           # 可选择将此版本标记为草稿版本。 设置为 true 以启用。
           draft: true
           # 发布的可选正文文件。 这应该是文件的路径。
@@ -89,10 +90,9 @@ jobs:
           # macOS Intel：在 Apple Silicon runner 上交叉编译
           - platform: macos-latest
             args: '--target x86_64-apple-darwin'
-          # Linux amd64：产物依赖 webkit2gtk-4.1 + libsoup3、glibc ≥ 2.35，
+          # Linux amd64：Tauri v1 依赖 webkit2gtk-4.0 + libsoup2.4、glibc ≥ 2.35，
           # 可装于 Ubuntu 22.04+ / Debian 12+ / deepin 23+ / 统信 UOS V25(2500) / 麒麟 V11
-          # 注意：统信 UOS V20 全系（1050/1060/1070，Debian 10 底座、glibc 2.28、无 webkit2gtk-4.1）
-          # 无法运行 Tauri v2 应用，不在支持范围内
+          # 注意：统信 UOS V20 全系（1050/1060/1070，glibc 2.28）不在支持范围内
           - platform: ubuntu-22.04
             args: ''
           # Linux arm64：覆盖 UOS V25 / 麒麟 V11 的 ARM 机型（公开仓库才有 arm runner）
@@ -110,6 +110,9 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
+          # tauri 1.8 的依赖栈（gtk-rs 0.15 / wry 0.24）较旧，
+          # 固定一个经过验证的稳定版，避免过新的 rustc 与旧绑定不兼容
+          toolchain: 1.90
           # macOS 上需要同时具备两个 target 才能交叉编译出 arm64 / x86_64 双架构
           targets: ${{ startsWith(matrix.platform, 'macos') && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
@@ -119,12 +122,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libwebkit2gtk-4.1-dev \
+            libwebkit2gtk-4.0-dev \
+            libgtk-3-dev \
             build-essential \
             curl \
             wget \
             file \
-            libxdo-dev \
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev \
@@ -168,7 +171,7 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install
 
-      - uses: tauri-apps/tauri-action@v1
+      - uses: tauri-apps/tauri-action@v0
         id: tauri-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

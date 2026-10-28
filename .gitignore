@@ -36,4 +36,7 @@ components.d.ts
 # mise 本地覆盖配置
 .mise.local.toml
 
+# 发版时由 scripts/changelog.ts 生成的更新说明（CI 内使用）
+updater/UPDATE_LOG.md
+
 ~
