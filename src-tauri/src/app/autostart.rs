@@ -61,8 +61,9 @@ fn set_enabled(id: &str, exe: &str, enabled: bool) -> Result<(), String> {
 }
 
 #[cfg(target_os = "macos")]
-fn plist_path(app: &AppHandle, id: &str) -> Option<PathBuf> {
-	let home = app.path_resolver().home_dir()?;
+fn plist_path(id: &str) -> Option<PathBuf> {
+	// PathResolver 没有 home_dir()，直接用 tauri 的 path 工具函数
+	let home = tauri::api::path::home_dir()?;
 	Some(
 		home.join("Library")
 			.join("LaunchAgents")
@@ -71,15 +72,13 @@ fn plist_path(app: &AppHandle, id: &str) -> Option<PathBuf> {
 }
 
 #[cfg(target_os = "macos")]
-fn is_enabled(app: &AppHandle, id: &str) -> bool {
-	plist_path(app, id)
-		.map(|path| path.is_file())
-		.unwrap_or(false)
+fn is_enabled(_app: &AppHandle, id: &str) -> bool {
+	plist_path(id).map(|path| path.is_file()).unwrap_or(false)
 }
 
 #[cfg(target_os = "macos")]
-fn set_enabled(app: &AppHandle, id: &str, exe: &str, enabled: bool) -> Result<(), String> {
-	let path = plist_path(app, id).ok_or_else(|| "无法获取用户目录".to_string())?;
+fn set_enabled(_app: &AppHandle, id: &str, exe: &str, enabled: bool) -> Result<(), String> {
+	let path = plist_path(id).ok_or_else(|| "无法获取用户目录".to_string())?;
 
 	if !enabled {
 		return match fs::remove_file(&path) {
