@@ -1,5 +1,11 @@
 # 📄 更新日志
 
+## [1.0.1](https://github.com/ddki/idcard-generator-tauri/compare/v1.0.0...v1.0.1) (2026-11-09)
+
+### 🐛 修复缺陷 | A bug fix
+
+- 修复 UOS V20 上闪屏无法自动关闭 ([1206192](https://github.com/ddki/idcard-generator-tauri/commit/1206192ad37f1f59f03d6e1545004be737801adc))
+
 ## [1.0.0](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.13...v1.0.0) (2026-10-28)
 
 ### 📦️ 构建相关 | Changes that affect the build system or external dependencies
