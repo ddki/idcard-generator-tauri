@@ -16,9 +16,16 @@ struct RuntimeSettings {
 	close_to_tray: Mutex<bool>,
 }
 
-#[tauri::command]
-fn close_splashscreen(app: AppHandle) {
-	// 先显示并聚焦主窗口，再关闭闪屏：顺序反过来会出现两者都不可见的空档，造成闪烁
+/// 闪屏兜底超时：前端正常情况下几百毫秒内就会请求切换，这里只用于兜住
+/// “前端始终没发来请求”的异常路径（脚本报错、资源加载失败、不可见窗口不产生合成帧等）。
+const SPLASH_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(8);
+
+/// 兜底切换的重试次数，避免窗口管理器吞掉一次 close 请求后闪屏继续残留。
+const SPLASH_RETRY: usize = 3;
+
+/// 显示并聚焦主窗口，然后关闭闪屏。
+/// 先显示主窗口再关闭闪屏：顺序反过来会出现两者都不可见的空档，造成闪烁。
+fn reveal_main(app: &AppHandle) {
 	if let Some(main) = app.get_window("main") {
 		let _ = main.show();
 		let _ = main.set_focus();
@@ -26,6 +33,11 @@ fn close_splashscreen(app: AppHandle) {
 	if let Some(splashscreen) = app.get_window("splashscreen") {
 		let _ = splashscreen.close();
 	}
+}
+
+#[tauri::command]
+fn close_splashscreen(app: AppHandle) {
+	reveal_main(&app);
 }
 
 /// 前端切换“后台常驻”时调用，即时生效。
@@ -89,6 +101,26 @@ fn main() {
 
 			// 设置任务栏图标
 			app::tray::create(&handle)?;
+
+			// 闪屏兜底：主窗口以 visible:false 创建，WebKitGTK（UOS v20 / 麒麟等）不会给
+			// 不可见窗口分配合成帧，前端可能永远等不到渲染完成回调而无法关闭闪屏，
+			// 表现为闪屏一直盖在屏幕上、只能点托盘“设置”唤出主窗口后消失。
+			// 这里超时后强制切换，保证闪屏一定会被关掉。
+			let watchdog = handle.clone();
+			std::thread::spawn(move || {
+				std::thread::sleep(SPLASH_TIMEOUT);
+				for _ in 0..SPLASH_RETRY {
+					if watchdog.get_window("splashscreen").is_none() {
+						return;
+					}
+					reveal_main(&watchdog);
+					std::thread::sleep(std::time::Duration::from_secs(1));
+				}
+				// 极端情况下窗口管理器可能吞掉 close 请求，最后一招是直接隐藏
+				if let Some(splashscreen) = watchdog.get_window("splashscreen") {
+					let _ = splashscreen.hide();
+				}
+			});
 
 			// 已有实例再次启动时，由这里把主窗口唤回前台
 			if let app::single_instance::Instance::Primary(listener) = instance {
