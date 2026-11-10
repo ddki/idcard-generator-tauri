@@ -1,5 +1,21 @@
 # 📄 更新日志
 
+## [2.0.1](https://github.com/ddki/idcard-generator-tauri/compare/v2.0.0...v2.0.1) (2026-11-10)
+
+### 🐛 修复缺陷 | A bug fix
+
+- :bug: 修复年龄计算与历史记录写入的问题 ([d49e1f5](https://github.com/ddki/idcard-generator-tauri/commit/d49e1f5d023710b75cb2c50049a3dca073b68565))
+- :bug: 修复闪屏可能一直停留的问题 ([49ba955](https://github.com/ddki/idcard-generator-tauri/commit/49ba9556ade4ba9cde4e5c209d2b295a0577f440))
+
+### 📦️ 构建相关 | Changes that affect the build system or external dependencies
+
+- :package: 同步权限变更后的 tauri schema ([875b1de](https://github.com/ddki/idcard-generator-tauri/commit/875b1de88275a89ec27de43df3f6335d1970959e))
+
+### 🔨 其他修改 | Other changes that do not modify src or test files
+
+- :lock: 启用 CSP 并精简插件权限 ([36a807d](https://github.com/ddki/idcard-generator-tauri/commit/36a807d450f3b8e2cec536e87332c0bd638a5004))
+- **deps:** :arrow_up: 升级前后端依赖并修复已知漏洞 ([6d8c133](https://github.com/ddki/idcard-generator-tauri/commit/6d8c133d102c8e677522dfaaa56bbde27df3c205))
+
 ## [2.0.0](https://github.com/ddki/idcard-generator-tauri/compare/v0.1.13...v2.0.0) (2026-10-28)
 
 ### 📦️ 构建相关 | Changes that affect the build system or external dependencies
