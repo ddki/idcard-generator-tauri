@@ -1,5 +1,6 @@
-import { createRouter, createWebHashHistory, type RouteLocationRaw } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { reportBootError } from '@/utils/BootErrorUtils'
 
 const router = createRouter({
 	history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -49,8 +50,9 @@ const router = createRouter({
 	]
 })
 
-function navigateTo(route: RouteLocationRaw) {
-	router.push({})
-}
+// 异步路由组件加载失败等错误：启动阶段给出可见提示，避免主窗口静默空白
+router.onError((error) => {
+	reportBootError(error)
+})
 
 export default router

@@ -46,10 +46,28 @@
 
 			img {
 				display: block;
-				max-width: 70vw;
-				max-height: 70vh;
+				/* 用 vmin 固定占位：图片加载前后布局稳定，也不会随窗口被无限放大到更模糊 */
+				width: 70vmin;
+				height: 70vmin;
 				object-fit: contain;
 				-webkit-user-drag: none;
+				animation: splash-fade-in 240ms ease-out both;
+			}
+
+			@keyframes splash-fade-in {
+				from {
+					opacity: 0;
+				}
+
+				to {
+					opacity: 1;
+				}
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				img {
+					animation: none;
+				}
 			}
 		</style>
 	</head>
