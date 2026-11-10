@@ -87,15 +87,14 @@ fn main() {
 	tauri::Builder::default()
 		.plugin(tauri_plugin_shell::init())
 		.plugin(tauri_plugin_notification::init())
-		.plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
-			println!("{}, {argv:?}, {cwd}", app.package_info().name);
+		.plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
 			// 窗口可能尚未创建完成（用户快速重复启动），因此不能 unwrap
 			show_main_window(app);
 			let _ = app
 				.notification()
 				.builder()
-				.title("This app is already running!")
-				.body("You can find it in the tray menu.")
+				.title("应用已在运行")
+				.body("主窗口已为你打开，也可以从托盘菜单进入。")
 				.show();
 		}))
 		.plugin(tauri_plugin_store::Builder::default().build())

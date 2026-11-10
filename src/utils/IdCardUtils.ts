@@ -31,7 +31,6 @@ export function generateIdCardInfo(param: IdCardInput): IdCardInfo {
  * @returns 外国人永久居留证证信息
  */
 export function generateFprCardInfo(param: FprCardInput): FprCardInfo {
-	console.log('param', param)
 	const country = param.country || randomCountry()
 	const result: FprCardInfo = {
 		cardNumber: getFprCardNumber(param.acceptAreaCode, country.ISO_3166_1_threeNumber, param.birthday, param.sex),
@@ -141,7 +140,6 @@ export function getBirthdayFromIdCard(idCard: string): string {
 	const arr: Array<string> = []
 	arr.push(birthday.substring(0, 4))
 	arr.push(birthday.substring(4, 6))
-	const date = birthday.substring(6, 8)
 	arr.push(birthday.substring(6, 8))
 	return arr.join('-')
 }
@@ -170,8 +168,11 @@ export function getAge(birthday: string): number {
 
 	const array = birthday.split('-')
 	const age = year - parseInt(array[0])
-	// 原实现为 `? age-- : age`，后置自减返回值即为 age，两者结果一致
-	return month - parseInt(array[1]) > 0 || date - parseInt(array[2]) > 0 ? age : age
+	const birthMonth = parseInt(array[1])
+	const birthDate = parseInt(array[2])
+	// 今年的生日还没到，年龄需要减 1（原实现两个分支相同，永远按整岁算）
+	const hasHadBirthday = month > birthMonth || (month === birthMonth && date >= birthDate)
+	return hasHadBirthday ? age : age - 1
 }
 
 /**
@@ -229,12 +230,9 @@ function getIdCard(areaCode: string, birthday: string, sex: string) {
  * @returns 外国人永久居留证号
  */
 function getFprCardNumber(areaCode: string, countryThreeNumber: string, birthday: string, sex: string) {
-	console.log('areaCode: ', areaCode, countryThreeNumber, birthday, sex)
 	areaCode = areaCode.length > 2 ? areaCode.substring(0, 2) : areaCode
 	const sequenceCode = getSequenceCode(sex)
-	/* eslint-disable */
-	const reg = /\-/g
-	birthday = birthday.replace(reg, '')
+	birthday = birthday.replace(/-/g, '')
 	const prefix = '9' + areaCode + countryThreeNumber + birthday + sequenceCode
 	const array = prefix.split('')
 	let sum = 0

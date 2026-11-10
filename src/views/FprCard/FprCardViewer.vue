@@ -29,8 +29,8 @@
 					/>
 				</el-form-item>
 				<el-form-item label="性别">
-					<el-radio v-model="formData.sex" label="1">男</el-radio>
-					<el-radio v-model="formData.sex" label="0">女</el-radio>
+					<el-radio v-model="formData.sex" value="1">男</el-radio>
+					<el-radio v-model="formData.sex" value="0">女</el-radio>
 				</el-form-item>
 				<el-form-item label="受理地代码">
 					<el-input v-model="formData.acceptAreaCode" placeholder="受理地代码" />
@@ -139,7 +139,7 @@ import type { FprCardInfo, FprCardInput } from 'fprCard'
 import { generateFprCardInfo, getAge, getBirthday } from '../../utils/IdCardUtils'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import useClipboard from 'vue-clipboard3'
+import { copyText } from '@/utils/ClipboardUtils'
 import { ElMessage } from 'element-plus'
 import { JSON_CITY, JSON_COUNTRY } from '@/utils/AssetsUtils'
 import type { Country } from 'baseModel'
@@ -151,7 +151,6 @@ import { loadSettings } from '@/utils/SettingUtils'
 defineOptions({ name: 'FprCardViewer' })
 
 const router = useRouter()
-const clipboard = useClipboard()
 
 const country = ref('')
 
@@ -168,7 +167,6 @@ const countries = ref<Country[]>(JSON_COUNTRY)
 
 const queryCountrySearch = (queryString: string, cb: (data: Country[]) => void) => {
 	const results = queryString ? countries.value.filter(createCountryFilter(queryString)) : countries.value
-	console.log('results = ', results)
 	cb(results)
 }
 const createCountryFilter = (queryString: string) => {
@@ -262,6 +260,7 @@ const recordHistory = async (): Promise<void> => {
 		historyCount.value = (await appendHistory(record, historyLimit)).length
 	} catch (error) {
 		console.error('保存历史记录失败：', error)
+		ElMessage.warning('历史记录保存失败，本次生成结果不会被记录')
 	}
 }
 
@@ -291,8 +290,7 @@ const handleGenerateImage = (
 }
 
 const handleClickCopy = async (value: string): Promise<void> => {
-	await clipboard.toClipboard(value)
-	ElMessage('已复制')
+	await copyText(value)
 }
 
 onMounted(async () => {

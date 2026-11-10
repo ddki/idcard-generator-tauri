@@ -152,14 +152,13 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import useClipboard from 'vue-clipboard3'
+import { copyText } from '@/utils/ClipboardUtils'
 import { clearHistory, loadHistory, saveHistory, type HistoryRecord, type HistoryType } from '@/utils/HistoryUtils'
 
 const visible = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ (event: 'changed', records: HistoryRecord[]): void }>()
 
 const router = useRouter()
-const clipboard = useClipboard()
 
 const loading = ref(false)
 const records = ref<HistoryRecord[]>([])
@@ -203,8 +202,15 @@ async function reload() {
 }
 
 async function onRemove(id: string) {
-	records.value = records.value.filter((record) => record.id !== id)
-	await saveHistory(records.value)
+	const next = records.value.filter((record) => record.id !== id)
+	try {
+		await saveHistory(next)
+	} catch (error) {
+		console.error('删除历史记录失败：', error)
+		ElMessage.error('删除失败，请稍后重试')
+		return
+	}
+	records.value = next
 	emit('changed', records.value)
 	ElMessage.success('已删除该条记录')
 }
@@ -220,7 +226,13 @@ async function onClear() {
 		return
 	}
 
-	await clearHistory()
+	try {
+		await clearHistory()
+	} catch (error) {
+		console.error('清除历史记录失败：', error)
+		ElMessage.error('清除失败，请稍后重试')
+		return
+	}
 	records.value = []
 	emit('changed', records.value)
 	ElMessage.success('历史记录已清除')
@@ -231,8 +243,7 @@ async function handleCopy(value: unknown) {
 	if (!text.trim()) {
 		return
 	}
-	await clipboard.toClipboard(text)
-	ElMessage('已复制')
+	await copyText(text)
 }
 
 const toQuery = (value: unknown): string => (value === undefined || value === null ? '' : String(value))

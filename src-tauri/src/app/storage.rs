@@ -110,11 +110,42 @@ fn history_path(data_dir: &Path) -> PathBuf {
 	data_dir.join(HISTORY_FILE)
 }
 
-fn read_history_file(data_dir: &Path) -> HistoryData {
-	fs::read_to_string(history_path(data_dir))
-		.ok()
-		.and_then(|content| serde_json::from_str::<HistoryData>(&content).ok())
-		.unwrap_or_default()
+/// 原子写入：先写临时文件再重命名，避免进程中断/断电留下半截文件。
+fn write_atomic(path: &Path, content: &[u8]) -> Result<(), String> {
+	if let Some(parent) = path.parent() {
+		fs::create_dir_all(parent).map_err(|error| format!("创建目录 {} 失败：{error}", parent.display()))?;
+	}
+
+	let temp = path.with_extension("tmp");
+	fs::write(&temp, content).map_err(|error| format!("写入 {} 失败：{error}", temp.display()))?;
+	fs::rename(&temp, path).map_err(|error| {
+		let _ = fs::remove_file(&temp);
+		format!("写入 {} 失败：{error}", path.display())
+	})
+}
+
+/// 读取历史记录。
+///
+/// 文件不存在视为空历史；内容损坏时先备份再报错，避免后续写入把原内容彻底覆盖。
+fn read_history_file(data_dir: &Path) -> Result<HistoryData, String> {
+	let path = history_path(data_dir);
+	let content = match fs::read_to_string(&path) {
+		Ok(content) => content,
+		Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(HistoryData::default()),
+		Err(error) => return Err(format!("读取历史记录失败：{error}")),
+	};
+
+	match serde_json::from_str::<HistoryData>(&content) {
+		Ok(data) => Ok(data),
+		Err(error) => {
+			let backup = path.with_extension("json.bak");
+			let _ = fs::copy(&path, &backup);
+			Err(format!(
+				"历史记录文件已损坏，原文件已备份为 {}：{error}",
+				backup.display()
+			))
+		}
+	}
 }
 
 impl StorageState {
@@ -271,14 +302,13 @@ pub fn clear_cache(state: State<'_, StorageState>) -> Result<u64, String> {
 }
 
 #[tauri::command]
-pub fn history_load(state: State<'_, StorageState>) -> HistoryData {
+pub fn history_load(state: State<'_, StorageState>) -> Result<HistoryData, String> {
 	read_history_file(&state.data_dir())
 }
 
 #[tauri::command]
 pub fn history_save(state: State<'_, StorageState>, entries: Vec<serde_json::Value>) -> Result<(), String> {
 	let data_dir = state.data_dir();
-	let _ = fs::create_dir_all(&data_dir);
 
 	let data = HistoryData {
 		updated_at: std::time::SystemTime::now()
@@ -289,7 +319,7 @@ pub fn history_save(state: State<'_, StorageState>, entries: Vec<serde_json::Val
 	};
 
 	let content = serde_json::to_vec(&data).map_err(|error| error.to_string())?;
-	fs::write(history_path(&data_dir), content).map_err(|error| format!("写入历史记录失败：{error}"))
+	write_atomic(&history_path(&data_dir), &content)
 }
 
 #[tauri::command]

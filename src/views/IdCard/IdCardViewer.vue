@@ -16,8 +16,8 @@
 					/>
 				</el-form-item>
 				<el-form-item label="性别：">
-					<el-radio v-model="formData.sex" label="1">男</el-radio>
-					<el-radio v-model="formData.sex" label="0">女</el-radio>
+					<el-radio v-model="formData.sex" value="1">男</el-radio>
+					<el-radio v-model="formData.sex" value="0">女</el-radio>
 				</el-form-item>
 				<el-form-item label="地区代码：">
 					<el-input v-model="formData.areaCode" placeholder="地区代码" />
@@ -131,7 +131,7 @@ import { generateIdCardInfo, getAge, getBirthday } from '../../utils/IdCardUtils
 import { onMounted, reactive, ref } from 'vue'
 import { RelationContext } from '../../service/idcard/RelationStrategy'
 import { useRouter } from 'vue-router'
-import useClipboard from 'vue-clipboard3'
+import { copyText } from '@/utils/ClipboardUtils'
 import { ElMessage } from 'element-plus'
 import HistoryDrawer from '@/components/HistoryDrawer.vue'
 import { appendHistory, createHistoryId, loadHistory, type HistoryRecord } from '@/utils/HistoryUtils'
@@ -141,7 +141,6 @@ import { loadSettings } from '@/utils/SettingUtils'
 defineOptions({ name: 'IdCardViewer' })
 
 const router = useRouter()
-const clipboard = useClipboard()
 
 const formData = reactive<IdCardInput>({
 	age: 20,
@@ -245,6 +244,7 @@ const recordHistory = async (): Promise<void> => {
 		historyCount.value = (await appendHistory(record, historyLimit)).length
 	} catch (error) {
 		console.error('保存历史记录失败：', error)
+		ElMessage.warning('历史记录保存失败，本次生成结果不会被记录')
 	}
 }
 
@@ -301,8 +301,7 @@ const handleGenerateImage = (_name: string, _idCard: string, _sexText: string, _
 }
 
 const handleClickCopy = async (value: string): Promise<void> => {
-	await clipboard.toClipboard(value)
-	ElMessage('已复制')
+	await copyText(value)
 }
 
 onMounted(async () => {

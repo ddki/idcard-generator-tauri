@@ -12,9 +12,8 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
 	let quit = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
 	let menus = Menu::with_items(app, &[&setting, &check_update, &quit])?;
 
-	let _ = TrayIconBuilder::with_id("tary")
+	let mut builder = TrayIconBuilder::with_id("tray")
 		.tooltip("证件生成器")
-		.icon(app.default_window_icon().unwrap().clone())
 		.menu(&menus)
 		.show_menu_on_left_click(true)
 		.on_menu_event(move |app, event| match event.id.as_ref() {
@@ -28,7 +27,6 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
 				let _ = app.emit("open-setting", ());
 			}
 			"check_update" => {
-				println!("check update ....");
 				app::updater::check_update(app.clone());
 			}
 			"quit" => {
@@ -39,9 +37,9 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
 		.on_tray_icon_event(|tray, event| {
 			if let TrayIconEvent::Click {
 				button: MouseButton::Left,
-        button_state: MouseButtonState::Up,
-        ..
-      } = event
+				button_state: MouseButtonState::Up,
+				..
+			} = event
 			{
 				let app = tray.app_handle();
 				if let Some(window) = app.get_webview_window("main") {
@@ -49,8 +47,15 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
 					let _ = window.set_focus();
 				}
 			}
-		})
-		.build(app);
+		});
+
+	// 缺少默认窗口图标时不再 panic，托盘其余功能（菜单、点击）仍然可用
+	if let Some(icon) = app.default_window_icon() {
+		builder = builder.icon(icon.clone());
+	}
+
+	// 创建失败要向上抛出，避免"托盘静默不出现"却以为初始化成功
+	builder.build(app)?;
 
 	Ok(())
 }

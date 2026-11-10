@@ -178,14 +178,11 @@ const formData = reactive<FprCardImageInput>({
 	endDate: initFormData.endDate
 })
 
-console.log('formData = ', formData)
-
 const country = ref(props.countryText)
 const countries = ref<Country[]>(JSON_COUNTRY)
 
 const queryCountrySearch = (queryString: string, cb: (data: Country[]) => void) => {
 	const results = queryString ? countries.value.filter(createCountryFilter(queryString)) : countries.value
-	console.log('results = ', results)
 	cb(results)
 }
 const createCountryFilter = (queryString: string) => {
@@ -223,13 +220,11 @@ const imageData = reactive({
 /** 当前使用的人像图，由人像选择器维护（预制人像或用户上传裁剪后的结果） */
 const userPhoto = ref('')
 
-/* eslint-disable */
-const reg = /\-/g
 const dateStr = computed(() => {
 	if (formData.validityType === '3') {
-		return formData.startDate.replace(reg, '.') + '-' + '长期'
+		return formData.startDate.replace(/-/g, '.') + '-' + '长期'
 	}
-	return formData.startDate.replace(reg, '.') + '-' + formData.endDate.replace(reg, '.')
+	return formData.startDate.replace(/-/g, '.') + '-' + formData.endDate.replace(/-/g, '.')
 })
 
 const onChangeValidityType = (value: string): void => {
@@ -247,16 +242,16 @@ const onChangeValidityType = (value: string): void => {
 }
 
 const onSubmit = async (): Promise<void> => {
-	if (formData.birthday == null || formData.birthday == undefined || formData.length < 8 || formData.cardNumber) {
+	// 仅在对应字段为空时从证件号推断，避免覆盖用户手动填写的内容
+	const canInfer = (formData.cardNumber ?? '').length >= 8
+	if (!formData.birthday && canInfer) {
 		formData.birthday = getBirthdayFromIdCard(formData.cardNumber)
 	}
-	if (formData.sexText == null || formData.sexText == undefined || formData.cardNumber) {
+	if (!formData.sexText && canInfer) {
 		formData.sexText = getSexWithCodeFromIdCard(formData.cardNumber)
 	}
-	if (formData.countryText == null || formData.countryText == undefined || formData.countryText.length < 1 || country) {
-		formData.countryText = country
-	}
-	console.log('data: ', formData)
+	// 国家/地区以输入框当前值为准（选中项或手动输入）
+	formData.countryText = country.value
 	await nextTick()
 	const fontCanvasElement = document.getElementById('fontCanvas') as HTMLCanvasElement
 	fontCanvasElement.width = FPR_CANVAS.width
