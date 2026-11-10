@@ -3,6 +3,13 @@ allowBuilds:
   esbuild: true
   vue-demi: true
 
+# 安全修复：传递依赖里落到有漏洞的版本，这里强制提到已修补的最小版本
+overrides:
+  # GHSA-c475-qrg2-pj4r（high）：release-it 的 proxy-agent 链会带进 basic-ftp
+  basic-ftp: ^6.2.1
+  # GHSA-g3hv-75wg-m249（moderate）：eslint 传递依赖，globparts 放大导致 DoS
+  minimatch: ^11.0.1
+
 # 本机 Windows 禁止遍历 reparse point（ERROR_UNTRUSTED_MOUNT_POINT / os error 448），
 # isolated 布局依赖 node_modules/.pnpm/node_modules 下的 junction 做依赖提升，
 # 会触发 ERR_PNPM_CMD_SHIM_READ_MANIFEST。改用 hoisted 扁平布局，不创建任何 junction。
